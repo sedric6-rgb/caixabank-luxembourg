@@ -35,7 +35,6 @@ export default async function EspaceClientLayout({ children }: { children: React
       <aside className="hidden lg:flex lg:flex-col w-[270px] bg-[#001f42] text-gray-300 fixed inset-y-0 left-0 z-30">
         <div className="p-6 border-b border-white/10">
           <Link href="/" className="block">
-            <img src="/logo/caixabank-logo.jpg" alt="CaixaBank" className="h-7 w-auto mb-1" />
             <span className="text-sm font-bold text-white">CaixaBank Luxembourg</span>
           </Link>
           <div className="mt-3">

@@ -9,7 +9,6 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <img src="/logo/caixabank-logo.jpg" alt="CaixaBank" className="h-12 w-auto mx-auto mb-2" />
             <span className="text-2xl font-bold text-white">CaixaBank Luxembourg</span>
           </Link>
           <p className="text-blue-200 text-sm mt-2">Espace Client Sécurisé</p>

@@ -27,7 +27,6 @@ export function BankHeader() {
       <div className="wrap flex items-center justify-between py-3">
         {/* Logo */}
         <Link href="/" className="shrink-0 flex items-center gap-2">
-          <img src="/logo/caixabank-logo.jpg" alt="CaixaBank" className="h-8 w-auto" />
           <span className="text-lg font-bold text-primary sm:text-xl">CaixaBank Luxembourg</span>
         </Link>
 

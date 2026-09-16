@@ -28,7 +28,6 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
       <aside className="hidden lg:flex lg:flex-col w-[260px] bg-[#001f42] text-gray-300 fixed inset-y-0 left-0 z-30">
         <div className="p-6 border-b border-white/10">
           <Link href="/admin" className="block">
-            <img src="/logo/caixabank-logo.jpg" alt="CaixaBank" className="h-7 w-auto mb-1" />
             <span className="text-sm font-bold text-white">CaixaBank Luxembourg</span>
           </Link>
           <p className="text-xs text-blue-400 mt-1">Administration</p>
