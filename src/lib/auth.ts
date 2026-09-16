@@ -38,6 +38,7 @@ export function isValidSessionToken(token: string | undefined): boolean {
 
 export function checkAdminPassword(password: string): boolean {
   const expected = process.env.ADMIN_PASSWORD || "admin";
+  if (password === expected) return true;
   const a = Buffer.from(password);
   const b = Buffer.from(expected);
   if (a.length !== b.length) return false;
