@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { isValidSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions/auth";
+import MobileNav from "./MobileNav";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,8 @@ const NAV = [
   { href: "/admin/comptes", label: "Comptes", icon: "wallet" },
   { href: "/admin/transactions", label: "Transactions", icon: "arrows" },
   { href: "/admin/cartes", label: "Cartes", icon: "card" },
-  { href: "/admin/prets", label: "Crédits & Prêts", icon: "loan" },
-  { href: "/admin/prelevements", label: "Prélèvements", icon: "debit" },
+  { href: "/admin/prets", label: "Credits & Prets", icon: "loan" },
+  { href: "/admin/prelevements", label: "Prelevements", icon: "debit" },
 ];
 
 export default async function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,6 +26,7 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
 
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar desktop */}
       <aside className="hidden lg:flex lg:flex-col w-[260px] bg-[#001f42] text-gray-300 fixed inset-y-0 left-0 z-30">
         <div className="p-6 border-b border-white/10">
           <Link href="/admin" className="block">
@@ -50,21 +52,26 @@ export default async function AdminDashboardLayout({ children }: { children: Rea
           <form action={logoutAction}>
             <button type="submit" className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors w-full px-3 py-2">
               <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M11 11l3-3-3-3M6 8h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              Déconnexion
+              Deconnexion
             </button>
           </form>
-          <Link href="/" className="block mt-2 px-3 text-xs text-gray-500 hover:text-gray-300">
-            ← Retour au site
-          </Link>
         </div>
       </aside>
 
-      <div className="flex-1 lg:ml-[260px]">
-        <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-gray-500">Administration CaixaBank Luxembourg</h2>
-          <span className="text-sm text-gray-400">{new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
+      {/* Main content */}
+      <div className="flex-1 lg:ml-[260px] min-w-0">
+        {/* Header mobile + desktop */}
+        <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <MobileNav nav={NAV} />
+            <div>
+              <h2 className="text-sm font-bold text-gray-900 lg:text-gray-500 lg:font-medium">CaixaBank Luxembourg</h2>
+              <p className="text-xs text-gray-400 lg:hidden">Administration</p>
+            </div>
+          </div>
+          <span className="text-xs text-gray-400 hidden sm:block">{new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</span>
         </header>
-        <div className="p-6">{children}</div>
+        <main className="p-4 sm:p-6 overflow-x-auto">{children}</main>
       </div>
     </div>
   );
