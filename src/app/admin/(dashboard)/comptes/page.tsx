@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 
 type Account = {
   id: number;
+  clientId: number;
+  acctIdx: number;
   number: string;
   holder: string;
   type: string;
@@ -19,9 +22,12 @@ function buildAccounts(): Account[] {
   let id = 1;
   const list: Account[] = [];
   for (const c of DEMO_CLIENTS) {
-    for (const a of c.accounts) {
+    for (let ai = 0; ai < c.accounts.length; ai++) {
+      const a = c.accounts[ai];
       list.push({
         id: id++,
+        clientId: c.id,
+        acctIdx: ai,
         number: a.number,
         holder: `${c.first_name} ${c.last_name}`,
         type: TYPE_MAP[a.type] || a.type,
@@ -52,7 +58,6 @@ export default function AdminComptesPage() {
   const [accounts, setAccounts] = useState<Account[]>(buildAccounts);
   const [filter, setFilter] = useState("Tous");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Account | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState("");
   const [showTransfer, setShowTransfer] = useState(false);
@@ -75,6 +80,8 @@ export default function AdminComptesPage() {
     const fd = new FormData(e.currentTarget);
     const newAcc: Account = {
       id: Date.now(),
+      clientId: 0,
+      acctIdx: 0,
       number: genIBAN(),
       holder: String(fd.get("holder")),
       type: String(fd.get("type")),
@@ -85,12 +92,6 @@ export default function AdminComptesPage() {
     setAccounts((prev) => [...prev, newAcc]);
     setShowForm(false);
     notify("Compte cree avec succes");
-  };
-
-  const toggleStatus = (id: number, newStatus: string) => {
-    setAccounts((prev) => prev.map((a) => a.id === id ? { ...a, status: newStatus } : a));
-    setSelected(null);
-    notify(`Statut du compte mis a jour : ${L[newStatus]}`);
   };
 
   const doTransfer = (e: React.FormEvent<HTMLFormElement>) => {
@@ -202,58 +203,34 @@ export default function AdminComptesPage() {
             <th className="text-right px-4 py-3 font-medium text-gray-500">Solde (EUR)</th>
             <th className="text-left px-4 py-3 font-medium text-gray-500">Statut</th>
             <th className="text-left px-4 py-3 font-medium text-gray-500 hidden sm:table-cell">Ouvert le</th>
+            <th className="text-right px-4 py-3 font-medium text-gray-500">Actions</th>
           </tr></thead>
           <tbody>
             {filtered.map((a) => (
-              <tr key={a.id} onClick={() => setSelected(a)} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <tr key={a.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="px-4 py-3 font-mono text-xs text-gray-600">{a.number}</td>
                 <td className="px-4 py-3 font-medium text-gray-900">{a.holder}</td>
                 <td className="px-4 py-3 text-gray-500">{a.type}</td>
                 <td className="px-4 py-3 text-right font-medium text-gray-900">{fmt(a.balance)}</td>
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[a.status]}`}>{L[a.status]}</span></td>
                 <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{a.opened}</td>
+                <td className="px-4 py-3 text-right">
+                  {a.clientId > 0 ? (
+                    <Link href={`/admin/comptes/${a.clientId}-${a.acctIdx}`} className="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                      Voir le compte
+                    </Link>
+                  ) : (
+                    <span className="text-xs text-gray-400">—</span>
+                  )}
+                </td>
               </tr>
             ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">Aucun compte trouve</td></tr>
+            )}
           </tbody>
         </table>
       </div>
-
-      {selected && (
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" onClick={() => setSelected(null)}>
-          <div className="bg-white rounded-xl shadow-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Details du compte</h2>
-            <div className="space-y-3 text-sm">
-              <Row label="IBAN" value={selected.number} />
-              <Row label="Titulaire" value={selected.holder} />
-              <Row label="Type" value={selected.type} />
-              <Row label="Solde" value={`${fmt(selected.balance)} EUR`} />
-              <Row label="Statut" value={L[selected.status]} />
-              <Row label="Ouvert le" value={selected.opened} />
-            </div>
-            <div className="mt-6 flex gap-2">
-              {selected.status === "actif" && (
-                <button onClick={() => toggleStatus(selected.id, "bloque")} className="flex-1 bg-red-100 text-red-700 py-2.5 rounded-lg text-sm font-medium hover:bg-red-200">Bloquer</button>
-              )}
-              {selected.status === "bloque" && (
-                <button onClick={() => toggleStatus(selected.id, "actif")} className="flex-1 bg-green-100 text-green-700 py-2.5 rounded-lg text-sm font-medium hover:bg-green-200">Debloquer</button>
-              )}
-              {selected.status === "en_attente" && (
-                <button onClick={() => toggleStatus(selected.id, "actif")} className="flex-1 bg-green-100 text-green-700 py-2.5 rounded-lg text-sm font-medium hover:bg-green-200">Activer</button>
-              )}
-              <button onClick={() => setSelected(null)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Fermer</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-medium text-gray-900 text-right">{value}</span>
     </div>
   );
 }
