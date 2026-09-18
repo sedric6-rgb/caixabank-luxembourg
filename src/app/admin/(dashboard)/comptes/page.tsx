@@ -1,18 +1,38 @@
 "use client";
 
 import { useState } from "react";
+import { DEMO_CLIENTS } from "@/lib/demo-data";
 
-const INITIAL_ACCOUNTS = [
-  { id: 1, number: "LU61 0019 1014 0000 0712 1981 2874", holder: "Jan Kowalski", type: "Courant", balance: 12847.53, status: "actif", opened: "15/03/2022" },
-  { id: 2, number: "LU27 0019 2004 0000 3002 0135 5387", holder: "Jan Kowalski", type: "Epargne", balance: 45230.00, status: "actif", opened: "15/03/2022" },
-  { id: 3, number: "LU10 0019 0099 7603 1234 5678 9012", holder: "Jan Kowalski", type: "Pro", balance: 89415.22, status: "actif", opened: "20/06/2023" },
-  { id: 4, number: "LU83 0019 1026 0000 0422 0000 1234", holder: "Anna Nowak", type: "Courant", balance: 5621.80, status: "actif", opened: "22/07/2023" },
-  { id: 5, number: "LU44 0019 2202 0000 0002 4447 1234", holder: "Piotr Wisniewski", type: "Courant", balance: 23105.44, status: "actif", opened: "10/01/2023" },
-  { id: 6, number: "LU92 0019 6247 1111 0010 4319 8745", holder: "Katarzyna Wojcik", type: "Epargne", balance: 0, status: "en_attente", opened: "01/09/2024" },
-  { id: 7, number: "LU15 0019 0076 0000 3310 0018 8523", holder: "Tomasz Kaminski", type: "Pro", balance: 156420.10, status: "actif", opened: "18/05/2023" },
-];
+type Account = {
+  id: number;
+  number: string;
+  holder: string;
+  type: string;
+  balance: number;
+  status: string;
+  opened: string;
+};
 
-type Account = typeof INITIAL_ACCOUNTS[number];
+const TYPE_MAP: Record<string, string> = { courant: "Courant", epargne: "Epargne", professionnel: "Pro" };
+
+function buildAccounts(): Account[] {
+  let id = 1;
+  const list: Account[] = [];
+  for (const c of DEMO_CLIENTS) {
+    for (const a of c.accounts) {
+      list.push({
+        id: id++,
+        number: a.number,
+        holder: `${c.first_name} ${c.last_name}`,
+        type: TYPE_MAP[a.type] || a.type,
+        balance: a.balance,
+        status: c.status,
+        opened: c.created_at,
+      });
+    }
+  }
+  return list;
+}
 
 const S: Record<string, string> = { actif: "bg-green-100 text-green-700", en_attente: "bg-yellow-100 text-yellow-700", bloque: "bg-red-100 text-red-700", ferme: "bg-gray-100 text-gray-500" };
 const L: Record<string, string> = { actif: "Actif", en_attente: "En attente", bloque: "Bloque", ferme: "Ferme" };
@@ -29,7 +49,7 @@ function genIBAN() {
 }
 
 export default function AdminComptesPage() {
-  const [accounts, setAccounts] = useState(INITIAL_ACCOUNTS);
+  const [accounts, setAccounts] = useState<Account[]>(buildAccounts);
   const [filter, setFilter] = useState("Tous");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Account | null>(null);
@@ -170,7 +190,7 @@ export default function AdminComptesPage() {
             <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${filter === f ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>{f}</button>
           ))}
         </div>
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-60" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher par titulaire ou IBAN..." className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-72" />
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
