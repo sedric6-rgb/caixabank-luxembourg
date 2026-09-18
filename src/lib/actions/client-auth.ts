@@ -7,18 +7,11 @@ import {
   createClientSessionToken,
   CLIENT_SESSION_COOKIE_NAME,
 } from "@/lib/auth-client";
+import { DEMO_CLIENTS } from "@/lib/demo-data";
 import type { RowDataPacket } from "mysql2";
 
-// Identifiants de demonstration
-const DEMO_CLIENT_NUMBER = "CBP-284751";
 const DEMO_PASSWORD = "demo2024";
-const DEMO_CLIENT_ID = 1;
 
-/**
- * Action serveur pour la connexion client.
- * Verifie le numero client + mot de passe, cree un token de session
- * et redirige vers l'espace client.
- */
 export async function clientLoginAction(formData: FormData): Promise<void> {
   const clientNumber = String(formData.get("client_number") || "").trim();
   const password = String(formData.get("password") || "");
@@ -54,13 +47,13 @@ export async function clientLoginAction(formData: FormData): Promise<void> {
     }
   }
 
-  // Fallback : identifiants de demonstration
-  if (
-    clientId === null &&
-    clientNumber === DEMO_CLIENT_NUMBER &&
-    password === DEMO_PASSWORD
-  ) {
-    clientId = DEMO_CLIENT_ID;
+  if (clientId === null && password === DEMO_PASSWORD) {
+    const demoClient = DEMO_CLIENTS.find(
+      (c) => c.client_number === clientNumber && c.status === "actif"
+    );
+    if (demoClient) {
+      clientId = demoClient.id;
+    }
   }
 
   if (clientId === null) {

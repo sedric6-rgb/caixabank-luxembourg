@@ -45,8 +45,7 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
   const saveEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    setClient((prev) => ({
-      ...prev,
+    const updates = {
       first_name: String(fd.get("first_name")),
       last_name: String(fd.get("last_name")),
       email: String(fd.get("email")),
@@ -54,7 +53,12 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
       address: String(fd.get("address")),
       city: String(fd.get("city")),
       postal_code: String(fd.get("postal_code")),
-    }));
+    };
+    setClient((prev) => ({ ...prev, ...updates }));
+    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
+    if (src) {
+      Object.assign(src, updates);
+    }
     setEditing(false);
     notify("Profil mis a jour");
   };
@@ -62,6 +66,8 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
   const toggleBlock = () => {
     const newStatus = client.status === "actif" ? "bloque" : "actif";
     setClient((prev) => ({ ...prev, status: newStatus }));
+    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
+    if (src) src.status = newStatus;
     notify(newStatus === "bloque" ? "Client bloque" : "Client reactive");
     setConfirmBlock(false);
   };
@@ -83,10 +89,17 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
     const d = new Date();
     const date = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 
-    setTransactions((prev) => [{ date, desc: `${type} — ${desc}`, amount }, ...prev]);
+    const newTx = { date, desc: `${type} — ${desc}`, amount };
+    setTransactions((prev) => [newTx, ...prev]);
     setAccounts((prev) => prev.map((a) =>
       a.number === accountNum ? { ...a, balance: a.balance + amount } : a
     ));
+    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
+    if (src) {
+      src.transactions.unshift(newTx);
+      const acct = src.accounts.find((a) => a.number === accountNum);
+      if (acct) acct.balance += amount;
+    }
     setTxOpen(false);
     notify(`Transaction de ${fmt(Math.abs(amount))} EUR enregistree`);
   };
@@ -104,6 +117,8 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
       type,
     };
     setAccounts((prev) => [...prev, newAcct]);
+    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
+    if (src) src.accounts.push(newAcct);
     setAddAcctOpen(false);
     notify("Compte bancaire cree");
   };

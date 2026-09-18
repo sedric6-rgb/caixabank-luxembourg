@@ -64,8 +64,13 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
     const isCredit = type === "Credit" || type === "Virement entrant" || type === "Interet";
     const amount = isCredit ? rawAmount : -rawAmount;
     const desc = String(fd.get("description"));
-    setTransactions((prev) => [{ date: today(), desc, amount }, ...prev]);
+    const newTx = { date: today(), desc, amount };
+    setTransactions((prev) => [newTx, ...prev]);
     setAccount((prev) => ({ ...prev, balance: prev.balance + amount }));
+    const srcAcct = DEMO_CLIENTS.find((c) => c.id === client.id)?.accounts.find((a) => a.number === account.number);
+    if (srcAcct) srcAcct.balance += amount;
+    const srcClient = DEMO_CLIENTS.find((c) => c.id === client.id);
+    if (srcClient) srcClient.transactions.unshift(newTx);
     setShowAddTx(false);
     notify(`${type} de ${fmt(Math.abs(amount))} EUR enregistre`);
   };

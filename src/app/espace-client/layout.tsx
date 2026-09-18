@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getClientSession } from "@/lib/auth-client";
 import { getClientById } from "@/lib/queries/banking";
 import { clientLogoutAction } from "@/lib/actions/client-auth";
+import ClientMobileNav from "./ClientMobileNav";
 
 const NAV = [
   { href: "/espace-client", label: "Tableau de bord", icon: "dashboard" },
@@ -64,9 +65,12 @@ export default async function EspaceClientLayout({ children }: { children: React
         </div>
       </aside>
 
-      <div className="flex-1 lg:ml-[270px]">
-        <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <span className="text-sm text-gray-500">Espace Client</span>
+      <div className="flex-1 lg:ml-[270px] min-w-0">
+        <header className="sticky top-0 z-20 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <ClientMobileNav nav={NAV} clientName={clientName} clientNumber={clientNumber} />
+            <span className="text-sm text-gray-500">Espace Client</span>
+          </div>
           <div className="flex items-center gap-4">
             <button className="relative text-gray-400 hover:text-gray-600">
               <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M15 6.5A5 5 0 005 6.5C5 11 3 13 3 13h14s-2-2-2-6.5zM8.5 16a2.5 2.5 0 005 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -75,7 +79,7 @@ export default async function EspaceClientLayout({ children }: { children: React
             <span className="text-sm text-gray-400">{new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
           </div>
         </header>
-        <div className="p-6">{children}</div>
+        <div className="p-4 sm:p-6">{children}</div>
       </div>
     </div>
   );

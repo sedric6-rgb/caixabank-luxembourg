@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { DEMO_CLIENTS } from "@/lib/demo-data";
 import type { RowDataPacket } from "mysql2";
 
 // ============================================================
@@ -111,449 +112,156 @@ export interface DashboardStats {
 }
 
 // ============================================================
-// Donnees de demonstration
+// Donnees de demonstration generees depuis DEMO_CLIENTS
 // ============================================================
 
-const DEMO_CLIENT: BankClient = {
-  id: 1,
-  client_number: "CBP-284751",
-  first_name: "Jan",
-  last_name: "Kowalski",
-  email: "jan.kowalski@email.lu",
-  phone: "+352 621 345 678",
-  date_of_birth: "1985-03-15",
-  address: "12 Av. de la Gare",
-  city: "Luxembourg",
-  postal_code: "1611",
-  country: "Luxembourg",
-  status: "actif",
-};
+function getDemoClient(clientId: number): BankClient | null {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return null;
+  return {
+    id: c.id, client_number: c.client_number,
+    first_name: c.first_name, last_name: c.last_name,
+    email: c.email, phone: c.phone, date_of_birth: c.date_of_birth,
+    address: c.address, city: c.city, postal_code: c.postal_code,
+    country: c.country, status: c.status,
+  };
+}
 
-const DEMO_ACCOUNTS: BankAccount[] = [
-  {
-    id: 1,
-    account_number: "LU61 0019 1014 0000 0712 1981 2874",
-    client_id: 1,
-    account_type: "courant",
-    label: "Compte Courant",
-    balance: 12847.53,
+function getDemoAccounts(clientId: number): BankAccount[] {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  return c.accounts.map((a, i) => ({
+    id: clientId * 100 + i + 1,
+    account_number: a.number,
+    client_id: clientId,
+    account_type: a.type,
+    label: a.label,
+    balance: a.balance,
     currency: "EUR",
     status: "actif",
-  },
-  {
-    id: 2,
-    account_number: "LU27 0019 2004 0000 3002 0135 5387",
-    client_id: 1,
-    account_type: "epargne",
-    label: "Livret Epargne",
-    balance: 45230.0,
-    currency: "EUR",
-    status: "actif",
-  },
-  {
-    id: 3,
-    account_number: "LU10 0019 0099 7603 1234 5678 9012",
-    client_id: 1,
-    account_type: "professionnel",
-    label: "Compte Pro",
-    balance: 89415.22,
-    currency: "EUR",
-    status: "actif",
-  },
-];
+  }));
+}
 
-const DEMO_TRANSACTIONS: BankTransaction[] = [
-  {
-    id: 1,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 125.5,
-    balance_after: 12847.53,
-    description: "Achat Cactus Belle Etoile",
-    counterparty: "Cactus",
-    reference: "TXN-2024091401",
-    executed_at: "2024-09-14T09:23:00",
-  },
-  {
-    id: 2,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 42.9,
-    balance_after: 12973.03,
-    description: "Achat Delhaize Kirchberg",
-    counterparty: "Delhaize",
-    reference: "TXN-2024091302",
-    executed_at: "2024-09-13T18:45:00",
-  },
-  {
-    id: 3,
-    account_id: 1,
-    type: "credit",
-    category: "virement_entrant",
-    amount: 4500.0,
-    balance_after: 13015.93,
-    description: "Salaire septembre 2024",
-    counterparty: "Entreprise ABC S.à r.l.",
-    reference: "SAL-2024-09",
-    executed_at: "2024-09-10T06:00:00",
-  },
-  {
-    id: 4,
-    account_id: 1,
-    type: "debit",
-    category: "prelevement",
-    amount: 1567.23,
-    balance_after: 8515.93,
-    description: "Echeance pret immobilier",
-    counterparty: "CaixaBank Luxembourg",
-    reference: "PRET-IMM-09",
-    executed_at: "2024-09-05T00:00:00",
-  },
-  {
-    id: 5,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 234.0,
-    balance_after: 10083.16,
-    description: "Achat Amazon.lu - Elektronik",
-    counterparty: "Amazon.lu",
-    reference: "TXN-2024090501",
-    executed_at: "2024-09-04T14:12:00",
-  },
-  {
-    id: 6,
-    account_id: 1,
-    type: "debit",
-    category: "prelevement",
-    amount: 189.0,
-    balance_after: 10317.16,
-    description: "Abonnement POST Telecom",
-    counterparty: "POST Luxembourg",
-    reference: "ORANGE-09-2024",
-    executed_at: "2024-09-03T00:00:00",
-  },
-  {
-    id: 7,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 67.3,
-    balance_after: 10506.16,
-    description: "Achat Di Luxembourg Gare",
-    counterparty: "Di",
-    reference: "TXN-2024090301",
-    executed_at: "2024-09-03T11:30:00",
-  },
-  {
-    id: 8,
-    account_id: 1,
-    type: "debit",
-    category: "virement_sortant",
-    amount: 2500.0,
-    balance_after: 10573.46,
-    description: "Loyer septembre",
-    counterparty: "Immobiliare S.à r.l.",
-    reference: "LOYER-09-2024",
-    executed_at: "2024-09-01T08:00:00",
-  },
-  {
-    id: 9,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 312.5,
-    balance_after: 13073.46,
-    description: "Billet CFL Luxembourg-Bruxelles",
-    counterparty: "CFL",
-    reference: "TXN-2024083101",
-    executed_at: "2024-08-31T07:15:00",
-  },
-  {
-    id: 10,
-    account_id: 1,
-    type: "credit",
-    category: "virement_entrant",
-    amount: 1200.0,
-    balance_after: 13385.96,
-    description: "Remboursement Anna Kowalska",
-    counterparty: "Anna Kowalska",
-    reference: "VIR-AK-0831",
-    executed_at: "2024-08-30T15:20:00",
-  },
-  {
-    id: 11,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 89.9,
-    balance_after: 12185.96,
-    description: "Achat Lidl Esch-sur-Alzette",
-    counterparty: "Lidl",
-    reference: "TXN-2024082901",
-    executed_at: "2024-08-29T12:40:00",
-  },
-  {
-    id: 12,
-    account_id: 1,
-    type: "debit",
-    category: "prelevement",
-    amount: 450.0,
-    balance_after: 12275.86,
-    description: "Cotisation CCSS",
-    counterparty: "CCSS",
-    reference: "ZUS-08-2024",
-    executed_at: "2024-08-28T00:00:00",
-  },
-  {
-    id: 13,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 156.0,
-    balance_after: 12725.86,
-    description: "Restaurant Mosconi Place Guillaume",
-    counterparty: "Mosconi",
-    reference: "TXN-2024082701",
-    executed_at: "2024-08-27T20:15:00",
-  },
-  {
-    id: 14,
-    account_id: 1,
-    type: "debit",
-    category: "retrait",
-    amount: 500.0,
-    balance_after: 12881.86,
-    description: "Retrait DAB CaixaBank Gare",
-    counterparty: "CaixaBank",
-    reference: "ATM-2024082601",
-    executed_at: "2024-08-26T16:00:00",
-  },
-  {
-    id: 15,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 78.5,
-    balance_after: 13381.86,
-    description: "Auchan Kirchberg",
-    counterparty: "Auchan",
-    reference: "TXN-2024082501",
-    executed_at: "2024-08-25T10:20:00",
-  },
-  {
-    id: 16,
-    account_id: 1,
-    type: "credit",
-    category: "interet",
-    amount: 12.36,
-    balance_after: 13460.36,
-    description: "Interets crediteurs Q3",
-    counterparty: "CaixaBank Luxembourg",
-    reference: "INT-Q3-2024",
-    executed_at: "2024-08-25T00:00:00",
-  },
-  {
-    id: 17,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 45.0,
-    balance_after: 13448.0,
-    description: "Cinema Kinepolis Kirchberg",
-    counterparty: "Kinepolis",
-    reference: "TXN-2024082401",
-    executed_at: "2024-08-24T19:30:00",
-  },
-  {
-    id: 18,
-    account_id: 1,
-    type: "debit",
-    category: "frais",
-    amount: 15.0,
-    balance_after: 13493.0,
-    description: "Frais tenue de compte aout",
-    counterparty: "CaixaBank Luxembourg",
-    reference: "FRAIS-08-2024",
-    executed_at: "2024-08-23T00:00:00",
-  },
-  {
-    id: 19,
-    account_id: 1,
-    type: "debit",
-    category: "carte",
-    amount: 399.0,
-    balance_after: 13508.0,
-    description: "Achat Saturn - Smartphone",
-    counterparty: "Saturn",
-    reference: "TXN-2024082201",
-    executed_at: "2024-08-22T13:45:00",
-  },
-  {
-    id: 20,
-    account_id: 1,
-    type: "credit",
-    category: "virement_entrant",
-    amount: 4500.0,
-    balance_after: 13907.0,
-    description: "Salaire aout 2024",
-    counterparty: "Entreprise ABC S.à r.l.",
-    reference: "SAL-2024-08",
-    executed_at: "2024-08-10T06:00:00",
-  },
-];
+function getDemoTransactions(accountId: number): BankTransaction[] {
+  const clientId = Math.floor(accountId / 100);
+  const acctIdx = (accountId % 100) - 1;
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  return c.transactions.map((tx, i) => {
+    const isCredit = tx.amount >= 0;
+    const parts = tx.desc.split(" — ");
+    return {
+      id: accountId * 1000 + i + 1,
+      account_id: accountId,
+      type: isCredit ? "credit" : "debit",
+      category: isCredit ? "virement_entrant" : "carte",
+      amount: Math.abs(tx.amount),
+      balance_after: c.accounts[acctIdx]?.balance ?? 0,
+      description: tx.desc,
+      counterparty: parts[1] || parts[0],
+      reference: `TXN-${clientId}-${i + 1}`,
+      executed_at: convertDate(tx.date),
+    };
+  });
+}
 
-const DEMO_CARDS: BankCard[] = [
-  {
-    id: 1,
-    account_id: 1,
-    client_id: 1,
-    card_number_last4: "4827",
-    card_type: "visa_gold",
-    expiry_date: "2027-09-30",
-    status: "active",
-    monthly_limit: 5000,
+function convertDate(d: string): string {
+  const [day, month, year] = d.split("/");
+  return `${year}-${month}-${day}T12:00:00`;
+}
+
+function getDemoCards(clientId: number): BankCard[] {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  const baseAcctId = clientId * 100 + 1;
+  const CARD_LIMITS: Record<string, number> = {
+    "Visa Infinite": 50000, "Visa Platinum": 20000, "Visa Gold": 10000,
+    "Visa Classic": 3000, "Mastercard Gold": 10000, "Mastercard Classic": 3000,
+    "Visa Debit": 2000, "Visa Business": 15000,
+  };
+  return c.cards.map((card, i) => ({
+    id: clientId * 100 + i + 1,
+    account_id: baseAcctId,
+    client_id: clientId,
+    card_number_last4: card.last4,
+    card_type: card.type.toLowerCase().replace(/ /g, "_"),
+    expiry_date: `20${card.expiry.split("/")[1]}-${card.expiry.split("/")[0]}-28`,
+    status: card.status === "Active" ? "active" : "bloquee",
+    monthly_limit: CARD_LIMITS[card.type] || 5000,
     contactless_enabled: true,
     online_payment_enabled: true,
-  },
-  {
-    id: 2,
-    account_id: 1,
-    client_id: 1,
-    card_number_last4: "9153",
-    card_type: "visa_debit",
-    expiry_date: "2028-03-31",
-    status: "active",
-    monthly_limit: 2000,
-    contactless_enabled: true,
-    online_payment_enabled: true,
-  },
-];
+  }));
+}
 
-const DEMO_LOANS: BankLoan[] = [
-  {
-    id: 1,
-    client_id: 1,
-    loan_type: "immobilier",
-    amount: 350000,
-    interest_rate: 3.45,
-    duration_months: 300,
-    monthly_payment: 1567.23,
-    remaining_amount: 312450.0,
-    status: "en_cours",
-    start_date: "2022-06-01",
-    end_date: "2047-06-01",
-  },
-];
+function getDemoLoans(clientId: number): BankLoan[] {
+  return [];
+}
 
-const DEMO_BENEFICIARIES: BankBeneficiary[] = [
-  {
-    id: 1,
-    client_id: 1,
-    label: "Anna Kowalska",
-    beneficiary_name: "Anna Kowalska",
-    iban: "LU83 0019 1014 0000 4220 0012 34",
+function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  const otherClients = DEMO_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
+  return otherClients.map((oc, i) => ({
+    id: clientId * 100 + i + 1,
+    client_id: clientId,
+    label: `${oc.first_name} ${oc.last_name}`,
+    beneficiary_name: `${oc.first_name} ${oc.last_name}`,
+    iban: oc.accounts[0]?.number || "",
     bic: "CABORLULL",
-    is_favorite: true,
-  },
-  {
-    id: 2,
-    client_id: 1,
-    label: "Loyer appartement",
-    beneficiary_name: "Immobiliare S.à r.l.",
-    iban: "LU44 0030 2202 0000 0024 4712 34",
-    bic: "BGLLLULL",
-    is_favorite: true,
-  },
-  {
-    id: 3,
-    client_id: 1,
-    label: "Electricite Enovos",
-    beneficiary_name: "Enovos Luxembourg S.A.",
-    iban: "LU92 0099 6247 1111 0010 4319 87",
-    bic: "BILLLULL",
-    is_favorite: false,
-  },
-];
+    is_favorite: i === 0,
+  }));
+}
 
-const DEMO_MESSAGES: BankMessage[] = [
-  {
-    id: 1,
-    client_id: 1,
-    subject: "Bienvenue chez CaixaBank Luxembourg",
-    body: "Cher M. Kowalski, nous avons le plaisir de vous accueillir parmi nos clients. Votre espace personnel est desormais actif. N'hesitez pas a nous contacter pour toute question concernant nos services bancaires. Cordialement, L'equipe CaixaBank Luxembourg.",
-    sender: "banque",
-    is_read: true,
-    created_at: "2024-01-15",
-  },
-  {
-    id: 2,
-    client_id: 1,
-    subject: "Votre nouvelle carte Visa Gold",
-    body: "Votre carte Visa Gold est prete et sera livree a votre adresse dans un delai de 5 jours ouvrables. Le code PIN vous sera envoye separement. Votre plafond mensuel est fixe a 5 000 EUR.",
-    sender: "banque",
-    is_read: false,
-    created_at: "2024-09-10",
-  },
-];
+function getDemoMessages(clientId: number): BankMessage[] {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  return [
+    {
+      id: clientId * 10 + 1, client_id: clientId,
+      subject: "Bienvenue chez CaixaBank Luxembourg",
+      body: `Cher(e) ${c.first_name} ${c.last_name}, nous avons le plaisir de vous accueillir parmi nos clients. Votre espace personnel est desormais actif. N'hesitez pas a nous contacter pour toute question. Cordialement, L'equipe CaixaBank Luxembourg.`,
+      sender: "banque", is_read: true, created_at: "2024-01-15",
+    },
+    {
+      id: clientId * 10 + 2, client_id: clientId,
+      subject: "Mise a jour de vos conditions tarifaires",
+      body: "Nous vous informons que vos conditions tarifaires ont ete mises a jour. Vous pouvez consulter le detail dans la rubrique Tarifs de votre espace client.",
+      sender: "banque", is_read: false, created_at: "2024-09-10",
+    },
+  ];
+}
 
-const DEMO_NOTIFICATIONS: BankNotification[] = [
-  {
-    id: 1,
-    client_id: 1,
-    title: "Paiement carte recu",
-    message: "Paiement de 125.50 EUR chez Cactus",
-    type: "info",
-    is_read: false,
-    created_at: "2024-09-14",
-  },
-  {
-    id: 2,
-    client_id: 1,
-    title: "Virement recu",
-    message: "Virement de 4 500.00 EUR de Entreprise ABC",
-    type: "info",
-    is_read: false,
-    created_at: "2024-09-13",
-  },
-  {
-    id: 3,
-    client_id: 1,
-    title: "Echeance pret immobilier",
-    message: "Le prelevement de 1 567.23 EUR pour votre pret immobilier a ete effectue",
-    type: "info",
-    is_read: true,
-    created_at: "2024-09-05",
-  },
-  {
-    id: 4,
-    client_id: 1,
-    title: "Connexion inhabituelle detectee",
-    message: "Une connexion depuis un nouvel appareil a ete detectee. Si ce n'etait pas vous, contactez-nous immediatement.",
-    type: "securite",
-    is_read: true,
-    created_at: "2024-09-01",
-  },
-  {
-    id: 5,
-    client_id: 1,
+function getDemoNotifications(clientId: number): BankNotification[] {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  if (!c) return [];
+  const notifs: BankNotification[] = [];
+  if (c.transactions.length > 0) {
+    const tx = c.transactions[0];
+    notifs.push({
+      id: clientId * 10 + 1, client_id: clientId,
+      title: tx.amount >= 0 ? "Virement recu" : "Paiement effectue",
+      message: tx.desc,
+      type: "info", is_read: false, created_at: "2024-09-14",
+    });
+  }
+  notifs.push({
+    id: clientId * 10 + 2, client_id: clientId,
     title: "Offre speciale epargne",
-    message: "Profitez d'un taux promotionnel de 4.5% sur votre livret epargne jusqu'au 31 decembre 2024",
-    type: "promotion",
-    is_read: false,
-    created_at: "2024-08-28",
-  },
-];
+    message: "Profitez d'un taux promotionnel de 4.5% sur votre livret epargne",
+    type: "promotion", is_read: false, created_at: "2024-08-28",
+  });
+  return notifs;
+}
 
 const DEMO_DASHBOARD_STATS: DashboardStats = {
-  totalClients: 1247,
-  activeAccounts: 2891,
-  totalDeposits: "45 230 847,53 EUR",
-  pendingLoans: 23,
-  newClientsThisMonth: 47,
-  transactionsToday: 1893,
+  totalClients: DEMO_CLIENTS.length,
+  activeAccounts: DEMO_CLIENTS.reduce((s, c) => s + c.accounts.length, 0),
+  totalDeposits: new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2 }).format(
+    DEMO_CLIENTS.reduce((s, c) => s + c.accounts.reduce((a, acc) => a + acc.balance, 0), 0)
+  ) + " EUR",
+  pendingLoans: 3,
+  newClientsThisMonth: 4,
+  transactionsToday: DEMO_CLIENTS.reduce((s, c) => s + c.transactions.length, 0),
 };
 
 // ============================================================
@@ -577,8 +285,7 @@ export async function getClientById(
     if (rows.length === 0) return null;
     return rows[0] as BankClient;
   } catch {
-    if (DEMO_CLIENT.id === clientId) return DEMO_CLIENT;
-    return null;
+    return getDemoClient(clientId);
   }
 }
 
@@ -598,7 +305,7 @@ export async function getClientAccounts(
     );
     return rows as BankAccount[];
   } catch {
-    return DEMO_ACCOUNTS.filter((a) => a.client_id === clientId);
+    return getDemoAccounts(clientId);
   }
 }
 
@@ -619,7 +326,12 @@ export async function getAccountById(
     if (rows.length === 0) return null;
     return rows[0] as BankAccount;
   } catch {
-    return DEMO_ACCOUNTS.find((a) => a.id === accountId) ?? null;
+    for (const c of DEMO_CLIENTS) {
+      const accts = getDemoAccounts(c.id);
+      const found = accts.find((a) => a.id === accountId);
+      if (found) return found;
+    }
+    return null;
   }
 }
 
@@ -643,10 +355,7 @@ export async function getAccountTransactions(
     );
     return rows as BankTransaction[];
   } catch {
-    return DEMO_TRANSACTIONS.filter((t) => t.account_id === accountId).slice(
-      0,
-      limit
-    );
+    return getDemoTransactions(accountId).slice(0, limit);
   }
 }
 
@@ -665,7 +374,7 @@ export async function getClientCards(clientId: number): Promise<BankCard[]> {
     );
     return rows as BankCard[];
   } catch {
-    return DEMO_CARDS.filter((c) => c.client_id === clientId);
+    return getDemoCards(clientId);
   }
 }
 
@@ -684,7 +393,7 @@ export async function getClientLoans(clientId: number): Promise<BankLoan[]> {
     );
     return rows as BankLoan[];
   } catch {
-    return DEMO_LOANS.filter((l) => l.client_id === clientId);
+    return getDemoLoans(clientId);
   }
 }
 
@@ -704,7 +413,7 @@ export async function getClientBeneficiaries(
     );
     return rows as BankBeneficiary[];
   } catch {
-    return DEMO_BENEFICIARIES.filter((b) => b.client_id === clientId);
+    return getDemoBeneficiaries(clientId);
   }
 }
 
@@ -724,7 +433,7 @@ export async function getClientMessages(
     );
     return rows as BankMessage[];
   } catch {
-    return DEMO_MESSAGES.filter((m) => m.client_id === clientId);
+    return getDemoMessages(clientId);
   }
 }
 
@@ -744,7 +453,7 @@ export async function getClientNotifications(
     );
     return rows as BankNotification[];
   } catch {
-    return DEMO_NOTIFICATIONS.filter((n) => n.client_id === clientId);
+    return getDemoNotifications(clientId);
   }
 }
 

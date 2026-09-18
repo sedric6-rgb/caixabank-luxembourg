@@ -425,6 +425,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     cards: [
       { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2029" },
       { last4: "4567", type: "Visa Gold", status: "Active", expiry: "08/2028" },
+      { last4: "7834", type: "Visa Infinite", status: "Active", expiry: "11/2029" },
     ],
     transactions: [
       { date: "15/09/2024", desc: "Virement entrant — Holdings International", amount: 185000 },

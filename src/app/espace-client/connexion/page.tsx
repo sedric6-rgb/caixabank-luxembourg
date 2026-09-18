@@ -51,7 +51,8 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
           </div>
 
           <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-            <p className="text-xs text-gray-400">Connexion démo : CBP-284751 / demo2024</p>
+            <p className="text-xs text-gray-400">Mot de passe demo : demo2024</p>
+            <p className="text-xs text-gray-400 mt-1">Exemple : CBP-284751 ou CBP-918274</p>
           </div>
         </div>
 
