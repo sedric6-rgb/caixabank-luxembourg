@@ -187,4 +187,195 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { date: "11/09/2024", desc: "Abonnement fitness", amount: -49.90 },
     ],
   },
+  {
+    id: 9, client_number: "CBP-512847", first_name: "Marie", last_name: "Dupont",
+    email: "m.dupont@email.lu", phone: "+352 621 111 222", date_of_birth: "12/05/1991",
+    address: "6 Rue de Clausen", city: "Luxembourg", postal_code: "1342", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "FRX 291048", status: "actif", created_at: "08/06/2023",
+    accounts: [
+      { label: "Compte Courant", number: "LU12 0019 1014 0000 5500 1111 2222", balance: 7823.15, type: "courant" },
+      { label: "Livret Epargne", number: "LU34 0019 2004 0000 6600 3333 4444", balance: 28500.00, type: "epargne" },
+    ],
+    cards: [
+      { last4: "4412", type: "Visa Classic", status: "Active", expiry: "06/2028" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Salaire — Ministere des Finances", amount: 5400 },
+      { date: "14/09/2024", desc: "Monoprix", amount: -96.30 },
+      { date: "13/09/2024", desc: "Loyer appartement", amount: -1350 },
+      { date: "12/09/2024", desc: "EDF Electricite", amount: -127.50 },
+    ],
+  },
+  {
+    id: 10, client_number: "CBP-683192", first_name: "Carlos", last_name: "Ferreira",
+    email: "c.ferreira@email.lu", phone: "+352 691 333 444", date_of_birth: "03/10/1979",
+    address: "28 Rue de Beggen", city: "Luxembourg", postal_code: "1221", country: "Luxembourg",
+    id_type: "Passeport", id_number: "PT 8472910", status: "actif", created_at: "19/11/2022",
+    accounts: [
+      { label: "Compte Courant", number: "LU56 0019 1014 0000 7700 5555 6666", balance: 15340.88, type: "courant" },
+      { label: "Compte Pro", number: "LU78 0019 0099 0000 8800 7777 8888", balance: 112750.00, type: "professionnel" },
+      { label: "Livret Epargne", number: "LU90 0019 2004 0000 9900 9999 0000", balance: 67800.00, type: "epargne" },
+    ],
+    cards: [
+      { last4: "7723", type: "Visa Platinum", status: "Active", expiry: "11/2027" },
+      { last4: "1156", type: "Visa Debit", status: "Active", expiry: "05/2028" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Paiement client — Projet Europa", amount: 28000 },
+      { date: "14/09/2024", desc: "Fournitures informatiques", amount: -1890 },
+      { date: "13/09/2024", desc: "Restaurant Le Bouquet", amount: -142.50 },
+      { date: "12/09/2024", desc: "Assurance vehicule", amount: -380 },
+      { date: "11/09/2024", desc: "Cotisations sociales", amount: -2450 },
+    ],
+  },
+  {
+    id: 11, client_number: "CBP-294718", first_name: "Sophie", last_name: "Martin",
+    email: "s.martin@email.lu", phone: "+352 661 555 666", date_of_birth: "25/08/1994",
+    address: "11 Av. de la Liberte", city: "Luxembourg", postal_code: "1931", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "GKL 582039", status: "actif", created_at: "02/03/2024",
+    accounts: [
+      { label: "Compte Courant", number: "LU23 0019 1014 0000 1100 2222 3333", balance: 3245.70, type: "courant" },
+    ],
+    cards: [
+      { last4: "9934", type: "Visa Debit", status: "Active", expiry: "03/2029" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Salaire — Deloitte Luxembourg", amount: 4200 },
+      { date: "14/09/2024", desc: "Zara", amount: -189.90 },
+      { date: "13/09/2024", desc: "Spotify Premium", amount: -9.99 },
+      { date: "12/09/2024", desc: "Pharmacie", amount: -34.50 },
+    ],
+  },
+  {
+    id: 12, client_number: "CBP-847362", first_name: "Ahmed", last_name: "Benali",
+    email: "a.benali@email.lu", phone: "+352 621 777 888", date_of_birth: "17/02/1983",
+    address: "5 Rue de Gasperich", city: "Luxembourg", postal_code: "1617", country: "Luxembourg",
+    id_type: "Passeport", id_number: "DZ 3928471", status: "actif", created_at: "25/09/2023",
+    accounts: [
+      { label: "Compte Courant", number: "LU45 0019 1014 0000 4400 5555 6666", balance: 11290.33, type: "courant" },
+      { label: "Livret Epargne", number: "LU67 0019 2004 0000 5500 7777 8888", balance: 41000.00, type: "epargne" },
+    ],
+    cards: [
+      { last4: "2278", type: "Visa Gold", status: "Active", expiry: "09/2027" },
+      { last4: "6643", type: "Visa Debit", status: "Active", expiry: "01/2029" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Salaire — ArcelorMittal", amount: 5800 },
+      { date: "14/09/2024", desc: "Auchan Cloche d'Or", amount: -215.40 },
+      { date: "13/09/2024", desc: "Assurance vie", amount: -320 },
+      { date: "12/09/2024", desc: "Virement famille", amount: -800 },
+      { date: "11/09/2024", desc: "Parking LuxExpo", amount: -12 },
+    ],
+  },
+  {
+    id: 13, client_number: "CBP-193628", first_name: "Elena", last_name: "Rodrigues",
+    email: "e.rodrigues@email.lu", phone: "+352 691 999 000", date_of_birth: "09/12/1987",
+    address: "33 Rue de Limpertsberg", city: "Luxembourg", postal_code: "1940", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "HMN 472910", status: "en_attente", created_at: "10/09/2024",
+    accounts: [
+      { label: "Compte Courant", number: "LU89 0019 1014 0000 6600 8888 9999", balance: 0, type: "courant" },
+    ],
+    cards: [],
+    transactions: [],
+  },
+  {
+    id: 14, client_number: "CBP-562941", first_name: "Jean-Pierre", last_name: "Schmit",
+    email: "jp.schmit@email.lu", phone: "+352 661 222 333", date_of_birth: "01/06/1972",
+    address: "19 Rue de Eich", city: "Luxembourg", postal_code: "1461", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "JRX 839201", status: "actif", created_at: "07/08/2022",
+    accounts: [
+      { label: "Compte Courant", number: "LU11 0019 1014 0000 7700 1111 2222", balance: 28940.67, type: "courant" },
+      { label: "Livret Epargne", number: "LU22 0019 2004 0000 8800 3333 4444", balance: 95000.00, type: "epargne" },
+      { label: "Compte Pro", number: "LU33 0019 0099 0000 9900 5555 6666", balance: 245100.50, type: "professionnel" },
+    ],
+    cards: [
+      { last4: "8891", type: "Visa Platinum", status: "Active", expiry: "08/2027" },
+      { last4: "4420", type: "Visa Gold", status: "Active", expiry: "12/2028" },
+      { last4: "7756", type: "Visa Debit", status: "Active", expiry: "06/2027" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Encaissement loyers immobiliers", amount: 8500 },
+      { date: "14/09/2024", desc: "Notaire — acte vente", amount: -12400 },
+      { date: "13/09/2024", desc: "Taxe fonciere", amount: -1870 },
+      { date: "12/09/2024", desc: "Dividendes SCI Schmit", amount: 15000 },
+      { date: "11/09/2024", desc: "Entretien immeubles", amount: -3200 },
+      { date: "10/09/2024", desc: "Credit immobilier mensualite", amount: -4567.89 },
+    ],
+  },
+  {
+    id: 15, client_number: "CBP-738291", first_name: "Fatima", last_name: "El Amrani",
+    email: "f.elamrani@email.lu", phone: "+352 621 444 555", date_of_birth: "20/03/1990",
+    address: "7 Rue de Hamm", city: "Luxembourg", postal_code: "1713", country: "Luxembourg",
+    id_type: "Passeport", id_number: "MA 5829301", status: "actif", created_at: "16/01/2024",
+    accounts: [
+      { label: "Compte Courant", number: "LU44 0019 1014 0000 2200 4444 5555", balance: 6150.20, type: "courant" },
+      { label: "Livret Epargne", number: "LU55 0019 2004 0000 3300 6666 7777", balance: 19800.00, type: "epargne" },
+    ],
+    cards: [
+      { last4: "3367", type: "Visa Classic", status: "Active", expiry: "01/2029" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Salaire — PWC Luxembourg", amount: 4800 },
+      { date: "14/09/2024", desc: "Delhaize Kirchberg", amount: -134.70 },
+      { date: "13/09/2024", desc: "Abonnement transport CFL", amount: -75 },
+      { date: "12/09/2024", desc: "Western Union — virement", amount: -500 },
+    ],
+  },
+  {
+    id: 16, client_number: "CBP-461829", first_name: "Marco", last_name: "Rossi",
+    email: "m.rossi@email.lu", phone: "+352 691 666 777", date_of_birth: "14/11/1981",
+    address: "25 Bd de la Petrusse", city: "Luxembourg", postal_code: "2320", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "KPQ 192847", status: "bloque", created_at: "12/04/2023",
+    accounts: [
+      { label: "Compte Courant", number: "LU66 0019 1014 0000 8800 6666 7777", balance: 890.45, type: "courant" },
+      { label: "Compte Pro", number: "LU77 0019 0099 0000 9900 8888 9999", balance: 4200.00, type: "professionnel" },
+    ],
+    cards: [
+      { last4: "5501", type: "Visa Gold", status: "Bloquee", expiry: "04/2027" },
+    ],
+    transactions: [
+      { date: "12/04/2023", desc: "Blocage du compte — verification en cours", amount: 0 },
+    ],
+  },
+  {
+    id: 17, client_number: "CBP-829461", first_name: "Nadia", last_name: "Petrova",
+    email: "n.petrova@email.lu", phone: "+352 661 888 999", date_of_birth: "06/09/1996",
+    address: "2 Rue de Neudorf", city: "Luxembourg", postal_code: "2221", country: "Luxembourg",
+    id_type: "Passeport", id_number: "RU 7382910", status: "actif", created_at: "30/05/2024",
+    accounts: [
+      { label: "Compte Courant", number: "LU88 0019 1014 0000 3300 8888 9999", balance: 2780.90, type: "courant" },
+    ],
+    cards: [
+      { last4: "1178", type: "Visa Debit", status: "Active", expiry: "05/2029" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Salaire — Amazon Luxembourg", amount: 3900 },
+      { date: "14/09/2024", desc: "IKEA Arlon", amount: -567.80 },
+      { date: "13/09/2024", desc: "Netflix", amount: -15.49 },
+      { date: "12/09/2024", desc: "Uber", amount: -23.40 },
+    ],
+  },
+  {
+    id: 18, client_number: "CBP-374829", first_name: "David", last_name: "Muller",
+    email: "d.muller@email.lu", phone: "+352 621 010 020", date_of_birth: "28/01/1975",
+    address: "40 Rue de Cents", city: "Luxembourg", postal_code: "1319", country: "Luxembourg",
+    id_type: "Carte d'identite", id_number: "LMN 482910", status: "actif", created_at: "23/12/2022",
+    accounts: [
+      { label: "Compte Courant", number: "LU99 0019 1014 0000 4400 9999 0000", balance: 19540.12, type: "courant" },
+      { label: "Livret Epargne", number: "LU10 0019 2004 0000 5500 1111 2222", balance: 82000.00, type: "epargne" },
+      { label: "Compte Pro", number: "LU21 0019 0099 0000 6600 3333 4444", balance: 178300.75, type: "professionnel" },
+    ],
+    cards: [
+      { last4: "9902", type: "Visa Platinum", status: "Active", expiry: "12/2027" },
+      { last4: "3345", type: "Visa Gold", status: "Active", expiry: "07/2028" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Virement client — Consulting Q3", amount: 22000 },
+      { date: "14/09/2024", desc: "Leasing Mercedes", amount: -890 },
+      { date: "13/09/2024", desc: "Restaurant Clairefontaine", amount: -285 },
+      { date: "12/09/2024", desc: "Expert comptable", amount: -1500 },
+      { date: "11/09/2024", desc: "Charges bureau Kirchberg", amount: -2100 },
+      { date: "10/09/2024", desc: "Salaire employe", amount: -4200 },
+    ],
+  },
 ];
