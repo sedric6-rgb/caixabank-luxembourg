@@ -412,4 +412,27 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { date: "13/09/2024", desc: "Virement international", amount: -15000 },
     ],
   },
+  {
+    id: 21, client_number: "CBP-918274", first_name: "Fritz", last_name: "Mambouka",
+    email: "f.mambouka@email.lu", phone: "+352 621 930 471", date_of_birth: "08/03/1980",
+    address: "51 Av. de la Porte-Neuve", city: "Luxembourg", postal_code: "2227", country: "Luxembourg",
+    id_type: "Passeport", id_number: "CG 4829103", status: "actif", created_at: "12/02/2022",
+    accounts: [
+      { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1233000.00, type: "courant" },
+      { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 450000.00, type: "epargne" },
+      { label: "Compte Pro", number: "LU84 0019 0099 0000 2100 7364 5600", balance: 875000.00, type: "professionnel" },
+    ],
+    cards: [
+      { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2029" },
+      { last4: "4567", type: "Visa Gold", status: "Active", expiry: "08/2028" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Virement entrant — Holdings International", amount: 185000 },
+      { date: "14/09/2024", desc: "Acquisition immobiliere — Kirchberg", amount: -320000 },
+      { date: "13/09/2024", desc: "Dividendes portefeuille", amount: 42000 },
+      { date: "12/09/2024", desc: "Gestion patrimoine premium", amount: -5800 },
+      { date: "11/09/2024", desc: "Assurance vie capitalisation", amount: -12000 },
+      { date: "10/09/2024", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
+    ],
+  },
 ];
