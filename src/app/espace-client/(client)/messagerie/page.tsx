@@ -1,21 +1,19 @@
 import { getClientSession } from "@/lib/auth-client";
-import { getClientMessages } from "@/lib/queries/banking";
 import { redirect } from "next/navigation";
+import { getClientById } from "@/lib/queries/banking";
+import { initClientConversations, getClientConversations } from "@/lib/messages-store";
 import MessagerieClient from "./messagerie-client";
 
 export default async function MessageriePage() {
   const session = await getClientSession();
   if (!session) redirect("/espace-client/connexion");
 
-  const messages = await getClientMessages(session.clientId);
-  const msgs = messages.map((m) => ({
-    id: m.id,
-    subject: m.subject,
-    body: m.body,
-    sender: m.sender,
-    read: m.is_read,
-    date: new Date(m.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }),
-  }));
+  const client = await getClientById(session.clientId);
+  const clientName = client ? `${client.first_name} ${client.last_name}` : "Client";
+  const clientNumber = client?.client_number || "";
 
-  return <MessagerieClient initialMessages={msgs} />;
+  initClientConversations(session.clientId, clientName, clientNumber);
+  const conversations = getClientConversations(session.clientId);
+
+  return <MessagerieClient initialConversations={conversations} />;
 }

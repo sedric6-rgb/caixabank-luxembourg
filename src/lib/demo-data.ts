@@ -14,6 +14,7 @@ export interface DemoClient {
   id_number: string;
   status: string;
   created_at: string;
+  password?: string;
   accounts: DemoAccount[];
   cards: DemoCard[];
   transactions: DemoTx[];
@@ -417,6 +418,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     email: "f.mambouka@email.lu", phone: "+352 621 930 471", date_of_birth: "08/03/1980",
     address: "51 Av. de la Porte-Neuve", city: "Luxembourg", postal_code: "2227", country: "Luxembourg",
     id_type: "Passeport", id_number: "CG 4829103", status: "actif", created_at: "12/02/2022",
+    password: "Azerty31@",
     accounts: [
       { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1233000.00, type: "courant" },
       { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 450000.00, type: "epargne" },

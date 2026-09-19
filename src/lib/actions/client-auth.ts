@@ -47,12 +47,15 @@ export async function clientLoginAction(formData: FormData): Promise<void> {
     }
   }
 
-  if (clientId === null && password === DEMO_PASSWORD) {
+  if (clientId === null) {
     const demoClient = DEMO_CLIENTS.find(
       (c) => c.client_number === clientNumber && c.status === "actif"
     );
     if (demoClient) {
-      clientId = demoClient.id;
+      const expected = demoClient.password || DEMO_PASSWORD;
+      if (password === expected) {
+        clientId = demoClient.id;
+      }
     }
   }
 
@@ -81,4 +84,56 @@ export async function clientLogoutAction(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete(CLIENT_SESSION_COOKIE_NAME);
   redirect("/espace-client/connexion");
+}
+
+export async function resetPasswordAction(formData: FormData): Promise<{ success: boolean; error?: string; newPassword?: string }> {
+  const clientNumber = String(formData.get("client_number") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+
+  if (!clientNumber || !email) {
+    return { success: false, error: "Veuillez remplir tous les champs" };
+  }
+
+  const client = DEMO_CLIENTS.find(
+    (c) => c.client_number === clientNumber && c.email === email && c.status === "actif"
+  );
+
+  if (!client) {
+    return { success: false, error: "Aucun compte ne correspond a ces informations" };
+  }
+
+  const newPassword = "Temp" + String(Math.floor(1000 + Math.random() * 9000)) + "!";
+  client.password = newPassword;
+
+  return { success: true, newPassword };
+}
+
+export async function changePasswordAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  const session = await (await import("@/lib/auth-client")).getClientSession();
+  if (!session) return { success: false, error: "Non connecte" };
+
+  const current = String(formData.get("current_password") || "");
+  const newPwd = String(formData.get("new_password") || "");
+  const confirm = String(formData.get("confirm_password") || "");
+
+  if (!current || !newPwd || !confirm) {
+    return { success: false, error: "Tous les champs sont requis" };
+  }
+  if (newPwd.length < 8) {
+    return { success: false, error: "Le nouveau mot de passe doit contenir au moins 8 caracteres" };
+  }
+  if (newPwd !== confirm) {
+    return { success: false, error: "Les mots de passe ne correspondent pas" };
+  }
+
+  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (!client) return { success: false, error: "Client introuvable" };
+
+  const expected = client.password || DEMO_PASSWORD;
+  if (current !== expected) {
+    return { success: false, error: "Mot de passe actuel incorrect" };
+  }
+
+  client.password = newPwd;
+  return { success: true };
 }

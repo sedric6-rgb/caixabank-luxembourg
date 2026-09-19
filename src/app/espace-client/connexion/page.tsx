@@ -46,13 +46,12 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
           </form>
 
           <div className="mt-6 flex justify-between text-sm">
-            <a href="#" className="text-blue-600 hover:underline">Mot de passe oublié ?</a>
-            <a href="#" className="text-blue-600 hover:underline">Première connexion</a>
+            <Link href="/espace-client/mot-de-passe-oublie" className="text-blue-600 hover:underline">Mot de passe oublie ?</Link>
+            <a href="#" className="text-blue-600 hover:underline">Premiere connexion</a>
           </div>
 
           <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-            <p className="text-xs text-gray-400">Mot de passe demo : demo2024</p>
-            <p className="text-xs text-gray-400 mt-1">Exemple : CBP-284751 ou CBP-918274</p>
+            <p className="text-xs text-gray-400">Compte demo : CBP-918274 / Azerty31@</p>
           </div>
         </div>
 
