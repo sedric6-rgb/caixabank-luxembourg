@@ -219,7 +219,7 @@ export default function HomePage() {
       {/* ========== WHY CHOOSE US ========== */}
       <section className="bg-bg-alt py-20">
         <div className="wrap">
-          <h2 className="text-center">Pourquoi choisir CaixaBank Luxembourg ?</h2>
+          <h2 className="text-center">Pourquoi choisir CaixaBank Luxembourg — Banque Privée ?</h2>
 
           <div className="mt-14 grid gap-8 sm:grid-cols-3">
             {ADVANTAGES.map((a) => (

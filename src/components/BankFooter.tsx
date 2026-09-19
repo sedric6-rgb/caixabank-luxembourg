@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const FOOTER_COLS = [
@@ -66,7 +67,7 @@ export function BankFooter() {
       <div className="border-t border-white/10">
         <div className="wrap py-6">
           <div className="flex flex-col gap-4 text-xs text-white/50 sm:flex-row sm:items-center sm:justify-between">
-            <span>&copy; 2024 CaixaBank Luxembourg S.A. Tous droits reserves.</span>
+            <span className="flex items-center gap-2"><Image src="/logo-caixabank.png" alt="" width={20} height={20} className="h-5 w-5 opacity-60" />&copy; 2024 CaixaBank Luxembourg S.A. — Banque Privée. Tous droits reserves.</span>
             <div className="flex flex-wrap gap-4">
               <Link href="/mentions-legales" className="hover:text-white">Mentions legales</Link>
               <span className="text-white/20">|</span>

@@ -11,7 +11,9 @@ export default async function AdminLoginPage({
     <div className="min-h-screen bg-gradient-to-br from-[#001f42] to-[#003060] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
+          <img src="/logo-caixabank.png" alt="CaixaBank" width={48} height={48} className="h-12 w-12 mx-auto mb-3" />
           <span className="text-xl font-bold text-white">CaixaBank Luxembourg</span>
+          <p className="text-[10px] font-semibold tracking-[0.2em] text-blue-300 uppercase mt-1">Banque Privée</p>
           <p className="text-blue-400 text-xs mt-1">Administration</p>
         </div>
 

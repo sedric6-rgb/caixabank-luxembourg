@@ -73,7 +73,7 @@ export default function CartesClient({ initialCards }: { initialCards: Card[] })
                 <div className={`bg-gradient-to-br ${CARD_COLORS[card.type] || "from-blue-600 to-blue-900"} rounded-2xl p-5 sm:p-6 text-white aspect-[1.586/1] max-w-[400px] flex flex-col justify-between shadow-lg ${card.status !== "active" ? "opacity-60" : ""}`}>
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-xs text-white/70">CaixaBank Luxembourg</p>
+                      <p className="text-xs text-white/70">CaixaBank Luxembourg — Banque Privée</p>
                       <p className="text-sm font-medium mt-1">{card.type}</p>
                     </div>
                     <svg width="40" height="26" viewBox="0 0 40 26"><rect width="40" height="26" rx="3" fill="white" fillOpacity="0.2"/><text x="6" y="17" fill="white" fontSize="10" fontWeight="bold">VISA</text></svg>

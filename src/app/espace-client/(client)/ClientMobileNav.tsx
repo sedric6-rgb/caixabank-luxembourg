@@ -22,7 +22,11 @@ export default function ClientMobileNav({ nav, clientName, clientNumber }: { nav
           <div className="absolute inset-y-0 left-0 w-[280px] bg-[#001f42] text-gray-300 flex flex-col" onClick={(e) => e.stopPropagation()}>
             <div className="p-5 border-b border-white/10 flex items-center justify-between">
               <div>
-                <span className="text-sm font-bold text-white">CaixaBank Luxembourg</span>
+                <div className="flex items-center gap-2">
+                  <img src="/logo-caixabank.png" alt="" width={24} height={24} className="h-6 w-6" />
+                  <span className="text-sm font-bold text-white">CaixaBank Luxembourg</span>
+                </div>
+                <p className="text-[9px] font-semibold tracking-[0.15em] text-blue-400 uppercase mt-0.5 ml-8">Banque Privée</p>
                 <p className="text-xs text-white mt-1">{clientName}</p>
                 <p className="text-xs text-blue-400 font-mono">{clientNumber}</p>
               </div>

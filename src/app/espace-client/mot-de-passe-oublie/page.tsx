@@ -28,8 +28,10 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#001f42] to-[#003d82] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block">
+          <Link href="/" className="inline-flex flex-col items-center gap-2">
+            <img src="/logo-caixabank.png" alt="CaixaBank" width={52} height={52} className="h-13 w-13" />
             <span className="text-2xl font-bold text-white">CaixaBank Luxembourg</span>
+            <p className="text-[11px] font-semibold tracking-[0.2em] text-blue-300 uppercase -mt-1">Banque Privée</p>
           </Link>
           <p className="text-blue-200 text-sm mt-2">Reinitialisation du mot de passe</p>
         </div>

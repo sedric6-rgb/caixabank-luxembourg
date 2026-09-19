@@ -168,7 +168,7 @@ export default function MessagerieClient({ initialConversations }: { initialConv
                 <div key={msg.id} className={`flex ${msg.sender === "client" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] rounded-xl px-4 py-3 ${msg.sender === "client" ? "bg-[#003d82] text-white" : "bg-gray-100 text-gray-800"}`}>
                     <p className={`text-[11px] font-medium mb-1 ${msg.sender === "client" ? "text-blue-200" : "text-gray-500"}`}>
-                      {msg.sender === "client" ? "Vous" : "CaixaBank Luxembourg"} — {msg.date}
+                      {msg.sender === "client" ? "Vous" : "CaixaBank Luxembourg — Banque Privée"} — {msg.date}
                     </p>
                     <p className="text-sm whitespace-pre-line leading-relaxed">{msg.text}</p>
                   </div>
