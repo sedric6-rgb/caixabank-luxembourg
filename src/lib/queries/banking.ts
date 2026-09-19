@@ -180,7 +180,7 @@ function getDemoCards(clientId: number): BankCard[] {
   if (!c) return [];
   const baseAcctId = clientId * 100 + 1;
   const CARD_LIMITS: Record<string, number> = {
-    "Visa Infinite": 50000, "Visa Platinum": 20000, "Visa Gold": 10000,
+    "Visa Infinite": 500000, "Visa Platinum": 100000, "Visa Gold": 10000,
     "Visa Classic": 3000, "Mastercard Gold": 10000, "Mastercard Classic": 3000,
     "Visa Debit": 2000, "Visa Business": 15000,
   };
