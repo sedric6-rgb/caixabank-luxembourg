@@ -19,7 +19,7 @@ const CARD_COLORS: Record<string, string> = {
   "Visa Virtuelle": "from-cyan-500 to-blue-700",
 };
 
-export default function CartesClient({ initialCards }: { initialCards: Card[] }) {
+export default function CartesClient({ initialCards, clientName }: { initialCards: Card[]; clientName: string }) {
   const [cards, setCards] = useState(initialCards);
   const [toast, setToast] = useState("");
   const [confirm, setConfirm] = useState<{ card: Card; action: "block" | "oppose" } | null>(null);
@@ -129,7 +129,8 @@ export default function CartesClient({ initialCards }: { initialCards: Card[] })
                       )}
                     </div>
                     <div>
-                      <p className="text-base sm:text-lg font-mono tracking-widest mb-3">**** **** **** {card.last4}</p>
+                      <p className="text-base sm:text-lg font-mono tracking-widest mb-1">**** **** **** {card.last4}</p>
+                      <p className="text-sm font-medium tracking-wide mb-2 uppercase">{clientName}</p>
                       <div className="flex justify-between text-xs">
                         <div><span className="text-white/60">Expiration</span><p className="font-medium">{card.expiry}</p></div>
                         <div><span className="text-white/60">Compte</span><p className="font-medium">{card.account}</p></div>

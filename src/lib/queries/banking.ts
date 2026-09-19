@@ -190,7 +190,7 @@ function getDemoCards(clientId: number): BankCard[] {
     client_id: clientId,
     card_number_last4: card.last4,
     card_type: card.type.toLowerCase().replace(/ /g, "_"),
-    expiry_date: `20${card.expiry.split("/")[1]}-${card.expiry.split("/")[0]}-28`,
+    expiry_date: `${card.expiry.split("/")[1]}-${card.expiry.split("/")[0]}-28`,
     status: card.status === "Active" ? "active" : "bloquee",
     monthly_limit: CARD_LIMITS[card.type] || 5000,
     contactless_enabled: true,

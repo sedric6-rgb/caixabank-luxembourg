@@ -1,5 +1,5 @@
 import { getClientSession } from "@/lib/auth-client";
-import { getClientCards } from "@/lib/queries/banking";
+import { getClientCards, getClientById } from "@/lib/queries/banking";
 import { redirect } from "next/navigation";
 import CartesClient from "./cartes-client";
 
@@ -7,6 +7,8 @@ export default async function CartesPage() {
   const session = await getClientSession();
   if (!session) redirect("/espace-client/connexion");
 
+  const client = await getClientById(session.clientId);
+  const clientName = client ? `${client.first_name} ${client.last_name}` : "Client";
   const cards = await getClientCards(session.clientId);
   const clientCards = cards.map((c) => ({
     id: c.id, last4: c.card_number_last4,
@@ -17,5 +19,5 @@ export default async function CartesPage() {
     account: "Compte Courant",
   }));
 
-  return <CartesClient initialCards={clientCards} />;
+  return <CartesClient initialCards={clientCards} clientName={clientName} />;
 }
