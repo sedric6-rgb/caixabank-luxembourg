@@ -1,5 +1,5 @@
 import { getClientSession } from "@/lib/auth-client";
-import { getClientAccounts, getClientBeneficiaries } from "@/lib/queries/banking";
+import { getClientAccounts, getClientBeneficiaries, isTransactionsBlocked } from "@/lib/queries/banking";
 import { redirect } from "next/navigation";
 import VirementForm from "./virement-form";
 
@@ -7,6 +7,7 @@ export default async function VirementsPage() {
   const session = await getClientSession();
   if (!session) redirect("/espace-client/connexion");
 
+  const blocked = isTransactionsBlocked(session.clientId);
   const accounts = await getClientAccounts(session.clientId);
   const beneficiaries = await getClientBeneficiaries(session.clientId);
 
@@ -17,5 +18,5 @@ export default async function VirementsPage() {
     id: b.id, label: b.label, iban: b.iban,
   }));
 
-  return <VirementForm accounts={accts} beneficiaries={bens} />;
+  return <VirementForm accounts={accts} beneficiaries={bens} blocked={blocked} />;
 }

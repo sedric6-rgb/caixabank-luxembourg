@@ -40,6 +40,11 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
 
+  const client0 = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (client0?._transactions_blocked) {
+    return { success: false, error: "Vos transactions sont temporairement suspendues. Veuillez contacter votre conseiller." };
+  }
+
   const sourceAccountId = Number(formData.get("source_account_id"));
   const beneficiaryName = String(formData.get("beneficiary_name") || "").trim();
   const beneficiaryIban = String(formData.get("beneficiary_iban") || "").trim();

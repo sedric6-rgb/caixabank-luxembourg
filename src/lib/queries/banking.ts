@@ -115,6 +115,11 @@ export interface DashboardStats {
 // Donnees de demonstration generees depuis DEMO_CLIENTS
 // ============================================================
 
+export function isTransactionsBlocked(clientId: number): boolean {
+  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  return c?._transactions_blocked || false;
+}
+
 function getDemoClient(clientId: number): BankClient | null {
   const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return null;

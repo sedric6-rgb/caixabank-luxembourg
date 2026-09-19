@@ -36,6 +36,8 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
   const [confirmBlock, setConfirmBlock] = useState(false);
   const [txOpen, setTxOpen] = useState(false);
   const [addAcctOpen, setAddAcctOpen] = useState(false);
+  const [confirmBlockTx, setConfirmBlockTx] = useState(false);
+  const [txBlocked, setTxBlocked] = useState(initial._transactions_blocked || false);
   const [toast, setToast] = useState("");
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
@@ -70,6 +72,15 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
     if (src) src.status = newStatus;
     notify(newStatus === "bloque" ? "Client bloque" : "Client reactive");
     setConfirmBlock(false);
+  };
+
+  const toggleBlockTx = () => {
+    const newVal = !txBlocked;
+    setTxBlocked(newVal);
+    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
+    if (src) src._transactions_blocked = newVal;
+    notify(newVal ? "Transactions bloquees" : "Transactions debloquees");
+    setConfirmBlockTx(false);
   };
 
   const sendMessage = (e: React.FormEvent<HTMLFormElement>) => {
@@ -186,6 +197,15 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
             <button onClick={() => setMsgOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50">Envoyer un message</button>
             <button onClick={() => setAddAcctOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-[#003d82] hover:bg-blue-50">Ouvrir un compte</button>
             <button onClick={() => setTxOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-[#003d82] hover:bg-blue-50">Nouvelle transaction</button>
+            <button onClick={() => setConfirmBlockTx(true)} className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm ${!txBlocked ? "border-orange-200 text-orange-600 hover:bg-orange-50" : "border-green-200 text-green-600 hover:bg-green-50"}`}>
+              {!txBlocked ? "Bloquer les transactions" : "Debloquer les transactions"}
+            </button>
+            {txBlocked && (
+              <div className="flex items-center gap-2 px-4 py-2 text-xs text-orange-600 bg-orange-50 rounded-lg border border-orange-200">
+                <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M7 1a4 4 0 00-4 4v2H2a1 1 0 00-1 1v5a1 1 0 001 1h10a1 1 0 001-1V8a1 1 0 00-1-1h-1V5a4 4 0 00-4-4zm-2 4a2 2 0 114 0v2H5V5z" fill="currentColor"/></svg>
+                Transactions bloquees
+              </div>
+            )}
             <button onClick={() => setConfirmBlock(true)} className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm ${client.status === "actif" ? "border-red-200 text-red-600 hover:bg-red-50" : "border-green-200 text-green-600 hover:bg-green-50"}`}>
               {client.status === "actif" ? "Bloquer le client" : "Reactiver le client"}
             </button>
@@ -327,6 +347,26 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
               <button type="button" onClick={() => setAddAcctOpen(false)} className="text-sm text-gray-500">Annuler</button>
             </div>
           </form>
+        </Modal>
+      )}
+
+      {confirmBlockTx && (
+        <Modal onClose={() => setConfirmBlockTx(false)}>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">{!txBlocked ? "Bloquer les transactions ?" : "Debloquer les transactions ?"}</h2>
+          <p className="text-sm text-gray-500 mb-2">
+            {!txBlocked
+              ? "Le client ne pourra plus effectuer de virements ni de transactions. Un message lui demandera de contacter son conseiller."
+              : "Le client pourra de nouveau effectuer des virements et transactions."}
+          </p>
+          {!txBlocked && (
+            <div className="mb-4 p-3 rounded-lg bg-orange-50 border border-orange-200">
+              <p className="text-xs text-orange-700">Le client verra : &quot;Vos transactions sont temporairement suspendues. Veuillez contacter votre conseiller pour plus d&apos;informations.&quot;</p>
+            </div>
+          )}
+          <div className="flex gap-3">
+            <button onClick={toggleBlockTx} className={`flex-1 py-2.5 rounded-lg text-sm font-medium text-white ${!txBlocked ? "bg-orange-500 hover:bg-orange-600" : "bg-green-600 hover:bg-green-700"}`}>Confirmer</button>
+            <button onClick={() => setConfirmBlockTx(false)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
+          </div>
         </Modal>
       )}
 

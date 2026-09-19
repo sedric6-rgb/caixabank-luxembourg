@@ -6,7 +6,26 @@ import { executeVirementAction, addBeneficiaryAction } from "@/lib/actions/virem
 type Account = { id: number; label: string; balance: number; iban: string };
 type Beneficiary = { id: number; label: string; iban: string };
 
-export default function VirementForm({ accounts, beneficiaries: initialBens }: { accounts: Account[]; beneficiaries: Beneficiary[] }) {
+export default function VirementForm({ accounts, beneficiaries: initialBens, blocked = false }: { accounts: Account[]; beneficiaries: Beneficiary[]; blocked?: boolean }) {
+  if (blocked) {
+    return (
+      <div className="max-w-lg mx-auto text-center py-16">
+        <div className="w-16 h-16 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-4">
+          <svg width="32" height="32" fill="none" viewBox="0 0 32 32"><path d="M16 4a8 8 0 00-8 8v4H6a2 2 0 00-2 2v10a2 2 0 002 2h20a2 2 0 002-2V18a2 2 0 00-2-2h-2v-4a8 8 0 00-8-8zm-4 8a4 4 0 118 0v4h-8v-4z" fill="#ea580c"/></svg>
+        </div>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Transactions suspendues</h2>
+        <p className="text-gray-500 mb-4">Vos transactions sont temporairement suspendues.</p>
+        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 mb-6">
+          <p className="text-sm text-orange-800 font-medium">Veuillez contacter votre conseiller pour plus d&apos;informations.</p>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <a href="/espace-client/messagerie" className="text-sm text-blue-600 hover:underline">Contacter via la messagerie</a>
+          <p className="text-xs text-gray-400">Ou appelez le +352 26 00 00 00</p>
+        </div>
+      </div>
+    );
+  }
+
   const [step, setStep] = useState<"form" | "confirm" | "done">("form");
   const [source, setSource] = useState(accounts[0]?.id ? String(accounts[0].id) : "");
   const [benMode, setBenMode] = useState<"existing" | "new">("existing");
