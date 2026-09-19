@@ -53,9 +53,6 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
             <a href="#" className="text-blue-600 hover:underline">Premiere connexion</a>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-            <p className="text-xs text-gray-400">Compte demo : CBP-918274 / Azerty31@</p>
-          </div>
         </div>
 
         <div className="mt-6 text-center">
