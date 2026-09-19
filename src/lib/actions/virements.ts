@@ -1,10 +1,53 @@
 "use server";
 
 import { getClientSession } from "@/lib/auth-client";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { DEMO_CLIENTS, type DemoAccount } from "@/lib/demo-data";
 
 let nextBenId = 10000;
 let nextTxId = 900000;
+
+export async function updateClientProfileAction(
+  clientId: number,
+  updates: { first_name: string; last_name: string; email: string; phone: string; address: string; city: string; postal_code: string }
+): Promise<{ success: boolean }> {
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  Object.assign(client, updates);
+  return { success: true };
+}
+
+export async function toggleClientStatusAction(
+  clientId: number,
+  newStatus: string
+): Promise<{ success: boolean }> {
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  client.status = newStatus;
+  return { success: true };
+}
+
+export async function adminAddTransactionAction(
+  clientId: number,
+  accountNumber: string,
+  tx: { date: string; desc: string; amount: number }
+): Promise<{ success: boolean }> {
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  client.transactions.unshift(tx);
+  const acct = client.accounts.find((a) => a.number === accountNumber);
+  if (acct) acct.balance += tx.amount;
+  return { success: true };
+}
+
+export async function adminAddAccountAction(
+  clientId: number,
+  newAcct: DemoAccount
+): Promise<{ success: boolean }> {
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  client.accounts.push(newAcct);
+  return { success: true };
+}
 
 export async function toggleBlockTransactionsAction(clientId: number, block: boolean): Promise<{ success: boolean }> {
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);

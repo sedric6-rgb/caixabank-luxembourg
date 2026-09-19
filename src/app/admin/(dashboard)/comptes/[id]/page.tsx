@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DEMO_CLIENTS, type DemoAccount, type DemoTx, type DemoCard } from "@/lib/demo-data";
+import { adminAddTransactionAction } from "@/lib/actions/virements";
 import { formatAmount } from "@/lib/format";
 
 function today() {
@@ -53,7 +54,7 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
   const statusColor = client.status === "actif" ? "bg-green-100 text-green-700" : client.status === "en_attente" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700";
   const statusLabel = client.status === "actif" ? "Actif" : client.status === "en_attente" ? "En attente" : "Bloque";
 
-  const addTransaction = (e: React.FormEvent<HTMLFormElement>) => {
+  const addTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const type = String(fd.get("type"));
@@ -62,12 +63,9 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
     const amount = isCredit ? rawAmount : -rawAmount;
     const desc = String(fd.get("description"));
     const newTx = { date: today(), desc, amount };
+    await adminAddTransactionAction(client.id, account.number, newTx);
     setTransactions((prev) => [newTx, ...prev]);
     setAccount((prev) => ({ ...prev, balance: prev.balance + amount }));
-    const srcAcct = DEMO_CLIENTS.find((c) => c.id === client.id)?.accounts.find((a) => a.number === account.number);
-    if (srcAcct) srcAcct.balance += amount;
-    const srcClient = DEMO_CLIENTS.find((c) => c.id === client.id);
-    if (srcClient) srcClient.transactions.unshift(newTx);
     setShowAddTx(false);
     notify(`${type} de ${formatAmount(Math.abs(amount))} EUR enregistre`);
   };

@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DEMO_CLIENTS, type DemoClient, type DemoAccount, type DemoTx } from "@/lib/demo-data";
-import { toggleBlockTransactionsAction } from "@/lib/actions/virements";
+import {
+  toggleBlockTransactionsAction,
+  updateClientProfileAction,
+  toggleClientStatusAction,
+  adminAddTransactionAction,
+  adminAddAccountAction,
+} from "@/lib/actions/virements";
 import { formatAmount } from "@/lib/format";
 
 export default function ClientDetailPage() {
@@ -42,7 +48,7 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
 
   const totalBalance = accounts.reduce((s, a) => s + a.balance, 0);
 
-  const saveEdit = (e: React.FormEvent<HTMLFormElement>) => {
+  const saveEdit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const updates = {
@@ -54,20 +60,16 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
       city: String(fd.get("city")),
       postal_code: String(fd.get("postal_code")),
     };
+    await updateClientProfileAction(initial.id, updates);
     setClient((prev) => ({ ...prev, ...updates }));
-    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
-    if (src) {
-      Object.assign(src, updates);
-    }
     setEditing(false);
     notify("Profil mis a jour");
   };
 
-  const toggleBlock = () => {
+  const toggleBlock = async () => {
     const newStatus = client.status === "actif" ? "bloque" : "actif";
+    await toggleClientStatusAction(initial.id, newStatus);
     setClient((prev) => ({ ...prev, status: newStatus }));
-    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
-    if (src) src.status = newStatus;
     notify(newStatus === "bloque" ? "Client bloque" : "Client reactive");
     setConfirmBlock(false);
   };
@@ -86,7 +88,7 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
     notify("Message envoye au client");
   };
 
-  const addTransaction = (e: React.FormEvent<HTMLFormElement>) => {
+  const addTransaction = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const type = String(fd.get("type"));
@@ -98,21 +100,16 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
     const date = `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 
     const newTx = { date, desc: `${type} — ${desc}`, amount };
+    await adminAddTransactionAction(initial.id, accountNum, newTx);
     setTransactions((prev) => [newTx, ...prev]);
     setAccounts((prev) => prev.map((a) =>
       a.number === accountNum ? { ...a, balance: a.balance + amount } : a
     ));
-    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
-    if (src) {
-      src.transactions.unshift(newTx);
-      const acct = src.accounts.find((a) => a.number === accountNum);
-      if (acct) acct.balance += amount;
-    }
     setTxOpen(false);
     notify(`Transaction de ${formatAmount(Math.abs(amount))} EUR enregistree`);
   };
 
-  const addAccount = (e: React.FormEvent<HTMLFormElement>) => {
+  const addAccount = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const r = () => String(Math.floor(Math.random() * 10000)).padStart(4, "0");
@@ -124,9 +121,8 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
       balance: Number(fd.get("balance") || 0),
       type,
     };
+    await adminAddAccountAction(initial.id, newAcct);
     setAccounts((prev) => [...prev, newAcct]);
-    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
-    if (src) src.accounts.push(newAcct);
     setAddAcctOpen(false);
     notify("Compte bancaire cree");
   };
