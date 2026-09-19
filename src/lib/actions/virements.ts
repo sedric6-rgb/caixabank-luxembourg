@@ -76,6 +76,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
 
   const today = new Date();
   const dateStr = `${String(today.getDate()).padStart(2, "0")}/${String(today.getMonth() + 1).padStart(2, "0")}/${today.getFullYear()}`;
+  const senderName = `${client.first_name} ${client.last_name}`;
   const desc = motif
     ? `Virement vers ${beneficiaryName} — ${motif}`
     : `Virement vers ${beneficiaryName}`;
@@ -85,6 +86,23 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
     desc,
     amount: -amount,
   });
+
+  for (const recipient of DEMO_CLIENTS) {
+    if (recipient.id === client.id) continue;
+    const recipientAcct = recipient.accounts.find((a) => a.number === beneficiaryIban);
+    if (recipientAcct) {
+      recipientAcct.balance += amount;
+      const creditDesc = motif
+        ? `Virement de ${senderName} — ${motif}`
+        : `Virement de ${senderName}`;
+      recipient.transactions.unshift({
+        date: dateStr,
+        desc: creditDesc,
+        amount: amount,
+      });
+      break;
+    }
+  }
 
   if (saveBeneficiary) {
     if (!client._beneficiaries) {
