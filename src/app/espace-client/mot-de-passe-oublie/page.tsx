@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <img src="/logo-caixabank.png" alt="CaixaBank" width={52} height={52} className="h-13 w-13" />
+            <img src="/logo-caixa.png" alt="CaixaBank" width={52} height={52} className="h-13 w-13" />
             <span className="text-2xl font-bold text-white">CaixaBank Luxembourg</span>
             <p className="text-[11px] font-semibold tracking-[0.2em] text-blue-300 uppercase -mt-1">Banque Privée</p>
           </Link>

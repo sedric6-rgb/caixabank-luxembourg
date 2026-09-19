@@ -27,7 +27,7 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
             <div className="p-5 border-b border-white/10 flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <img src="/logo-caixabank.png" alt="" width={24} height={24} className="h-6 w-6" />
+                  <img src="/logo-caixa.png" alt="" width={24} height={24} className="h-6 w-6" />
                   <span className="text-sm font-bold text-white">CaixaBank Luxembourg</span>
                 </div>
                 <p className="text-[9px] font-semibold tracking-[0.15em] text-blue-400 uppercase mt-0.5 ml-8">Banque Privée</p>

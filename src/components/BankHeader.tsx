@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -28,7 +27,7 @@ export function BankHeader() {
       <div className="wrap flex items-center justify-between py-3">
         {/* Logo */}
         <Link href="/" className="shrink-0 flex items-center gap-2.5">
-          <Image src="/logo-caixabank.png" alt="CaixaBank" width={36} height={36} className="h-9 w-9" />
+          <img src="/logo-caixa.png" alt="CaixaBank" width={36} height={36} className="h-9 w-9" />
           <div className="leading-tight">
             <span className="text-lg font-bold text-primary sm:text-xl">CaixaBank Luxembourg</span>
             <p className="text-[10px] font-semibold tracking-widest text-primary/60 uppercase">Banque Privée</p>
