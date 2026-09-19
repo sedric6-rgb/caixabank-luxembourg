@@ -18,6 +18,7 @@ export interface DemoClient {
   accounts: DemoAccount[];
   cards: DemoCard[];
   transactions: DemoTx[];
+  _beneficiaries?: { id: number; label: string; name: string; iban: string; bic: string; favorite: boolean }[];
 }
 
 export interface DemoAccount {

@@ -201,7 +201,7 @@ function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
   const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   const otherClients = DEMO_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
-  return otherClients.map((oc, i) => ({
+  const base: BankBeneficiary[] = otherClients.map((oc, i) => ({
     id: clientId * 100 + i + 1,
     client_id: clientId,
     label: `${oc.first_name} ${oc.last_name}`,
@@ -210,6 +210,16 @@ function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
     bic: "CABORLULL",
     is_favorite: i === 0,
   }));
+  const extra = (c._beneficiaries || []).map((b) => ({
+    id: b.id,
+    client_id: clientId,
+    label: b.label,
+    beneficiary_name: b.name,
+    iban: b.iban,
+    bic: b.bic,
+    is_favorite: b.favorite,
+  }));
+  return [...base, ...extra];
 }
 
 function getDemoMessages(clientId: number): BankMessage[] {
