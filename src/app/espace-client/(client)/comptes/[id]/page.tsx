@@ -1,7 +1,8 @@
 import { getClientSession } from "@/lib/auth-client";
-import { getAccountById, getAccountTransactions } from "@/lib/queries/banking";
+import { getAccountById, getAccountTransactions, getClientById } from "@/lib/queries/banking";
 import { formatCurrency, formatIBAN, formatDate } from "@/lib/format";
 import { redirect } from "next/navigation";
+import AccountActions from "./AccountActions";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -10,6 +11,8 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
 
   const account = await getAccountById(Number(id));
   const transactions = await getAccountTransactions(Number(id));
+  const client = await getClientById(session.clientId);
+  const clientName = client ? `${client.first_name} ${client.last_name}` : "Client";
 
   if (!account) {
     return <div className="text-center py-12 text-gray-500">Compte introuvable</div>;
@@ -30,9 +33,15 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             </span>
           </div>
         </div>
-        <div className="mt-4 flex gap-3">
-          <button className="text-xs px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100">Télécharger RIB</button>
-          <button className="text-xs px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">Relevé de compte</button>
+        <div className="mt-4">
+          <AccountActions
+            accountLabel={account.label}
+            accountNumber={account.account_number}
+            clientName={clientName}
+            balance={account.balance}
+            currency={account.currency}
+            transactions={transactions}
+          />
         </div>
       </div>
 

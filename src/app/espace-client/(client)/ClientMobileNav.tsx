@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { clientLogoutAction } from "@/lib/actions/client-auth";
 
 type NavItem = { href: string; label: string; icon: string };
 
@@ -46,9 +47,12 @@ export default function ClientMobileNav({ nav, clientName, clientNumber }: { nav
               })}
             </nav>
             <div className="p-4 border-t border-white/10">
-              <Link href="/" onClick={() => setOpen(false)} className="block px-3 py-2 text-xs text-gray-500 hover:text-gray-300">
-                Retour au site
-              </Link>
+              <form action={clientLogoutAction}>
+                <button type="submit" className="flex items-center gap-2 px-3 py-2 text-xs text-gray-400 hover:text-white transition-colors w-full">
+                  <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3M11 11l3-3-3-3M6 8h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  Déconnexion
+                </button>
+              </form>
             </div>
           </div>
         </div>
