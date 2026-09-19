@@ -11,7 +11,7 @@ const CARD_COLORS: Record<string, string> = {
   "Visa Gold": "from-yellow-600 to-yellow-800",
   "Visa Debit": "from-blue-600 to-blue-900",
   "Visa Classic": "from-gray-600 to-gray-800",
-  "Visa Platinum": "from-gray-800 to-black",
+  "Visa Platinum": "from-[#8c9eab] via-[#c5d0d8] to-[#6b7d8a]",
   "Visa Infinite": "from-slate-900 to-black",
   "Visa Business": "from-blue-800 to-indigo-900",
   "Mastercard Gold": "from-amber-600 to-amber-800",
@@ -133,16 +133,16 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
             return (
               <div key={card.id} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="relative">
-                  <div className={`bg-gradient-to-br ${CARD_COLORS[card.type] || "from-blue-600 to-blue-900"} rounded-2xl p-5 sm:p-6 text-white aspect-[1.586/1] max-w-[400px] flex flex-col justify-between shadow-lg ${card.status !== "active" ? "opacity-60" : ""}`}>
+                  <div className={`bg-gradient-to-br ${CARD_COLORS[card.type] || "from-blue-600 to-blue-900"} rounded-2xl p-5 sm:p-6 ${card.type === "Visa Platinum" ? "text-gray-900" : "text-white"} aspect-[1.586/1] max-w-[400px] flex flex-col justify-between shadow-lg ${card.status !== "active" ? "opacity-60" : ""}`}>
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-xs text-white/70">CaixaBank Luxembourg — Banque Privée</p>
+                        <p className={`text-xs ${card.type === "Visa Platinum" ? "text-gray-900/60" : "text-white/70"}`}>CaixaBank Luxembourg — Banque Privée</p>
                         <p className="text-sm font-medium mt-1">{card.type}</p>
                       </div>
                       {card.type === "Visa Virtuelle" ? (
                         <svg width="40" height="26" viewBox="0 0 40 26"><rect width="40" height="26" rx="3" fill="white" fillOpacity="0.2"/><text x="4" y="14" fill="white" fontSize="7" fontWeight="bold">VIRTUAL</text></svg>
                       ) : (
-                        <svg width="40" height="26" viewBox="0 0 40 26"><rect width="40" height="26" rx="3" fill="white" fillOpacity="0.2"/><text x="6" y="17" fill="white" fontSize="10" fontWeight="bold">VISA</text></svg>
+                        <svg width="40" height="26" viewBox="0 0 40 26"><rect width="40" height="26" rx="3" fill={card.type === "Visa Platinum" ? "#1a2a3a" : "white"} fillOpacity="0.2"/><text x="6" y="17" fill={card.type === "Visa Platinum" ? "#1a2a3a" : "white"} fontSize="10" fontWeight="bold">VISA</text></svg>
                       )}
                     </div>
                     <div>
@@ -150,7 +150,7 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
                         <p className="text-base sm:text-lg font-mono tracking-widest select-none">
                           {revealedCards.has(card.id) ? getFullCardNumber(card.last4) : `**** **** **** ${card.last4}`}
                         </p>
-                        <button onClick={() => toggleCardReveal(card.id)} className="text-white/70 hover:text-white transition-colors" aria-label={revealedCards.has(card.id) ? "Masquer le numéro" : "Afficher le numéro"}>
+                        <button onClick={() => toggleCardReveal(card.id)} className={`${card.type === "Visa Platinum" ? "text-gray-900/50 hover:text-gray-900" : "text-white/70 hover:text-white"} transition-colors`} aria-label={revealedCards.has(card.id) ? "Masquer le numéro" : "Afficher le numéro"}>
                           {revealedCards.has(card.id) ? (
                             <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 01-4.24-4.24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 1l22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                           ) : (
@@ -160,8 +160,8 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
                       </div>
                       <p className="text-sm font-medium tracking-wide mb-2 uppercase">{clientName}</p>
                       <div className="flex justify-between text-xs">
-                        <div><span className="text-white/60">Expiration</span><p className="font-medium">{card.expiry}</p></div>
-                        <div><span className="text-white/60">Compte</span><p className="font-medium">{card.account}</p></div>
+                        <div><span className={card.type === "Visa Platinum" ? "text-gray-900/50" : "text-white/60"}>Expiration</span><p className="font-medium">{card.expiry}</p></div>
+                        <div><span className={card.type === "Visa Platinum" ? "text-gray-900/50" : "text-white/60"}>Compte</span><p className="font-medium">{card.account}</p></div>
                       </div>
                     </div>
                   </div>
