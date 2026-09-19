@@ -7,7 +7,7 @@ type AccountInfo = { id: number; label: string; iban: string; clientName?: strin
 type Transaction = { date: string; description: string; amount: number };
 
 function fmtAbs(n: number) {
-  return Math.abs(n).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return Math.abs(n).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ /g, " ");
 }
 
 export default function RelevesClient({

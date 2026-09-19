@@ -4,10 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DEMO_CLIENTS, type DemoAccount, type DemoTx, type DemoCard } from "@/lib/demo-data";
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
+import { formatAmount } from "@/lib/format";
 
 function today() {
   const d = new Date();
@@ -72,7 +69,7 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
     const srcClient = DEMO_CLIENTS.find((c) => c.id === client.id);
     if (srcClient) srcClient.transactions.unshift(newTx);
     setShowAddTx(false);
-    notify(`${type} de ${fmt(Math.abs(amount))} EUR enregistre`);
+    notify(`${type} de ${formatAmount(Math.abs(amount))} EUR enregistre`);
   };
 
   const updateTransaction = (e: React.FormEvent<HTMLFormElement>) => {
@@ -128,7 +125,7 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
             <p className="text-sm text-gray-500">Solde disponible</p>
-            <p className={`text-2xl sm:text-3xl font-bold ${account.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{fmt(account.balance)} EUR</p>
+            <p className={`text-2xl sm:text-3xl font-bold ${account.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{formatAmount(account.balance)} EUR</p>
           </div>
           <div className="text-sm text-gray-400">
             <p>Ouvert le {client.created_at}</p>
@@ -221,7 +218,7 @@ function AccountView({ client, initialAccount }: { client: typeof DEMO_CLIENTS[n
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
                         <span className={`text-sm font-bold whitespace-nowrap ${tx.amount >= 0 ? "text-green-600" : "text-red-600"}`}>
-                          {tx.amount >= 0 ? "+" : ""}{fmt(tx.amount)}
+                          {tx.amount >= 0 ? "+" : ""}{formatAmount(tx.amount)}
                         </span>
                         <button onClick={() => setEditIdx(i)} className="p-1.5 rounded-md hover:bg-gray-200 text-gray-400" title="Modifier">
                           <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M11.5 1.5l3 3-9 9H2.5v-3l9-9z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>

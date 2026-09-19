@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { formatAmount } from "@/lib/format";
 
 type Insurance = {
   id: number;
@@ -44,10 +45,6 @@ function buildInitialInsurances(): Insurance[] {
 
 const S: Record<string, string> = { active: "bg-green-100 text-green-700", en_attente: "bg-yellow-100 text-yellow-700", expiree: "bg-gray-100 text-gray-500", resiliee: "bg-red-100 text-red-700" };
 const SL: Record<string, string> = { active: "Active", en_attente: "En attente", expiree: "Expiree", resiliee: "Resiliee" };
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 export default function AdminAssurancesPage() {
   const [insurances, setInsurances] = useState<Insurance[]>(buildInitialInsurances);
@@ -131,11 +128,11 @@ export default function AdminAssurancesPage() {
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
           <p className="text-xs text-gray-500">Primes mensuelles</p>
-          <p className="text-lg sm:text-2xl font-bold text-gray-900">{fmt(totalPrimes)} EUR</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-900">{formatAmount(totalPrimes)} EUR</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
           <p className="text-xs text-gray-500">Couverture totale</p>
-          <p className="text-lg sm:text-2xl font-bold text-blue-600">{fmt(totalCouverture)} EUR</p>
+          <p className="text-lg sm:text-2xl font-bold text-blue-600">{formatAmount(totalCouverture)} EUR</p>
         </div>
       </div>
 
@@ -213,7 +210,7 @@ export default function AdminAssurancesPage() {
                 <p className="text-xs text-gray-400 mt-0.5">{i.formule}</p>
               </div>
               <div className="text-right">
-                <span className="text-base font-bold text-gray-900">{fmt(i.prime)} EUR</span>
+                <span className="text-base font-bold text-gray-900">{formatAmount(i.prime)} EUR</span>
                 <p className="text-xs text-gray-400">/mois</p>
               </div>
             </div>
@@ -241,8 +238,8 @@ export default function AdminAssurancesPage() {
                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{i.client}</td>
                 <td className="px-4 py-3 text-gray-500">{i.type}</td>
                 <td className="px-4 py-3 text-gray-500">{i.formule}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{fmt(i.prime)}</td>
-                <td className="px-4 py-3 text-right text-gray-500 whitespace-nowrap">{i.couverture > 0 ? fmt(i.couverture) : "—"}</td>
+                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{formatAmount(i.prime)}</td>
+                <td className="px-4 py-3 text-right text-gray-500 whitespace-nowrap">{i.couverture > 0 ? formatAmount(i.couverture) : "—"}</td>
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[i.status]}`}>{SL[i.status]}</span></td>
                 <td className="px-4 py-3 text-gray-500">{i.echeance}</td>
                 <td className="px-4 py-3 text-right">
@@ -269,9 +266,9 @@ export default function AdminAssurancesPage() {
               <div className="flex justify-between"><span className="text-sm text-gray-500">Client</span><span className="text-sm font-medium text-gray-900">{detail.client}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Type</span><span className="text-sm font-medium text-gray-900">{detail.type}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Formule</span><span className="text-sm font-medium text-gray-900">{detail.formule}</span></div>
-              <div className="flex justify-between"><span className="text-sm text-gray-500">Prime mensuelle</span><span className="text-sm font-bold text-gray-900">{fmt(detail.prime)} EUR</span></div>
-              <div className="flex justify-between"><span className="text-sm text-gray-500">Prime annuelle</span><span className="text-sm font-medium text-gray-900">{fmt(detail.prime * 12)} EUR</span></div>
-              {detail.couverture > 0 && <div className="flex justify-between"><span className="text-sm text-gray-500">Couverture</span><span className="text-sm font-bold text-blue-700">{fmt(detail.couverture)} EUR</span></div>}
+              <div className="flex justify-between"><span className="text-sm text-gray-500">Prime mensuelle</span><span className="text-sm font-bold text-gray-900">{formatAmount(detail.prime)} EUR</span></div>
+              <div className="flex justify-between"><span className="text-sm text-gray-500">Prime annuelle</span><span className="text-sm font-medium text-gray-900">{formatAmount(detail.prime * 12)} EUR</span></div>
+              {detail.couverture > 0 && <div className="flex justify-between"><span className="text-sm text-gray-500">Couverture</span><span className="text-sm font-bold text-blue-700">{formatAmount(detail.couverture)} EUR</span></div>}
               <div className="flex justify-between border-t border-gray-100 pt-3"><span className="text-sm text-gray-500">Debut</span><span className="text-sm text-gray-900">{detail.debut}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Echeance</span><span className="text-sm text-gray-900">{detail.echeance}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Statut</span><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[detail.status]}`}>{SL[detail.status]}</span></div>

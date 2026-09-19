@@ -5,10 +5,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DEMO_CLIENTS, type DemoClient, type DemoAccount, type DemoTx } from "@/lib/demo-data";
 import { toggleBlockTransactionsAction } from "@/lib/actions/virements";
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
+import { formatAmount } from "@/lib/format";
 
 export default function ClientDetailPage() {
   const params = useParams();
@@ -112,7 +109,7 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
       if (acct) acct.balance += amount;
     }
     setTxOpen(false);
-    notify(`Transaction de ${fmt(Math.abs(amount))} EUR enregistree`);
+    notify(`Transaction de ${formatAmount(Math.abs(amount))} EUR enregistree`);
   };
 
   const addAccount = (e: React.FormEvent<HTMLFormElement>) => {
@@ -227,11 +224,11 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
                     <p className="text-sm font-medium text-gray-900">{a.label}</p>
                     <p className="text-xs font-mono text-gray-400">{a.number}</p>
                   </div>
-                  <span className={`text-sm font-bold ${a.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{fmt(a.balance)} EUR</span>
+                  <span className={`text-sm font-bold ${a.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{formatAmount(a.balance)} EUR</span>
                 </div>
               ))}
               <p className="text-right text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
-                Total : {fmt(totalBalance)} EUR
+                Total : {formatAmount(totalBalance)} EUR
               </p>
             </div>
           )}
@@ -278,7 +275,7 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
                   <td className="py-2 text-gray-600">{tx.date}</td>
                   <td className="py-2 text-gray-700">{tx.desc}</td>
                   <td className={`py-2 text-right font-medium ${tx.amount >= 0 ? "text-green-600" : "text-red-600"}`}>
-                    {tx.amount >= 0 ? "+" : ""}{fmt(tx.amount)} EUR
+                    {tx.amount >= 0 ? "+" : ""}{formatAmount(tx.amount)} EUR
                   </td>
                 </tr>
               ))}

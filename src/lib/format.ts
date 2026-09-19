@@ -28,7 +28,11 @@ export function formatCurrency(amount: number, currency: string = "EUR"): string
     currency,
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(amount);
+  }).format(amount).replace(/ /g, " ");
+}
+
+export function formatAmount(n: number): string {
+  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ /g, " ");
 }
 
 export function formatIBAN(iban: string): string {

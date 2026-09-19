@@ -34,10 +34,10 @@ export default function PretsClient({ initialLoans }: { initialLoans: Loan[] }) 
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 text-sm">
-                    <div><p className="text-gray-500">Montant total</p><p className="font-bold text-gray-900">{loan.amount.toLocaleString("fr-FR")} EUR</p></div>
-                    <div><p className="text-gray-500">Capital restant</p><p className="font-bold text-gray-900">{loan.remaining.toLocaleString("fr-FR")} EUR</p></div>
+                    <div><p className="text-gray-500">Montant total</p><p className="font-bold text-gray-900">{loan.amount.toLocaleString("fr-FR").replace(/ /g, " ")} EUR</p></div>
+                    <div><p className="text-gray-500">Capital restant</p><p className="font-bold text-gray-900">{loan.remaining.toLocaleString("fr-FR").replace(/ /g, " ")} EUR</p></div>
                     <div><p className="text-gray-500">Taux</p><p className="font-bold text-gray-900">{loan.rate}%</p></div>
-                    <div><p className="text-gray-500">Mensualite</p><p className="font-bold text-gray-900">{loan.monthly.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR</p></div>
+                    <div><p className="text-gray-500">Mensualite</p><p className="font-bold text-gray-900">{loan.monthly.toLocaleString("fr-FR", { minimumFractionDigits: 2 }).replace(/ /g, " ")} EUR</p></div>
                   </div>
                   <div className="mb-2">
                     <div className="flex justify-between text-xs text-gray-500 mb-1">
@@ -61,7 +61,7 @@ export default function PretsClient({ initialLoans }: { initialLoans: Loan[] }) 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Montant emprunte : <span className="font-bold">{simAmount.toLocaleString("fr-FR")} EUR</span></label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Montant emprunte : <span className="font-bold">{simAmount.toLocaleString("fr-FR").replace(/ /g, " ")} EUR</span></label>
               <input type="range" min="5000" max="500000" step="5000" value={simAmount} onChange={(e) => setSimAmount(Number(e.target.value))}
                 className="w-full accent-blue-600" />
               <div className="flex justify-between text-xs text-gray-400"><span>5 000 EUR</span><span>500 000 EUR</span></div>
@@ -76,8 +76,8 @@ export default function PretsClient({ initialLoans }: { initialLoans: Loan[] }) 
           </div>
           <div className="flex flex-col items-center justify-center bg-blue-50 rounded-xl p-6">
             <p className="text-sm text-gray-500 mb-2">Mensualite estimee</p>
-            <p className="text-3xl sm:text-4xl font-bold text-[#003d82]">{simMonthly.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EUR</p>
-            <p className="text-sm text-gray-500 mt-2">Cout total : {(simMonthly * simDuration).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EUR</p>
+            <p className="text-3xl sm:text-4xl font-bold text-[#003d82]">{simMonthly.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ /g, " ")} EUR</p>
+            <p className="text-sm text-gray-500 mt-2">Cout total : {(simMonthly * simDuration).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ /g, " ")} EUR</p>
             <button className="mt-4 bg-[#003d82] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c] transition-colors">
               Demander ce credit
             </button>

@@ -51,7 +51,7 @@ export default function CartesClient({ initialCards }: { initialCards: Card[] })
     if (newLimit < 100 || newLimit > 50000) { notify("Le plafond doit etre entre 100 et 50 000 EUR"); return; }
     setCards((prev) => prev.map((c) => c.id === id ? { ...c, limit: newLimit } : c));
     setLimitEdit(null);
-    notify(`Plafond mis a jour : ${newLimit.toLocaleString("fr-FR")} EUR`);
+    notify(`Plafond mis a jour : ${newLimit.toLocaleString("fr-FR").replace(/ /g, " ")} EUR`);
   };
 
   return (
@@ -110,7 +110,7 @@ export default function CartesClient({ initialCards }: { initialCards: Card[] })
                       </div>
                     ) : (
                       <div className="flex items-center gap-2">
-                        <p className="text-lg font-bold text-gray-900">{card.limit.toLocaleString("fr-FR")} EUR</p>
+                        <p className="text-lg font-bold text-gray-900">{card.limit.toLocaleString("fr-FR").replace(/ /g, " ")} EUR</p>
                         {card.status === "active" && (
                           <button onClick={() => setLimitEdit({ cardId: card.id, value: String(card.limit) })} className="text-xs text-blue-600 hover:underline">Modifier</button>
                         )}

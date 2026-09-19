@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { executeVirementAction, addBeneficiaryAction } from "@/lib/actions/virements";
+import { formatAmount } from "@/lib/format";
 
 type Account = { id: number; label: string; balance: number; iban: string };
 type Beneficiary = { id: number; label: string; iban: string };
@@ -93,7 +94,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
         </div>
         <h2 className="text-xl font-bold text-gray-900 mb-2">Virement effectue</h2>
         <p className="text-gray-500 mb-1">
-          Votre virement de <strong>{Number(amount).toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR</strong> vers <strong>{benName}</strong> a ete soumis avec succes.
+          Votre virement de <strong>{formatAmount(Number(amount))} EUR</strong> vers <strong>{benName}</strong> a ete soumis avec succes.
         </p>
         <p className="text-xs text-gray-400 font-mono mb-6">{benIban}</p>
         {benMode === "new" && saveBen && (
@@ -127,7 +128,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
         <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4">
           <Row label="Compte debiteur" value={sourceAcc?.label || ""} sub={sourceAcc?.iban} />
           <Row label="Beneficiaire" value={benName} sub={benIban} />
-          <Row label="Montant" value={`${Number(amount).toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR`} />
+          <Row label="Montant" value={`${formatAmount(Number(amount))} EUR`} />
           {motif && <Row label="Motif" value={motif} />}
           {benMode === "new" && saveBen && (
             <div className="flex items-center gap-2 text-xs text-green-600">
@@ -167,7 +168,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
           <select value={source} onChange={(e) => setSource(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             {accounts.map((a) => (
-              <option key={a.id} value={a.id}>{a.label} — {a.balance.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR</option>
+              <option key={a.id} value={a.id}>{a.label} — {formatAmount(a.balance)} EUR</option>
             ))}
           </select>
         </div>
@@ -224,7 +225,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
           <input type="number" min="0.01" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0,00"
             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
           {sourceAcc && (
-            <p className="text-xs text-gray-400 mt-1">Solde disponible : {sourceAcc.balance.toLocaleString("fr-FR", { minimumFractionDigits: 2 })} EUR</p>
+            <p className="text-xs text-gray-400 mt-1">Solde disponible : {formatAmount(sourceAcc.balance)} EUR</p>
           )}
         </div>
 

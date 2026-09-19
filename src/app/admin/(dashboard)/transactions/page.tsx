@@ -28,7 +28,7 @@ const TYPES = ["Virement entrant", "Virement sortant", "Prélèvement", "Carte",
 const FILTERS = ["Tout", "Virements", "Prélèvements", "Cartes", "Retraits"];
 
 function fmt(n: number) {
-  const s = Math.abs(n).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const s = Math.abs(n).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(/ /g, " ");
   return n >= 0 ? `+${s}` : `-${s}`;
 }
 

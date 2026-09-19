@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { formatAmount } from "@/lib/format";
 
 type Loan = {
   id: number;
@@ -39,10 +40,6 @@ function buildInitialLoans(): Loan[] {
 
 const S: Record<string, string> = { en_cours: "bg-green-100 text-green-700", demande: "bg-yellow-100 text-yellow-700", approuve: "bg-blue-100 text-blue-700", refuse: "bg-red-100 text-red-700" };
 const SL: Record<string, string> = { en_cours: "En cours", demande: "Demande", approuve: "Approuve", refuse: "Refuse" };
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 export default function AdminPretsPage() {
   const [loans, setLoans] = useState<Loan[]>(buildInitialLoans);
@@ -100,7 +97,7 @@ export default function AdminPretsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Credits & Prets</h1>
-          <p className="text-sm text-gray-500 mt-1">{loans.length} dossiers — encours : {fmt(totalMontant)} EUR</p>
+          <p className="text-sm text-gray-500 mt-1">{loans.length} dossiers — encours : {formatAmount(totalMontant)} EUR</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="inline-flex items-center gap-2 bg-[#003d82] text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#002a5c]">
           + Octroyer un pret
@@ -119,7 +116,7 @@ export default function AdminPretsPage() {
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
           <p className="text-xs text-gray-500">Encours total</p>
-          <p className="text-lg sm:text-2xl font-bold text-gray-900">{fmt(totalMontant)} EUR</p>
+          <p className="text-lg sm:text-2xl font-bold text-gray-900">{formatAmount(totalMontant)} EUR</p>
         </div>
         <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
           <p className="text-xs text-gray-500">Taux moyen</p>
@@ -185,11 +182,11 @@ export default function AdminPretsPage() {
                 <span className="text-xs text-gray-400">{l.type} — {l.rate}%</span>
                 <p className="text-xs text-gray-500 mt-0.5">{l.duration}</p>
               </div>
-              <span className="text-base font-bold text-gray-900">{fmt(l.amount)} EUR</span>
+              <span className="text-base font-bold text-gray-900">{formatAmount(l.amount)} EUR</span>
             </div>
             <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
               <span className="text-xs text-gray-400">Mensualite</span>
-              <span className="text-sm font-semibold text-blue-700">{fmt(l.mensualite)} EUR</span>
+              <span className="text-sm font-semibold text-blue-700">{formatAmount(l.mensualite)} EUR</span>
             </div>
             {l.status === "demande" && (
               <div className="mt-2 flex gap-2">
@@ -221,10 +218,10 @@ export default function AdminPretsPage() {
               <tr key={l.id} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => setDetail(l)}>
                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{l.client}</td>
                 <td className="px-4 py-3 text-gray-500">{l.type}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{fmt(l.amount)}</td>
+                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{formatAmount(l.amount)}</td>
                 <td className="px-4 py-3 text-gray-500">{l.rate}%</td>
                 <td className="px-4 py-3 text-gray-500">{l.duration}</td>
-                <td className="px-4 py-3 text-right font-medium text-blue-700 whitespace-nowrap">{fmt(l.mensualite)}</td>
+                <td className="px-4 py-3 text-right font-medium text-blue-700 whitespace-nowrap">{formatAmount(l.mensualite)}</td>
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[l.status]}`}>{SL[l.status]}</span></td>
                 <td className="px-4 py-3 text-gray-500">{l.date}</td>
                 <td className="px-4 py-3 text-right space-x-2">
@@ -255,11 +252,11 @@ export default function AdminPretsPage() {
             <div className="space-y-3">
               <div className="flex justify-between"><span className="text-sm text-gray-500">Client</span><span className="text-sm font-medium text-gray-900">{detail.client}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Type</span><span className="text-sm font-medium text-gray-900">{detail.type}</span></div>
-              <div className="flex justify-between"><span className="text-sm text-gray-500">Montant</span><span className="text-sm font-bold text-gray-900">{fmt(detail.amount)} EUR</span></div>
+              <div className="flex justify-between"><span className="text-sm text-gray-500">Montant</span><span className="text-sm font-bold text-gray-900">{formatAmount(detail.amount)} EUR</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Taux annuel</span><span className="text-sm font-medium text-gray-900">{detail.rate}%</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Duree</span><span className="text-sm font-medium text-gray-900">{detail.duration}</span></div>
-              <div className="flex justify-between border-t border-gray-100 pt-3"><span className="text-sm text-gray-500">Mensualite</span><span className="text-sm font-bold text-blue-700">{fmt(detail.mensualite)} EUR</span></div>
-              <div className="flex justify-between"><span className="text-sm text-gray-500">Cout total</span><span className="text-sm font-medium text-gray-900">{fmt(detail.mensualite * parseInt(detail.duration) * 12)} EUR</span></div>
+              <div className="flex justify-between border-t border-gray-100 pt-3"><span className="text-sm text-gray-500">Mensualite</span><span className="text-sm font-bold text-blue-700">{formatAmount(detail.mensualite)} EUR</span></div>
+              <div className="flex justify-between"><span className="text-sm text-gray-500">Cout total</span><span className="text-sm font-medium text-gray-900">{formatAmount(detail.mensualite * parseInt(detail.duration) * 12)} EUR</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Statut</span><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[detail.status]}`}>{SL[detail.status]}</span></div>
               <div className="flex justify-between"><span className="text-sm text-gray-500">Date</span><span className="text-sm text-gray-900">{detail.date}</span></div>
             </div>

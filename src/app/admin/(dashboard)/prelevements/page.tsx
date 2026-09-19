@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatAmount } from "@/lib/format";
 
 const STATUSES = ["Tous", "Actif", "En attente", "Suspendu", "Termine"] as const;
 
@@ -16,10 +17,6 @@ const INITIAL = [
 ];
 
 type Mandate = typeof INITIAL[number];
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 function statusColor(s: string) {
   if (s === "Actif") return "bg-green-100 text-green-700";
@@ -89,7 +86,7 @@ export default function AdminPrelevementsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Prelevements</h1>
-          <p className="text-sm text-gray-500 mt-1">{mandates.filter((m) => m.status === "Actif").length} mandats actifs — total mensuel estime : {fmt(activeTotal)} EUR</p>
+          <p className="text-sm text-gray-500 mt-1">{mandates.filter((m) => m.status === "Actif").length} mandats actifs — total mensuel estime : {formatAmount(activeTotal)} EUR</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="inline-flex items-center gap-2 bg-[#003d82] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c]">
           <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -164,7 +161,7 @@ export default function AdminPrelevementsPage() {
                 <td className="px-4 py-3 text-gray-900 font-medium">{m.creditor}</td>
                 <td className="px-4 py-3 font-mono text-xs text-gray-500">{m.debtor}</td>
                 <td className="px-4 py-3 font-mono text-xs text-gray-400 hidden md:table-cell">{m.rum}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900">{fmt(m.amount)}</td>
+                <td className="px-4 py-3 text-right font-medium text-gray-900">{formatAmount(m.amount)}</td>
                 <td className="px-4 py-3 text-gray-600 hidden lg:table-cell">{m.frequency}</td>
                 <td className="px-4 py-3 text-gray-600 hidden lg:table-cell">{m.nextDate}</td>
                 <td className="px-4 py-3"><span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor(m.status)}`}>{m.status}</span></td>
@@ -182,7 +179,7 @@ export default function AdminPrelevementsPage() {
               <Row label="Creancier" value={selected.creditor} />
               <Row label="RUM" value={selected.rum} />
               <Row label="Compte debiteur" value={selected.debtor} />
-              <Row label="Montant" value={`${fmt(selected.amount)} EUR`} />
+              <Row label="Montant" value={`${formatAmount(selected.amount)} EUR`} />
               <Row label="Frequence" value={selected.frequency} />
               <Row label="Prochaine echeance" value={selected.nextDate} />
               <Row label="Statut" value={selected.status} />

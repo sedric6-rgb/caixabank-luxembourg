@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { formatAmount } from "@/lib/format";
 
 type Account = {
   id: number;
@@ -48,10 +49,6 @@ const S: Record<string, string> = { actif: "bg-green-100 text-green-700", en_att
 const L: Record<string, string> = { actif: "Actif", en_attente: "En attente", bloque: "Bloque" };
 const TYPES = ["Courant", "Epargne", "Pro"];
 const FILTERS = ["Tous", "Courant", "Epargne", "Pro"];
-
-function fmt(n: number) {
-  return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
 
 function genIBAN() {
   const r = () => String(Math.floor(Math.random() * 10000)).padStart(4, "0");
@@ -108,7 +105,7 @@ export default function AdminComptesPage() {
       return a;
     }));
     setShowTransfer(false);
-    notify(`Virement interne de ${fmt(amount)} EUR effectue`);
+    notify(`Virement interne de ${formatAmount(amount)} EUR effectue`);
   };
 
   return (
@@ -119,7 +116,7 @@ export default function AdminComptesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Comptes bancaires</h1>
-          <p className="text-sm text-gray-500 mt-1">{accounts.length} comptes — total : {fmt(totalBalance)} EUR</p>
+          <p className="text-sm text-gray-500 mt-1">{accounts.length} comptes — total : {formatAmount(totalBalance)} EUR</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setShowTransfer(!showTransfer)} className="inline-flex items-center gap-2 border border-[#003d82] text-[#003d82] px-3 py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-blue-50">
@@ -210,7 +207,7 @@ export default function AdminComptesPage() {
                 <span className="text-xs text-gray-400">{a.type}</span>
                 <p className="text-xs font-mono text-gray-500 mt-0.5">{a.shortNumber}</p>
               </div>
-              <span className="text-base font-bold text-gray-900">{fmt(a.balance)} EUR</span>
+              <span className="text-base font-bold text-gray-900">{formatAmount(a.balance)} EUR</span>
             </div>
           </Link>
         ))}
@@ -234,7 +231,7 @@ export default function AdminComptesPage() {
                 <td className="px-4 py-3 font-mono text-xs text-gray-600 whitespace-nowrap">{a.shortNumber}</td>
                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{a.holder}</td>
                 <td className="px-4 py-3 text-gray-500">{a.type}</td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{fmt(a.balance)}</td>
+                <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{formatAmount(a.balance)}</td>
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[a.status]}`}>{L[a.status]}</span></td>
                 <td className="px-4 py-3 text-right">
                   {a.clientId > 0 ? (

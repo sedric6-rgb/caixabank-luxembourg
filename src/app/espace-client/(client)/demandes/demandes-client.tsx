@@ -214,7 +214,7 @@ function PlafondForm({ cards, onSubmit, pending }: { cards: CardInfo[]; onSubmit
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Carte</label>
         <select value={cardId} onChange={(e) => setCardId(e.target.value)} className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-          {cards.map((c) => <option key={c.id} value={c.id}>{c.type} **** {c.last4} (plafond actuel : {c.limit.toLocaleString("fr-FR")} EUR)</option>)}
+          {cards.map((c) => <option key={c.id} value={c.id}>{c.type} **** {c.last4} (plafond actuel : {c.limit.toLocaleString("fr-FR").replace(/ /g, " ")} EUR)</option>)}
         </select>
       </div>
       <div>
@@ -226,7 +226,7 @@ function PlafondForm({ cards, onSubmit, pending }: { cards: CardInfo[]; onSubmit
         if (!newLimit || !card) return;
         onSubmit(
           `Augmentation plafond ${card.type} **** ${card.last4}`,
-          `Demande d'augmentation du plafond mensuel de ${card.limit.toLocaleString("fr-FR")} EUR a ${Number(newLimit).toLocaleString("fr-FR")} EUR pour la carte ${card.type} **** ${card.last4}`
+          `Demande d'augmentation du plafond mensuel de ${card.limit.toLocaleString("fr-FR").replace(/ /g, " ")} EUR a ${Number(newLimit).toLocaleString("fr-FR").replace(/ /g, " ")} EUR pour la carte ${card.type} **** ${card.last4}`
         );
       }} disabled={pending || !newLimit}
         className="bg-[#003d82] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c] disabled:opacity-50">
