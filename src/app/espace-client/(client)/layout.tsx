@@ -2,9 +2,10 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getClientSession } from "@/lib/auth-client";
-import { getClientById } from "@/lib/queries/banking";
+import { getClientById, getClientNotifications } from "@/lib/queries/banking";
 import { clientLogoutAction } from "@/lib/actions/client-auth";
 import ClientMobileNav from "./ClientMobileNav";
+import NotificationBell from "./NotificationBell";
 
 const NAV = [
   { href: "/espace-client", label: "Tableau de bord", icon: "dashboard" },
@@ -31,6 +32,7 @@ export default async function EspaceClientLayout({ children }: { children: React
   const client = await getClientById(session.clientId);
   const clientName = client ? `${client.first_name} ${client.last_name}` : "Client";
   const clientNumber = client?.client_number || "";
+  const notifications = await getClientNotifications(session.clientId);
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -77,10 +79,7 @@ export default async function EspaceClientLayout({ children }: { children: React
             <span className="text-sm text-gray-500">Espace Client</span>
           </div>
           <div className="flex items-center gap-4">
-            <button className="relative text-gray-400 hover:text-gray-600">
-              <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><path d="M15 6.5A5 5 0 005 6.5C5 11 3 13 3 13h14s-2-2-2-6.5zM8.5 16a2.5 2.5 0 005 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
-            </button>
+            <NotificationBell notifications={notifications} />
             <span className="text-sm text-gray-400">{new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
           </div>
         </header>
