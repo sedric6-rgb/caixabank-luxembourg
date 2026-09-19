@@ -30,11 +30,11 @@ const TYPES = ["Immobilier", "Consommation", "Auto", "Etudiant", "Professionnel"
 function buildInitialLoans(): Loan[] {
   return [
     { id: 1, clientId: 1, client: "Cedric Carpentier", type: "Immobilier", amount: 350000, rate: "3,45", duration: "25 ans", status: "en_cours", date: "01/06/2022", mensualite: calcMensualite(350000, "3,45", 25) },
-    { id: 2, clientId: 2, client: "François Martelly", type: "Professionnel", amount: 120000, rate: "4,10", duration: "7 ans", status: "en_cours", date: "15/01/2024", mensualite: calcMensualite(120000, "4,10", 7) },
-    { id: 3, clientId: 5, client: "Sophie Laurent", type: "Auto", amount: 45000, rate: "4,30", duration: "5 ans", status: "en_cours", date: "10/03/2023", mensualite: calcMensualite(45000, "4,30", 5) },
-    { id: 4, clientId: 8, client: "Michel Weber", type: "Immobilier", amount: 280000, rate: "3,45", duration: "20 ans", status: "demande", date: "05/09/2024", mensualite: calcMensualite(280000, "3,45", 20) },
-    { id: 5, clientId: 21, client: "Fritz Mambouka", type: "Professionnel", amount: 500000, rate: "4,10", duration: "10 ans", status: "en_cours", date: "20/08/2024", mensualite: calcMensualite(500000, "4,10", 10) },
-    { id: 6, clientId: 10, client: "Elena Popov", type: "Consommation", amount: 25000, rate: "5,80", duration: "4 ans", status: "demande", date: "12/09/2024", mensualite: calcMensualite(25000, "5,80", 4) },
+    { id: 2, clientId: 2, client: "François Martelly", type: "Professionnel", amount: 120000, rate: "4,10", duration: "7 ans", status: "en_cours", date: "15/01/2026", mensualite: calcMensualite(120000, "4,10", 7) },
+    { id: 3, clientId: 5, client: "Sophie Laurent", type: "Auto", amount: 45000, rate: "4,30", duration: "5 ans", status: "en_cours", date: "10/03/2025", mensualite: calcMensualite(45000, "4,30", 5) },
+    { id: 4, clientId: 8, client: "Michel Weber", type: "Immobilier", amount: 280000, rate: "3,45", duration: "20 ans", status: "demande", date: "05/09/2026", mensualite: calcMensualite(280000, "3,45", 20) },
+    { id: 5, clientId: 21, client: "Fritz Mambouka", type: "Professionnel", amount: 500000, rate: "4,10", duration: "10 ans", status: "en_cours", date: "20/08/2026", mensualite: calcMensualite(500000, "4,10", 10) },
+    { id: 6, clientId: 10, client: "Elena Popov", type: "Consommation", amount: 25000, rate: "5,80", duration: "4 ans", status: "demande", date: "12/09/2026", mensualite: calcMensualite(25000, "5,80", 4) },
   ];
 }
 

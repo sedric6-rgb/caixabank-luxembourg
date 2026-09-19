@@ -40,11 +40,11 @@ export function initClientConversations(clientId: number, clientName: string, cl
         id: nextMsgId++,
         sender: "banque",
         text: `Cher(e) ${clientName}, nous avons le plaisir de vous accueillir parmi nos clients. Votre espace personnel est desormais actif.\n\nN'hesitez pas a nous contacter pour toute question.\n\nCordialement,\nL'equipe CaixaBank Luxembourg`,
-        date: "15/01/2024",
+        date: "15/01/2026",
       },
     ],
-    createdAt: "15/01/2024",
-    updatedAt: "15/01/2024",
+    createdAt: "15/01/2026",
+    updatedAt: "15/01/2026",
   });
 
   CONVERSATIONS.push({
@@ -59,12 +59,12 @@ export function initClientConversations(clientId: number, clientName: string, cl
       {
         id: nextMsgId++,
         sender: "banque",
-        text: "Nous vous informons que vos conditions tarifaires ont ete mises a jour a compter du 1er octobre 2024.\n\nVous pouvez consulter le detail dans la rubrique Tarifs de votre espace client.\n\nPour toute question, n'hesitez pas a repondre a ce message.\n\nCordialement,\nService Client CaixaBank Luxembourg",
-        date: "10/09/2024",
+        text: "Nous vous informons que vos conditions tarifaires ont ete mises a jour a compter du 1er octobre 2026.\n\nVous pouvez consulter le detail dans la rubrique Tarifs de votre espace client.\n\nPour toute question, n'hesitez pas a repondre a ce message.\n\nCordialement,\nService Client CaixaBank Luxembourg",
+        date: "10/09/2026",
       },
     ],
-    createdAt: "10/09/2024",
-    updatedAt: "10/09/2024",
+    createdAt: "10/09/2026",
+    updatedAt: "10/09/2026",
   });
 }
 

@@ -3,18 +3,18 @@
 import { useState } from "react";
 
 const INITIAL_TXS = [
-  { id: 1, date: "15/09/2024 14:23", account: "LU61...2874", type: "Carte", amount: -125.5, counterparty: "Cactus", ref: "CB-2024091514230001" },
-  { id: 2, date: "15/09/2024 11:05", account: "LU61...2874", type: "Virement entrant", amount: 4500, counterparty: "Entreprise ABC", ref: "VIR-2024091511050002" },
-  { id: 3, date: "14/09/2024 18:47", account: "LU61...2874", type: "Carte", amount: -42.3, counterparty: "Delhaize", ref: "CB-2024091418470003" },
-  { id: 4, date: "14/09/2024 09:00", account: "LU61...2874", type: "Prélèvement", amount: -1567.23, counterparty: "Crédit Immobilier CBL", ref: "PRLV-2024091409000004" },
-  { id: 5, date: "13/09/2024 16:30", account: "LU10...9012", type: "Virement sortant", amount: -8500, counterparty: "Fournisseur XYZ S.à r.l.", ref: "VIR-2024091316300005" },
-  { id: 6, date: "13/09/2024 12:15", account: "LU27...5387", type: "Intérêt", amount: 122.34, counterparty: "Intérêts Livret Épargne", ref: "INT-2024091312150006" },
-  { id: 7, date: "12/09/2024 20:10", account: "LU61...2874", type: "Carte", amount: -89.9, counterparty: "Amazon.lu", ref: "CB-2024091220100007" },
-  { id: 8, date: "12/09/2024 08:00", account: "LU61...2874", type: "Virement sortant", amount: -2800, counterparty: "Immobiliare S.à r.l.", ref: "VIR-2024091208000008" },
-  { id: 9, date: "11/09/2024 15:45", account: "LU10...9012", type: "Virement entrant", amount: 15000, counterparty: "Client Projekt Alfa", ref: "VIR-2024091115450009" },
-  { id: 10, date: "11/09/2024 10:30", account: "LU61...2874", type: "Retrait", amount: -500, counterparty: "DAB Luxembourg-Gare", ref: "ATM-2024091110300010" },
-  { id: 11, date: "10/09/2024 19:20", account: "LU61...2874", type: "Carte", amount: -234.5, counterparty: "CFL", ref: "CB-2024091019200011" },
-  { id: 12, date: "10/09/2024 14:00", account: "LU61...2874", type: "Prélèvement", amount: -350, counterparty: "Enovos", ref: "PRLV-2024091014000012" },
+  { id: 1, date: "15/09/2026 14:23", account: "LU61...2874", type: "Carte", amount: -125.5, counterparty: "Cactus", ref: "CB-2026091514230001" },
+  { id: 2, date: "15/09/2026 11:05", account: "LU61...2874", type: "Virement entrant", amount: 4500, counterparty: "Entreprise ABC", ref: "VIR-2026091511050002" },
+  { id: 3, date: "14/09/2026 18:47", account: "LU61...2874", type: "Carte", amount: -42.3, counterparty: "Delhaize", ref: "CB-2026091418470003" },
+  { id: 4, date: "14/09/2026 09:00", account: "LU61...2874", type: "Prélèvement", amount: -1567.23, counterparty: "Crédit Immobilier CBL", ref: "PRLV-2026091409000004" },
+  { id: 5, date: "13/09/2026 16:30", account: "LU10...9012", type: "Virement sortant", amount: -8500, counterparty: "Fournisseur XYZ S.à r.l.", ref: "VIR-2026091316300005" },
+  { id: 6, date: "13/09/2026 12:15", account: "LU27...5387", type: "Intérêt", amount: 122.34, counterparty: "Intérêts Livret Épargne", ref: "INT-2026091312150006" },
+  { id: 7, date: "12/09/2026 20:10", account: "LU61...2874", type: "Carte", amount: -89.9, counterparty: "Amazon.lu", ref: "CB-2026091220100007" },
+  { id: 8, date: "12/09/2026 08:00", account: "LU61...2874", type: "Virement sortant", amount: -2800, counterparty: "Immobiliare S.à r.l.", ref: "VIR-2026091208000008" },
+  { id: 9, date: "11/09/2026 15:45", account: "LU10...9012", type: "Virement entrant", amount: 15000, counterparty: "Client Projekt Alfa", ref: "VIR-2026091115450009" },
+  { id: 10, date: "11/09/2026 10:30", account: "LU61...2874", type: "Retrait", amount: -500, counterparty: "DAB Luxembourg-Gare", ref: "ATM-2026091110300010" },
+  { id: 11, date: "10/09/2026 19:20", account: "LU61...2874", type: "Carte", amount: -234.5, counterparty: "CFL", ref: "CB-2026091019200011" },
+  { id: 12, date: "10/09/2026 14:00", account: "LU61...2874", type: "Prélèvement", amount: -350, counterparty: "Enovos", ref: "PRLV-2026091014000012" },
 ];
 
 const ACCOUNTS = [

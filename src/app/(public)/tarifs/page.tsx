@@ -44,7 +44,7 @@ export default function TarifsPage() {
         ]} />
 
         <p className="text-xs text-gray-400 text-center max-w-2xl mx-auto">
-          Les taux et tarifs indiqués sont valables au 1er septembre 2024 et susceptibles de modification. Consultez nos conditions générales pour plus de détails. CaixaBank Luxembourg S.A. est un établissement de crédit agréé par la CSSF.
+          Les taux et tarifs indiqués sont valables au 1er septembre 2026 et susceptibles de modification. Consultez nos conditions générales pour plus de détails. CaixaBank Luxembourg S.A. est un établissement de crédit agréé par la CSSF.
         </p>
       </div>
     </div>

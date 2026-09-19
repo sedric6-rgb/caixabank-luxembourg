@@ -6,14 +6,14 @@ import { formatAmount } from "@/lib/format";
 const STATUSES = ["Tous", "Actif", "En attente", "Suspendu", "Termine"] as const;
 
 const INITIAL = [
-  { id: 1, creditor: "Enovos Luxembourg S.A.", debtor: "LU61...2874", rum: "MNDT-2024-001", amount: 189.50, frequency: "Mensuel", nextDate: "01/10/2024", status: "Actif" as const },
-  { id: 2, creditor: "POST Luxembourg", debtor: "LU61...2874", rum: "MNDT-2024-002", amount: 54.90, frequency: "Mensuel", nextDate: "05/10/2024", status: "Actif" as const },
-  { id: 3, creditor: "CCSS", debtor: "LU61...2874", rum: "MNDT-2024-003", amount: 1567.23, frequency: "Mensuel", nextDate: "01/10/2024", status: "Actif" as const },
-  { id: 4, creditor: "Assurances Foyer", debtor: "LU61...2874", rum: "MNDT-2024-004", amount: 245.00, frequency: "Trimestriel", nextDate: "01/01/2025", status: "Actif" as const },
-  { id: 5, creditor: "SES Water", debtor: "LU10...9012", rum: "MNDT-2024-005", amount: 78.30, frequency: "Bimestriel", nextDate: "01/11/2024", status: "Actif" as const },
-  { id: 6, creditor: "Fitness First", debtor: "LU61...2874", rum: "MNDT-2024-006", amount: 49.90, frequency: "Mensuel", nextDate: "—", status: "Suspendu" as const },
-  { id: 7, creditor: "Ancien bailleur", debtor: "LU61...2874", rum: "MNDT-2023-012", amount: 1200.00, frequency: "Mensuel", nextDate: "—", status: "Termine" as const },
-  { id: 8, creditor: "Crèche Les Petits", debtor: "LU61...2874", rum: "MNDT-2024-007", amount: 890.00, frequency: "Mensuel", nextDate: "01/10/2024", status: "En attente" as const },
+  { id: 1, creditor: "Enovos Luxembourg S.A.", debtor: "LU61...2874", rum: "MNDT-2026-001", amount: 189.50, frequency: "Mensuel", nextDate: "01/10/2026", status: "Actif" as const },
+  { id: 2, creditor: "POST Luxembourg", debtor: "LU61...2874", rum: "MNDT-2026-002", amount: 54.90, frequency: "Mensuel", nextDate: "05/10/2026", status: "Actif" as const },
+  { id: 3, creditor: "CCSS", debtor: "LU61...2874", rum: "MNDT-2026-003", amount: 1567.23, frequency: "Mensuel", nextDate: "01/10/2026", status: "Actif" as const },
+  { id: 4, creditor: "Assurances Foyer", debtor: "LU61...2874", rum: "MNDT-2026-004", amount: 245.00, frequency: "Trimestriel", nextDate: "01/01/2027", status: "Actif" as const },
+  { id: 5, creditor: "SES Water", debtor: "LU10...9012", rum: "MNDT-2026-005", amount: 78.30, frequency: "Bimestriel", nextDate: "01/11/2026", status: "Actif" as const },
+  { id: 6, creditor: "Fitness First", debtor: "LU61...2874", rum: "MNDT-2026-006", amount: 49.90, frequency: "Mensuel", nextDate: "—", status: "Suspendu" as const },
+  { id: 7, creditor: "Ancien bailleur", debtor: "LU61...2874", rum: "MNDT-2025-012", amount: 1200.00, frequency: "Mensuel", nextDate: "—", status: "Termine" as const },
+  { id: 8, creditor: "Crèche Les Petits", debtor: "LU61...2874", rum: "MNDT-2026-007", amount: 890.00, frequency: "Mensuel", nextDate: "01/10/2026", status: "En attente" as const },
 ];
 
 type Mandate = typeof INITIAL[number];

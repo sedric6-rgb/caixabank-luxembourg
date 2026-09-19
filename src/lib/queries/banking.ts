@@ -235,13 +235,13 @@ function getDemoMessages(clientId: number): BankMessage[] {
       id: clientId * 10 + 1, client_id: clientId,
       subject: "Bienvenue chez CaixaBank Luxembourg",
       body: `Cher(e) ${c.first_name} ${c.last_name}, nous avons le plaisir de vous accueillir parmi nos clients. Votre espace personnel est desormais actif. N'hesitez pas a nous contacter pour toute question. Cordialement, L'equipe CaixaBank Luxembourg.`,
-      sender: "banque", is_read: true, created_at: "2024-01-15",
+      sender: "banque", is_read: true, created_at: "2026-01-15",
     },
     {
       id: clientId * 10 + 2, client_id: clientId,
       subject: "Mise a jour de vos conditions tarifaires",
       body: "Nous vous informons que vos conditions tarifaires ont ete mises a jour. Vous pouvez consulter le detail dans la rubrique Tarifs de votre espace client.",
-      sender: "banque", is_read: false, created_at: "2024-09-10",
+      sender: "banque", is_read: false, created_at: "2026-09-10",
     },
   ];
 }
@@ -256,14 +256,14 @@ function getDemoNotifications(clientId: number): BankNotification[] {
       id: clientId * 10 + 1, client_id: clientId,
       title: tx.amount >= 0 ? "Virement recu" : "Paiement effectue",
       message: tx.desc,
-      type: "info", is_read: false, created_at: "2024-09-14",
+      type: "info", is_read: false, created_at: "2026-09-14",
     });
   }
   notifs.push({
     id: clientId * 10 + 2, client_id: clientId,
     title: "Offre speciale epargne",
     message: "Profitez d'un taux promotionnel de 4.5% sur votre livret epargne",
-    type: "promotion", is_read: false, created_at: "2024-08-28",
+    type: "promotion", is_read: false, created_at: "2026-08-28",
   });
   return notifs;
 }
