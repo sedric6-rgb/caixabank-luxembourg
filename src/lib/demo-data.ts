@@ -54,8 +54,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU10 0019 0099 7603 1234 5678 9012", balance: 89415.22, type: "professionnel" },
     ],
     cards: [
-      { last4: "4827", type: "Visa Gold", status: "Active", expiry: "09/2027" },
-      { last4: "9153", type: "Visa Debit", status: "Active", expiry: "03/2028" },
+      { last4: "4827", type: "Visa Gold", status: "Active", expiry: "09/2029" },
+      { last4: "9153", type: "Visa Debit", status: "Active", expiry: "03/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Cactus", amount: -125.5 },
@@ -76,7 +76,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU44 0019 2202 0000 0002 4447 5678", balance: 18750.00, type: "epargne" },
     ],
     cards: [
-      { last4: "3341", type: "Visa Classic", status: "Active", expiry: "11/2028" },
+      { last4: "3341", type: "Visa Classic", status: "Active", expiry: "11/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Auchan Kirchberg", amount: -87.40 },
@@ -95,8 +95,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU92 0019 6247 0000 0010 4319 8745", balance: 67890.00, type: "professionnel" },
     ],
     cards: [
-      { last4: "7712", type: "Visa Gold", status: "Active", expiry: "06/2027" },
-      { last4: "2289", type: "Visa Debit", status: "Active", expiry: "01/2028" },
+      { last4: "7712", type: "Visa Gold", status: "Active", expiry: "06/2029" },
+      { last4: "2289", type: "Visa Debit", status: "Active", expiry: "01/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement client Dupont", amount: 12500 },
@@ -127,7 +127,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU71 0019 1014 0000 8800 9876 5432", balance: 8340.25, type: "courant" },
     ],
     cards: [
-      { last4: "6601", type: "Visa Platinum", status: "Active", expiry: "12/2027" },
+      { last4: "6601", type: "Visa Platinum", status: "Active", expiry: "12/2029" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Paiement fournisseur Allemagne", amount: -24500 },
@@ -146,7 +146,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU55 0019 2004 0000 7700 5555 6666", balance: 32100.00, type: "epargne" },
     ],
     cards: [
-      { last4: "8834", type: "Visa Classic", status: "Bloquee", expiry: "04/2028" },
+      { last4: "8834", type: "Visa Classic", status: "Bloquee", expiry: "04/2030" },
     ],
     transactions: [
       { date: "03/11/2022", desc: "Blocage du compte — fraude suspectee", amount: 0 },
@@ -161,7 +161,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU77 0019 1014 0000 9900 7777 8888", balance: 4520.90, type: "courant" },
     ],
     cards: [
-      { last4: "1199", type: "Visa Debit", status: "Active", expiry: "04/2029" },
+      { last4: "1199", type: "Visa Debit", status: "Active", expiry: "04/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — Banque XYZ", amount: 5200 },
@@ -179,8 +179,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU99 0019 2004 0000 2200 9999 0000", balance: 54200.00, type: "epargne" },
     ],
     cards: [
-      { last4: "5567", type: "Visa Gold", status: "Active", expiry: "02/2028" },
-      { last4: "3398", type: "Visa Debit", status: "Active", expiry: "08/2027" },
+      { last4: "5567", type: "Visa Gold", status: "Active", expiry: "02/2030" },
+      { last4: "3398", type: "Visa Debit", status: "Active", expiry: "08/2029" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — Cabinet Avocat", amount: 6800 },
@@ -200,7 +200,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU34 0019 2004 0000 6600 3333 4444", balance: 28500.00, type: "epargne" },
     ],
     cards: [
-      { last4: "4412", type: "Visa Classic", status: "Active", expiry: "06/2028" },
+      { last4: "4412", type: "Visa Classic", status: "Active", expiry: "06/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — Ministere des Finances", amount: 5400 },
@@ -220,8 +220,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU90 0019 2004 0000 9900 9999 0000", balance: 67800.00, type: "epargne" },
     ],
     cards: [
-      { last4: "7723", type: "Visa Platinum", status: "Active", expiry: "11/2027" },
-      { last4: "1156", type: "Visa Debit", status: "Active", expiry: "05/2028" },
+      { last4: "7723", type: "Visa Platinum", status: "Active", expiry: "11/2029" },
+      { last4: "1156", type: "Visa Debit", status: "Active", expiry: "05/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Paiement client — Projet Europa", amount: 28000 },
@@ -240,7 +240,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU23 0019 1014 0000 1100 2222 3333", balance: 3245.70, type: "courant" },
     ],
     cards: [
-      { last4: "9934", type: "Visa Debit", status: "Active", expiry: "03/2029" },
+      { last4: "9934", type: "Visa Debit", status: "Active", expiry: "03/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — Deloitte Luxembourg", amount: 4200 },
@@ -259,8 +259,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU67 0019 2004 0000 5500 7777 8888", balance: 41000.00, type: "epargne" },
     ],
     cards: [
-      { last4: "2278", type: "Visa Gold", status: "Active", expiry: "09/2027" },
-      { last4: "6643", type: "Visa Debit", status: "Active", expiry: "01/2029" },
+      { last4: "2278", type: "Visa Gold", status: "Active", expiry: "09/2029" },
+      { last4: "6643", type: "Visa Debit", status: "Active", expiry: "01/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — ArcelorMittal", amount: 5800 },
@@ -292,9 +292,9 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU33 0019 0099 0000 9900 5555 6666", balance: 245100.50, type: "professionnel" },
     ],
     cards: [
-      { last4: "8891", type: "Visa Platinum", status: "Active", expiry: "08/2027" },
-      { last4: "4420", type: "Visa Gold", status: "Active", expiry: "12/2028" },
-      { last4: "7756", type: "Visa Debit", status: "Active", expiry: "06/2027" },
+      { last4: "8891", type: "Visa Platinum", status: "Active", expiry: "08/2029" },
+      { last4: "4420", type: "Visa Gold", status: "Active", expiry: "12/2030" },
+      { last4: "7756", type: "Visa Debit", status: "Active", expiry: "06/2029" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Encaissement loyers immobiliers", amount: 8500 },
@@ -315,7 +315,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Livret Epargne", number: "LU55 0019 2004 0000 3300 6666 7777", balance: 19800.00, type: "epargne" },
     ],
     cards: [
-      { last4: "3367", type: "Visa Classic", status: "Active", expiry: "01/2029" },
+      { last4: "3367", type: "Visa Classic", status: "Active", expiry: "01/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — PWC Luxembourg", amount: 4800 },
@@ -334,7 +334,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU77 0019 0099 0000 9900 8888 9999", balance: 4200.00, type: "professionnel" },
     ],
     cards: [
-      { last4: "5501", type: "Visa Gold", status: "Bloquee", expiry: "04/2027" },
+      { last4: "5501", type: "Visa Gold", status: "Bloquee", expiry: "04/2029" },
     ],
     transactions: [
       { date: "12/04/2023", desc: "Blocage du compte — verification en cours", amount: 0 },
@@ -349,7 +349,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU88 0019 1014 0000 3300 8888 9999", balance: 2780.90, type: "courant" },
     ],
     cards: [
-      { last4: "1178", type: "Visa Debit", status: "Active", expiry: "05/2029" },
+      { last4: "1178", type: "Visa Debit", status: "Active", expiry: "05/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Salaire — Amazon Luxembourg", amount: 3900 },
@@ -369,8 +369,8 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU21 0019 0099 0000 6600 3333 4444", balance: 178300.75, type: "professionnel" },
     ],
     cards: [
-      { last4: "9902", type: "Visa Platinum", status: "Active", expiry: "12/2027" },
-      { last4: "3345", type: "Visa Gold", status: "Active", expiry: "07/2028" },
+      { last4: "9902", type: "Visa Platinum", status: "Active", expiry: "12/2029" },
+      { last4: "3345", type: "Visa Gold", status: "Active", expiry: "07/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement client — Consulting Q3", amount: 22000 },
@@ -391,7 +391,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU42 0019 1014 0000 1900 4371 2110", balance: 670000.00, type: "courant" },
     ],
     cards: [
-      { last4: "8210", type: "Visa Platinum", status: "Active", expiry: "01/2028" },
+      { last4: "8210", type: "Visa Platinum", status: "Active", expiry: "01/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement entrant — Investissements", amount: 45000 },
@@ -409,7 +409,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU53 0019 1014 0000 2000 5921 8400", balance: 867000.00, type: "courant" },
     ],
     cards: [
-      { last4: "6347", type: "Visa Platinum", status: "Active", expiry: "06/2028" },
+      { last4: "6347", type: "Visa Platinum", status: "Active", expiry: "06/2030" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement entrant — Dividendes", amount: 72000 },
@@ -429,9 +429,9 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Pro", number: "LU84 0019 0099 0000 2100 7364 5600", balance: 875000.00, type: "professionnel" },
     ],
     cards: [
-      { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2029" },
-      { last4: "4567", type: "Visa Gold", status: "Active", expiry: "08/2028" },
-      { last4: "7834", type: "Visa Infinite", status: "Active", expiry: "11/2029" },
+      { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2031" },
+      { last4: "4567", type: "Visa Gold", status: "Active", expiry: "08/2030" },
+      { last4: "7834", type: "Visa Infinite", status: "Active", expiry: "11/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement entrant — Holdings International", amount: 185000 },
@@ -452,7 +452,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { label: "Compte Courant", number: "LU95 0019 1014 0000 2200 6418 2300", balance: 225000.00, type: "courant" },
     ],
     cards: [
-      { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2029" },
+      { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2031" },
     ],
     transactions: [
       { date: "15/09/2026", desc: "Virement entrant — Investissements ACD", amount: 35000 },

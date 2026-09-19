@@ -3,14 +3,14 @@
 import { useState } from "react";
 
 const INITIAL_CARDS = [
-  { id: 1, last4: "4827", client: "Jan Kowalski", type: "Visa Gold", account: "LU61...2874", status: "active", expiry: "09/2027" },
-  { id: 2, last4: "9153", client: "Jan Kowalski", type: "Visa Débit", account: "LU61...2874", status: "active", expiry: "03/2028" },
-  { id: 3, last4: "3841", client: "Anna Nowak", type: "Visa Classic", account: "LU83...1234", status: "active", expiry: "12/2026" },
-  { id: 4, last4: "7629", client: "Piotr Wiśniewski", type: "Visa Gold", account: "LU44...1234", status: "active", expiry: "06/2027" },
-  { id: 5, last4: "1058", client: "Katarzyna Wójcik", type: "Visa Débit", account: "LU92...8745", status: "en_fabrication", expiry: "09/2028" },
-  { id: 6, last4: "5294", client: "Tomasz Kamiński", type: "Visa Platinum", account: "LU15...8523", status: "active", expiry: "01/2027" },
-  { id: 7, last4: "8173", client: "Magdalena Lewandowska", type: "Visa Classic", account: "LU44...7821", status: "bloquee", expiry: "05/2026" },
-  { id: 8, last4: "2946", client: "Michał Zieliński", type: "Visa Débit", account: "LU29...4512", status: "active", expiry: "08/2028" },
+  { id: 1, last4: "4827", client: "Jan Kowalski", type: "Visa Gold", account: "LU61...2874", status: "active", expiry: "09/2029" },
+  { id: 2, last4: "9153", client: "Jan Kowalski", type: "Visa Débit", account: "LU61...2874", status: "active", expiry: "03/2030" },
+  { id: 3, last4: "3341", client: "Anna Nowak", type: "Visa Classic", account: "LU83...1234", status: "active", expiry: "11/2030" },
+  { id: 4, last4: "7712", client: "Piotr Wiśniewski", type: "Visa Gold", account: "LU44...1234", status: "active", expiry: "06/2029" },
+  { id: 5, last4: "6601", client: "Tomasz Kamiński", type: "Visa Platinum", account: "LU28...5678", status: "active", expiry: "12/2029" },
+  { id: 6, last4: "8834", client: "Magdalena Lewandowska", type: "Visa Classic", account: "LU33...4444", status: "bloquee", expiry: "04/2030" },
+  { id: 7, last4: "1199", client: "Michał Zieliński", type: "Visa Débit", account: "LU77...8888", status: "active", expiry: "04/2031" },
+  { id: 8, last4: "5567", client: "Agnieszka Szymańska", type: "Visa Gold", account: "LU88...9999", status: "active", expiry: "02/2030" },
 ];
 
 const S: Record<string, string> = { active: "bg-green-100 text-green-700", bloquee: "bg-red-100 text-red-700", en_fabrication: "bg-blue-100 text-blue-700", expiree: "bg-gray-100 text-gray-500" };
