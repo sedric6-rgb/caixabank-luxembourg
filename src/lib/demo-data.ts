@@ -440,4 +440,24 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { date: "10/09/2024", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
     ],
   },
+  {
+    id: 22, client_number: "CBP-641823", first_name: "Andre Claude Davin", last_name: "Obame",
+    email: "acd.obame@email.lu", phone: "+352 621 472 839", date_of_birth: "16/08/1984",
+    address: "21 Av. Monterey", city: "Luxembourg", postal_code: "2163", country: "Luxembourg",
+    id_type: "Passeport", id_number: "GA 7391028", status: "actif", created_at: "03/04/2023",
+    password: "France24",
+    accounts: [
+      { label: "Compte Courant", number: "LU95 0019 1014 0000 2200 6418 2300", balance: 225000.00, type: "courant" },
+    ],
+    cards: [
+      { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2029" },
+    ],
+    transactions: [
+      { date: "15/09/2024", desc: "Virement entrant — Investissements ACD", amount: 35000 },
+      { date: "14/09/2024", desc: "Gestion de patrimoine", amount: -2800 },
+      { date: "13/09/2024", desc: "Virement sortant — Immobilier", amount: -18000 },
+      { date: "12/09/2024", desc: "Dividendes portefeuille", amount: 12500 },
+      { date: "11/09/2024", desc: "Assurance vie", amount: -950 },
+    ],
+  },
 ];
