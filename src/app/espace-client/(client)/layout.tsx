@@ -11,11 +11,15 @@ const NAV = [
   { href: "/espace-client", label: "Tableau de bord", icon: "dashboard" },
   { href: "/espace-client/comptes", label: "Mes comptes", icon: "wallet" },
   { href: "/espace-client/virements", label: "Virements", icon: "send" },
-  { href: "/espace-client/cartes", label: "Cartes bancaires", icon: "card" },
+  { href: "/espace-client/cartes", label: "Cartes", icon: "card" },
+  { href: "/espace-client/epargne", label: "Épargne", icon: "piggy" },
+  { href: "/espace-client/investissements", label: "Investissements", icon: "chart" },
   { href: "/espace-client/prets", label: "Crédits & Prêts", icon: "loan" },
+  { href: "/espace-client/prelevements", label: "Prélèvements", icon: "repeat" },
   { href: "/espace-client/beneficiaires", label: "Bénéficiaires", icon: "users" },
+  { href: "/espace-client/documents", label: "Documents", icon: "folder" },
   { href: "/espace-client/demandes", label: "Mes demandes", icon: "clipboard" },
-  { href: "/espace-client/releves", label: "Releves", icon: "doc" },
+  { href: "/espace-client/releves", label: "Relevés", icon: "doc" },
   { href: "/espace-client/messagerie", label: "Messagerie", icon: "mail" },
   { href: "/espace-client/profil", label: "Mon profil", icon: "user" },
 ];
@@ -99,6 +103,10 @@ function NavIcon({ name }: { name: string }) {
     case "users": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="9" cy="6" r="3"/><path d="M3 16a6 6 0 0112 0"/></svg>;
     case "doc": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M5 2h6l4 4v10a1 1 0 01-1 1H5a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M11 2v4h4M7 10h4M7 13h4"/></svg>;
     case "mail": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M2 5l7 5 7-5" strokeLinejoin="round"/></svg>;
+    case "piggy": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 8a5 4 0 1010 0 5 4 0 00-10 0z"/><path d="M8 5V4M15 8h1M5 11l-2 3M13 11l2 3"/></svg>;
+    case "chart": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 15l4-5 3 2 5-7"/><path d="M11 5h3v3"/></svg>;
+    case "repeat": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 4l2 2-2 2M4 14l-2-2 2-2"/><path d="M16 6H6a3 3 0 000 6M2 12h10a3 3 0 000-6"/></svg>;
+    case "folder": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 5a1 1 0 011-1h4l2 2h6a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V5z"/></svg>;
     case "clipboard": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M6 2h6v2H6zM4 4h10v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/><path d="M7 9h4M7 12h4"/></svg>;
     case "user": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><circle cx="9" cy="7" r="3"/><path d="M4 16a5 5 0 0110 0"/></svg>;
     default: return null;

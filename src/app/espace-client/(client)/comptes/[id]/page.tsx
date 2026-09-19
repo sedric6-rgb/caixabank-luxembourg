@@ -1,8 +1,9 @@
 import { getClientSession } from "@/lib/auth-client";
 import { getAccountById, getAccountTransactions, getClientById, isTransactionsBlocked } from "@/lib/queries/banking";
-import { formatCurrency, formatIBAN, formatDate } from "@/lib/format";
+import { formatCurrency, formatIBAN } from "@/lib/format";
 import { redirect } from "next/navigation";
 import AccountActions from "./AccountActions";
+import TransactionsTable from "./TransactionsTable";
 
 export default async function AccountDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -55,38 +56,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="font-semibold text-gray-900">Historique des opérations</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead><tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-6 py-3 font-medium text-gray-500">Date</th>
-              <th className="text-left px-6 py-3 font-medium text-gray-500">Description</th>
-              <th className="text-left px-6 py-3 font-medium text-gray-500 hidden md:table-cell">Catégorie</th>
-              <th className="text-right px-6 py-3 font-medium text-gray-500">Montant</th>
-              <th className="text-right px-6 py-3 font-medium text-gray-500 hidden sm:table-cell">Solde après</th>
-            </tr></thead>
-            <tbody>
-              {transactions.map((tx) => (
-                <tr key={tx.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-3 text-gray-500 whitespace-nowrap">{formatDate(tx.executed_at)}</td>
-                  <td className="px-6 py-3">
-                    <p className="font-medium text-gray-900">{tx.description}</p>
-                    {tx.counterparty && <p className="text-xs text-gray-400">{tx.counterparty}</p>}
-                  </td>
-                  <td className="px-6 py-3 text-gray-500 hidden md:table-cell capitalize">{tx.category.replace(/_/g, " ")}</td>
-                  <td className={`px-6 py-3 text-right font-semibold ${tx.type === "credit" ? "text-green-600" : "text-red-600"}`}>
-                    {tx.type === "credit" ? "+" : "-"}{formatCurrency(tx.amount)}
-                  </td>
-                  <td className="px-6 py-3 text-right text-gray-500 hidden sm:table-cell">{formatCurrency(tx.balance_after)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <TransactionsTable transactions={transactions} currency={account.currency} />
     </div>
   );
 }
