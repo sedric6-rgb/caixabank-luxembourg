@@ -27,8 +27,25 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
   const [pinReveal, setPinReveal] = useState<number | null>(null);
   const [wallets, setWallets] = useState<Record<number, { apple: boolean; google: boolean }>>({});
   const [showCreateVirtual, setShowCreateVirtual] = useState(false);
+  const [revealedCards, setRevealedCards] = useState<Set<number>>(new Set());
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
+
+  const toggleCardReveal = (id: number) => {
+    setRevealedCards((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const getFullCardNumber = (last4: string) => {
+    const seed = parseInt(last4, 10);
+    const g1 = String(4000 + (seed * 3 % 999)).padStart(4, "0");
+    const g2 = String((seed * 7 % 9000) + 1000);
+    const g3 = String((seed * 13 % 9000) + 1000);
+    return `${g1} ${g2} ${g3} ${last4}`;
+  };
 
   const toggleOption = (id: number, option: "contactless" | "online") => {
     setCards((prev) => prev.map((c) => c.id === id ? { ...c, [option]: !c[option] } : c));
@@ -129,7 +146,18 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
                       )}
                     </div>
                     <div>
-                      <p className="text-base sm:text-lg font-mono tracking-widest mb-1">**** **** **** {card.last4}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-base sm:text-lg font-mono tracking-widest select-none">
+                          {revealedCards.has(card.id) ? getFullCardNumber(card.last4) : `**** **** **** ${card.last4}`}
+                        </p>
+                        <button onClick={() => toggleCardReveal(card.id)} className="text-white/70 hover:text-white transition-colors" aria-label={revealedCards.has(card.id) ? "Masquer le numéro" : "Afficher le numéro"}>
+                          {revealedCards.has(card.id) ? (
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 01-4.24-4.24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M1 1l22 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          ) : (
+                            <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5"/></svg>
+                          )}
+                        </button>
+                      </div>
                       <p className="text-sm font-medium tracking-wide mb-2 uppercase">{clientName}</p>
                       <div className="flex justify-between text-xs">
                         <div><span className="text-white/60">Expiration</span><p className="font-medium">{card.expiry}</p></div>
