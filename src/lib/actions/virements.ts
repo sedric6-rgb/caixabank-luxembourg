@@ -6,6 +6,13 @@ import { DEMO_CLIENTS } from "@/lib/demo-data";
 let nextBenId = 10000;
 let nextTxId = 900000;
 
+export async function toggleBlockTransactionsAction(clientId: number, block: boolean): Promise<{ success: boolean }> {
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  client._transactions_blocked = block;
+  return { success: true };
+}
+
 export async function addBeneficiaryAction(formData: FormData): Promise<{ success: boolean; error?: string; id?: number }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };

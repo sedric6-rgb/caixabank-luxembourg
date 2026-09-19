@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import { DEMO_CLIENTS, type DemoClient, type DemoAccount, type DemoTx } from "@/lib/demo-data";
+import { toggleBlockTransactionsAction } from "@/lib/actions/virements";
 
 function fmt(n: number) {
   return n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -74,11 +75,10 @@ function ClientDetail({ initial }: { initial: DemoClient }) {
     setConfirmBlock(false);
   };
 
-  const toggleBlockTx = () => {
+  const toggleBlockTx = async () => {
     const newVal = !txBlocked;
+    await toggleBlockTransactionsAction(initial.id, newVal);
     setTxBlocked(newVal);
-    const src = DEMO_CLIENTS.find((c) => c.id === initial.id);
-    if (src) src._transactions_blocked = newVal;
     notify(newVal ? "Transactions bloquees" : "Transactions debloquees");
     setConfirmBlockTx(false);
   };
