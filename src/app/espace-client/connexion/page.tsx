@@ -5,11 +5,12 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
   const { error } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#001f42] to-[#003d82] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-[#001f42] to-[#003d82] flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      <img src="/logo-caixa.png" alt="" width={600} height={490} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-auto opacity-[0.07] pointer-events-none select-none" />
+      <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <img src="/logo-caixa.png" alt="CaixaBank" width={52} height={52} className="h-13 w-13" />
+            <img src="/logo-caixa.png" alt="CaixaBank" width={80} height={65} className="h-20 w-auto drop-shadow-lg" />
             <span className="text-2xl font-bold text-white">CaixaBank Luxembourg</span>
             <p className="text-[11px] font-semibold tracking-[0.2em] text-blue-300 uppercase -mt-1">Banque Privée</p>
           </Link>
