@@ -384,6 +384,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     email: "c.carpentier@email.lu", phone: "+352 621 850 912", date_of_birth: "22/04/1988",
     address: "15 Av. John F. Kennedy", city: "Luxembourg", postal_code: "1855", country: "Luxembourg",
     id_type: "Carte d'identite", id_number: "NRX 583920", status: "actif", created_at: "05/01/2023",
+    password: "France24",
     accounts: [
       { label: "Compte Courant", number: "LU42 0019 1014 0000 1900 4371 2110", balance: 670000.00, type: "courant" },
     ],
@@ -397,10 +398,11 @@ export const DEMO_CLIENTS: DemoClient[] = [
     ],
   },
   {
-    id: 20, client_number: "CBP-592184", first_name: "Philippe", last_name: "Martelly",
-    email: "p.martelly@email.lu", phone: "+352 691 740 318", date_of_birth: "11/07/1976",
+    id: 20, client_number: "CBP-592184", first_name: "François", last_name: "Martelly",
+    email: "f.martelly@email.lu", phone: "+352 691 740 318", date_of_birth: "11/07/1976",
     address: "38 Bd Royal", city: "Luxembourg", postal_code: "2449", country: "Luxembourg",
     id_type: "Passeport", id_number: "HT 9281034", status: "actif", created_at: "18/06/2022",
+    password: "France24",
     accounts: [
       { label: "Compte Courant", number: "LU53 0019 1014 0000 2000 5921 8400", balance: 867000.00, type: "courant" },
     ],
