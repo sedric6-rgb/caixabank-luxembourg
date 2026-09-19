@@ -34,17 +34,17 @@ export default async function ClientDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <div className="bg-gradient-to-br from-[#001f42] to-[#003d82] rounded-xl p-5 text-white">
           <p className="text-sm text-white/70">Solde total</p>
-          <p className="text-2xl font-bold mt-1">{formatCurrency(totalBalance)}</p>
+          <p className="text-2xl font-bold mt-1 select-none">{formatCurrency(totalBalance)}</p>
           <p className="text-xs text-white/50 mt-2">{accounts.length} compte{accounts.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-sm text-gray-500">Comptes courants</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{formatCurrency(courantAccounts.reduce((s, a) => s + a.balance, 0))}</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1 select-none">{formatCurrency(courantAccounts.reduce((s, a) => s + a.balance, 0))}</p>
           <p className="text-xs text-gray-400 mt-2">{courantAccounts.length} compte{courantAccounts.length !== 1 ? "s" : ""}</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-sm text-gray-500">Épargne</p>
-          <p className="text-2xl font-bold text-green-600 mt-1">{formatCurrency(epargneAccounts.reduce((s, a) => s + a.balance, 0))}</p>
+          <p className="text-2xl font-bold text-green-600 mt-1 select-none">{formatCurrency(epargneAccounts.reduce((s, a) => s + a.balance, 0))}</p>
           <p className="text-xs text-gray-400 mt-2">{epargneAccounts.length} compte{epargneAccounts.length !== 1 ? "s" : ""}</p>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default async function ClientDashboard() {
                   {acc.account_type === "courant" ? "Courant" : acc.account_type === "epargne" ? "Épargne" : "Pro"}
                 </span>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(acc.balance, acc.currency)}</p>
+              <p className="text-2xl font-bold text-gray-900 select-none">{formatCurrency(acc.balance, acc.currency)}</p>
               <p className="text-xs text-gray-400 font-mono mt-2">{acc.account_number.slice(0, 12)}...{acc.account_number.slice(-4)}</p>
             </Link>
           ))}

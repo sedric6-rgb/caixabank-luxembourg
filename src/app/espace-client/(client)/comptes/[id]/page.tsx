@@ -38,7 +38,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-gray-400 font-mono mt-1">{formatIBAN(account.account_number)}</p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-gray-900">{formatCurrency(account.balance, account.currency)}</p>
+            <p className="text-3xl font-bold text-gray-900 select-none">{formatCurrency(account.balance, account.currency)}</p>
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${account.status === "actif" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
               {account.status === "actif" ? "Actif" : account.status}
             </span>

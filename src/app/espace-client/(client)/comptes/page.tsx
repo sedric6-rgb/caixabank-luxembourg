@@ -11,7 +11,7 @@ export default async function ComptesPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-1">Mes comptes</h1>
-      <p className="text-sm text-gray-500 mb-6">Solde total : <span className="font-bold text-gray-900">{formatCurrency(total)}</span></p>
+      <p className="text-sm text-gray-500 mb-6">Solde total : <span className="font-bold text-gray-900 select-none">{formatCurrency(total)}</span></p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {accounts.map((acc) => (
@@ -23,7 +23,7 @@ export default async function ComptesPage() {
                 {acc.status === "actif" ? "Actif" : acc.status}
               </span>
             </div>
-            <p className="text-3xl font-bold text-gray-900 mb-3">{formatCurrency(acc.balance, acc.currency)}</p>
+            <p className="text-3xl font-bold text-gray-900 mb-3 select-none">{formatCurrency(acc.balance, acc.currency)}</p>
             <p className="text-xs text-gray-400 font-mono">{formatIBAN(acc.account_number)}</p>
             <div className="mt-4 flex items-center text-sm text-blue-600 group-hover:text-blue-800">
               Voir les opérations
