@@ -175,8 +175,8 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
     }
   }
 
-  revalidatePath("/espace-client");
-  revalidatePath("/admin");
+  revalidatePath("/espace-client", "layout");
+  revalidatePath("/admin", "layout");
 
   return { success: true };
 }

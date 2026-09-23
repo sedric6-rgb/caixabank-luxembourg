@@ -424,7 +424,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     id_type: "Passeport", id_number: "CG 4829103", status: "actif", created_at: "12/02/2022",
     password: "Azerty31@",
     accounts: [
-      { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1233000.00, type: "courant" },
+      { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1148000.00, type: "courant" },
       { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 450000.00, type: "epargne" },
       { label: "Compte Pro", number: "LU84 0019 0099 0000 2100 7364 5600", balance: 875000.00, type: "professionnel" },
     ],
@@ -434,6 +434,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { last4: "7834", type: "Visa Infinite", status: "Active", expiry: "11/2031" },
     ],
     transactions: [
+      { date: "23/09/2026", desc: "Virement instantané vers Andre Claude Davin Obame", amount: -85000 },
       { date: "15/09/2026", desc: "Virement entrant — Holdings International", amount: 185000 },
       { date: "14/09/2026", desc: "Acquisition immobiliere — Kirchberg", amount: -320000 },
       { date: "13/09/2026", desc: "Dividendes portefeuille", amount: 42000 },
@@ -449,12 +450,13 @@ export const DEMO_CLIENTS: DemoClient[] = [
     id_type: "Passeport", id_number: "GA 7391028", status: "actif", created_at: "03/04/2023",
     password: "France24",
     accounts: [
-      { label: "Compte Courant", number: "LU95 0019 1014 0000 2200 6418 2300", balance: 225000.00, type: "courant" },
+      { label: "Compte Courant", number: "LU95 0019 1014 0000 2200 6418 2300", balance: 310000.00, type: "courant" },
     ],
     cards: [
       { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2031" },
     ],
     transactions: [
+      { date: "23/09/2026", desc: "Virement instantané de Fritz Mambouka", amount: 85000 },
       { date: "15/09/2026", desc: "Virement entrant — Investissements ACD", amount: 35000 },
       { date: "14/09/2026", desc: "Gestion de patrimoine", amount: -2800 },
       { date: "13/09/2026", desc: "Virement sortant — Immobilier", amount: -18000 },
