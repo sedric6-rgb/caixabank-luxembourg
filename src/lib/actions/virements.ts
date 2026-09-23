@@ -87,6 +87,36 @@ export async function addBeneficiaryAction(formData: FormData): Promise<{ succes
   return { success: true, id };
 }
 
+export async function deleteBeneficiaryAction(beneficiaryId: number): Promise<{ success: boolean; error?: string }> {
+  const session = await getClientSession();
+  if (!session) return { success: false, error: "Non connecte" };
+
+  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
+
+  const idx = client._beneficiaries.findIndex((b) => b.id === beneficiaryId);
+  if (idx === -1) return { success: false, error: "Beneficiaire introuvable" };
+
+  client._beneficiaries.splice(idx, 1);
+  revalidatePath("/espace-client", "layout");
+  return { success: true };
+}
+
+export async function toggleBeneficiaryFavoriteAction(beneficiaryId: number): Promise<{ success: boolean; error?: string; favorite?: boolean }> {
+  const session = await getClientSession();
+  if (!session) return { success: false, error: "Non connecte" };
+
+  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
+
+  const ben = client._beneficiaries.find((b) => b.id === beneficiaryId);
+  if (!ben) return { success: false, error: "Beneficiaire introuvable" };
+
+  ben.favorite = !ben.favorite;
+  revalidatePath("/espace-client", "layout");
+  return { success: true, favorite: ben.favorite };
+}
+
 export async function executeVirementAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };

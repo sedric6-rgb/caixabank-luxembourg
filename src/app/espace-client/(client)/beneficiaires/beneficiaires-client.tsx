@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { addBeneficiaryAction } from "@/lib/actions/virements";
+import { addBeneficiaryAction, deleteBeneficiaryAction, toggleBeneficiaryFavoriteAction } from "@/lib/actions/virements";
 
 type Beneficiary = { id: number; label: string; name: string; iban: string; bic: string; favorite: boolean };
 
@@ -16,11 +16,17 @@ export default function BeneficiairesClient({ initialBeneficiaries }: { initialB
 
   const toggleFav = (id: number) => {
     setBeneficiaries((prev) => prev.map((b) => b.id === id ? { ...b, favorite: !b.favorite } : b));
+    startTransition(async () => {
+      await toggleBeneficiaryFavoriteAction(id);
+    });
   };
 
   const deleteBen = (id: number) => {
     setBeneficiaries((prev) => prev.filter((b) => b.id !== id));
     notify("Beneficiaire supprime");
+    startTransition(async () => {
+      await deleteBeneficiaryAction(id);
+    });
   };
 
   const addBeneficiary = (e: React.FormEvent<HTMLFormElement>) => {
