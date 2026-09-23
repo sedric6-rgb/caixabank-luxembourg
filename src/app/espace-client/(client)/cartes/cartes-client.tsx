@@ -22,7 +22,7 @@ const CARD_COLORS: Record<string, string> = {
 export default function CartesClient({ initialCards, clientName }: { initialCards: Card[]; clientName: string }) {
   const [cards, setCards] = useState(initialCards);
   const [toast, setToast] = useState("");
-  const [confirm, setConfirm] = useState<{ card: Card; action: "block" | "oppose" } | null>(null);
+  const [confirm, setConfirm] = useState<{ card: Card; action: "block" } | null>(null);
   const [limitEdit, setLimitEdit] = useState<{ cardId: number; value: string } | null>(null);
   const [pinReveal, setPinReveal] = useState<number | null>(null);
   const [wallets, setWallets] = useState<Record<number, { apple: boolean; google: boolean }>>({});
@@ -60,11 +60,6 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
     notify(card.status === "active" ? `Carte **** ${card.last4} bloquée` : `Carte **** ${card.last4} débloquée`);
   };
 
-  const opposeCard = (card: Card) => {
-    setCards((prev) => prev.map((c) => c.id === card.id ? { ...c, status: "opposed" } : c));
-    setConfirm(null);
-    notify(`Opposition enregistrée pour la carte **** ${card.last4}`);
-  };
 
   const updateLimit = (id: number) => {
     if (!limitEdit) return;
@@ -243,10 +238,7 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
                     {/* Actions */}
                     <div className="pt-3 border-t border-gray-200 flex gap-2">
                       {card.status === "active" ? (
-                        <>
-                          <button onClick={() => setConfirm({ card, action: "block" })} className="text-xs px-4 py-2 rounded-lg bg-red-50 text-red-700 font-medium hover:bg-red-100">Bloquer</button>
-                          <button onClick={() => setConfirm({ card, action: "oppose" })} className="text-xs px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200">Opposer</button>
-                        </>
+                        <button onClick={() => setConfirm({ card, action: "block" })} className="text-xs px-4 py-2 rounded-lg bg-red-50 text-red-700 font-medium hover:bg-red-100">Bloquer temporairement</button>
                       ) : card.status === "blocked" ? (
                         <button onClick={() => blockCard(card)} className="text-xs px-4 py-2 rounded-lg bg-green-100 text-green-700 font-medium hover:bg-green-200">Débloquer</button>
                       ) : (
@@ -265,19 +257,14 @@ export default function CartesClient({ initialCards, clientName }: { initialCard
       {confirm && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" onClick={() => setConfirm(null)}>
           <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-bold text-gray-900 mb-2">
-              {confirm.action === "block" ? "Bloquer la carte" : "Mettre en opposition"}
-            </h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Bloquer la carte</h2>
             <p className="text-sm text-gray-600 mb-6">
-              {confirm.action === "block"
-                ? `Bloquer temporairement la carte **** ${confirm.card.last4} ? Vous pourrez la débloquer.`
-                : `Mettre en opposition la carte **** ${confirm.card.last4} ? Cette action est irréversible.`
-              }
+              Bloquer temporairement la carte **** {confirm.card.last4} ? Vous pourrez la débloquer à tout moment.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => confirm.action === "block" ? blockCard(confirm.card) : opposeCard(confirm.card)}
-                className={`flex-1 py-2.5 rounded-lg text-sm font-medium ${confirm.action === "oppose" ? "bg-red-600 text-white hover:bg-red-700" : "bg-orange-500 text-white hover:bg-orange-600"}`}>
-                {confirm.action === "block" ? "Bloquer" : "Confirmer"}
+              <button onClick={() => blockCard(confirm.card)}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium bg-orange-500 text-white hover:bg-orange-600">
+                Bloquer
               </button>
               <button onClick={() => setConfirm(null)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
             </div>

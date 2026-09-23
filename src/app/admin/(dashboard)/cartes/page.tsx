@@ -44,8 +44,8 @@ const ALL_CLIENTS = DEMO_CLIENTS.filter((c) => c.accounts.length > 0).map((c) =>
   }),
 }));
 
-const S: Record<string, string> = { active: "bg-green-100 text-green-700", bloquee: "bg-red-100 text-red-700", en_fabrication: "bg-blue-100 text-blue-700", expiree: "bg-gray-100 text-gray-500" };
-const L: Record<string, string> = { active: "Active", bloquee: "Bloquée", en_fabrication: "En fabrication", expiree: "Expirée" };
+const S: Record<string, string> = { active: "bg-green-100 text-green-700", bloquee: "bg-red-100 text-red-700", opposed: "bg-orange-100 text-orange-700", en_fabrication: "bg-blue-100 text-blue-700", expiree: "bg-gray-100 text-gray-500" };
+const L: Record<string, string> = { active: "Active", bloquee: "Bloquée", opposed: "Opposition", en_fabrication: "En fabrication", expiree: "Expirée" };
 
 export default function AdminCartesPage() {
   const [cards, setCards] = useState(buildCards);
@@ -58,9 +58,10 @@ export default function AdminCartesPage() {
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
-  const toggleStatus = (id: number) => {
-    setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: c.status === "active" ? "bloquee" : "active" } : c));
-    notify(confirm?.action === "block" ? "Carte bloquée" : "Carte activée");
+  const changeStatus = (id: number, newStatus: string) => {
+    setCards((prev) => prev.map((c) => c.id === id ? { ...c, status: newStatus } : c));
+    const labels: Record<string, string> = { active: "Carte activée", bloquee: "Carte bloquée", opposed: "Carte mise en opposition" };
+    notify(labels[newStatus] || "Statut mis à jour");
     setConfirm(null);
   };
 
@@ -81,6 +82,7 @@ export default function AdminCartesPage() {
   const filtered = cards.filter((c) => {
     if (filter === "Actives" && c.status !== "active") return false;
     if (filter === "Bloquées" && c.status !== "bloquee") return false;
+    if (filter === "Opposition" && c.status !== "opposed") return false;
     if (filter === "En fabrication" && c.status !== "en_fabrication") return false;
     if (search) {
       const q = search.toLowerCase();
@@ -138,7 +140,7 @@ export default function AdminCartesPage() {
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
-          {["Tout", "Actives", "Bloquées", "En fabrication"].map((f) => (
+          {["Tout", "Actives", "Bloquées", "Opposition", "En fabrication"].map((f) => (
             <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${filter === f ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>{f}</button>
           ))}
         </div>
@@ -166,8 +168,15 @@ export default function AdminCartesPage() {
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[c.status] || S.active}`}>{L[c.status] || c.status}</span></td>
                 <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">{c.expiry}</td>
                 <td className="px-4 py-3 text-right space-x-2">
-                  {c.status === "active" && <button onClick={() => setConfirm({ id: c.id, action: "block" })} className="text-xs text-red-600 hover:underline">Bloquer</button>}
-                  {c.status === "bloquee" && <button onClick={() => setConfirm({ id: c.id, action: "activate" })} className="text-xs text-green-600 hover:underline">Activer</button>}
+                  {c.status === "active" && (
+                    <>
+                      <button onClick={() => setConfirm({ id: c.id, action: "block" })} className="text-xs text-red-600 hover:underline">Bloquer</button>
+                      <button onClick={() => setConfirm({ id: c.id, action: "oppose" })} className="text-xs text-orange-600 hover:underline">Opposition</button>
+                    </>
+                  )}
+                  {(c.status === "bloquee" || c.status === "opposed") && (
+                    <button onClick={() => setConfirm({ id: c.id, action: "activate" })} className="text-xs text-green-600 hover:underline">Activer</button>
+                  )}
                 </td>
               </tr>
             ))}
@@ -178,10 +187,14 @@ export default function AdminCartesPage() {
       {confirm && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4" onClick={() => setConfirm(null)}>
           <div className="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
-            <h2 className="text-lg font-bold text-gray-900 mb-2">{confirm.action === "block" ? "Bloquer la carte ?" : "Activer la carte ?"}</h2>
-            <p className="text-sm text-gray-500 mb-6">{confirm.action === "block" ? "La carte sera immédiatement désactivée." : "La carte sera réactivée."}</p>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">
+              {confirm.action === "block" ? "Bloquer la carte ?" : confirm.action === "oppose" ? "Mettre en opposition ?" : "Activer la carte ?"}
+            </h2>
+            <p className="text-sm text-gray-500 mb-6">
+              {confirm.action === "block" ? "La carte sera immédiatement désactivée. Vous pourrez la réactiver." : confirm.action === "oppose" ? "La carte sera mise en opposition. Vous pourrez lever l'opposition." : "La carte sera réactivée et utilisable."}
+            </p>
             <div className="flex gap-3">
-              <button onClick={() => toggleStatus(confirm.id)} className={`flex-1 py-2.5 rounded-lg text-sm font-medium text-white ${confirm.action === "block" ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}`}>
+              <button onClick={() => changeStatus(confirm.id, confirm.action === "block" ? "bloquee" : confirm.action === "oppose" ? "opposed" : "active")} className={`flex-1 py-2.5 rounded-lg text-sm font-medium text-white ${confirm.action === "activate" ? "bg-green-600 hover:bg-green-700" : confirm.action === "oppose" ? "bg-orange-600 hover:bg-orange-700" : "bg-red-600 hover:bg-red-700"}`}>
                 Confirmer
               </button>
               <button onClick={() => setConfirm(null)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
