@@ -2,6 +2,7 @@
 
 import { getClientSession } from "@/lib/auth-client";
 import { DEMO_CLIENTS, type DemoAccount } from "@/lib/demo-data";
+import { revalidatePath } from "next/cache";
 
 let nextBenId = 10000;
 let nextTxId = 900000;
@@ -137,9 +138,10 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
     amount: -amount,
   });
 
+  const normalizedIban = beneficiaryIban.replace(/\s/g, "");
   for (const recipient of DEMO_CLIENTS) {
     if (recipient.id === client.id) continue;
-    const recipientAcct = recipient.accounts.find((a) => a.number === beneficiaryIban);
+    const recipientAcct = recipient.accounts.find((a) => a.number.replace(/\s/g, "") === normalizedIban);
     if (recipientAcct) {
       recipientAcct.balance += amount;
       const creditDesc = motif
@@ -172,6 +174,9 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
       });
     }
   }
+
+  revalidatePath("/espace-client");
+  revalidatePath("/admin");
 
   return { success: true };
 }
