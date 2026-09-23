@@ -15,6 +15,7 @@ const NAV = [
   { href: "/admin/cartes", label: "Cartes", icon: "card" },
   { href: "/admin/prets", label: "Credits & Prets", icon: "loan" },
   { href: "/admin/demandes", label: "Demandes clients", icon: "inbox" },
+  { href: "/admin/notifications", label: "Notifications", icon: "bell" },
   { href: "/admin/messagerie", label: "Messagerie", icon: "mail" },
   { href: "/admin/assurances", label: "Assurances", icon: "shield" },
   { href: "/admin/prelevements", label: "Prelevements", icon: "debit" },
@@ -95,6 +96,7 @@ function NavIcon({ name }: { name: string }) {
     case "inbox": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 10h4l1.5 2h3L12 10h4"/><rect x="2" y="3" width="14" height="12" rx="2"/></svg>;
     case "shield": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2l6 3v4c0 3.5-2.5 6.5-6 8-3.5-1.5-6-4.5-6-8V5l6-3z"/><path d="M6.5 9l2 2 3.5-3.5"/></svg>;
     case "debit": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M3 9h12M12 5l4 4-4 4"/><path d="M15 14H5a2 2 0 01-2-2V6"/></svg>;
+    case "bell": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M13.5 6A4.5 4.5 0 004.5 6c0 4-1.5 5.5-1.5 5.5h12S13.5 10 13.5 6zM7.5 14a2 2 0 004 0"/></svg>;
     case "mail": return <svg width="18" height="18" fill="none" viewBox="0 0 18 18" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M2 5l7 5 7-5" strokeLinejoin="round"/></svg>;
     default: return null;
   }

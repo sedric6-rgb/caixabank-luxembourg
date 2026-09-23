@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import type { Conversation, ConversationMessage } from "@/lib/messages-store";
 import { adminReplyAction } from "@/lib/actions/messages";
+import { sendMessageToAllAction } from "@/lib/actions/admin-notifications";
 
 const CATEGORIES: Record<string, string> = {
   general: "Question generale",
@@ -19,6 +20,7 @@ export default function AdminMessagerieClient({ initialConversations }: { initia
   const [conversations, setConversations] = useState(initialConversations);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [filter, setFilter] = useState<"all" | "ouvert" | "ferme">("all");
+  const [showBroadcast, setShowBroadcast] = useState(false);
   const [toast, setToast] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -56,6 +58,22 @@ export default function AdminMessagerieClient({ initialConversations }: { initia
     });
   };
 
+  const handleBroadcast = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    startTransition(async () => {
+      const res = await sendMessageToAllAction(fd);
+      if (res.success) {
+        form.reset();
+        setShowBroadcast(false);
+        notify(`Message envoye a ${res.count} clients`);
+      } else {
+        notify(res.error || "Erreur");
+      }
+    });
+  };
+
   const statusBadge = (status: string) => (
     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${status === "ouvert" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
       {status === "ouvert" ? "Ouvert" : "Ferme"}
@@ -66,10 +84,59 @@ export default function AdminMessagerieClient({ initialConversations }: { initia
     <div>
       {toast && <div className="fixed top-4 right-4 z-50 bg-green-600 text-white px-5 py-3 rounded-lg shadow-lg text-sm font-medium">{toast}</div>}
 
-      <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Messagerie clients</h1>
-        <p className="text-sm text-gray-500 mt-1">{conversations.filter((c) => c.status === "ouvert").length} conversation(s) ouverte(s)</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Messagerie clients</h1>
+          <p className="text-sm text-gray-500 mt-1">{conversations.filter((c) => c.status === "ouvert").length} conversation(s) ouverte(s)</p>
+        </div>
+        <button onClick={() => setShowBroadcast(!showBroadcast)}
+          className="inline-flex items-center gap-2 bg-[#003d82] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c] transition-colors">
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2L7 9M14 2l-5 12-2-5-5-2 12-5z" />
+          </svg>
+          Envoyer a tous
+        </button>
       </div>
+
+      {showBroadcast && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-1">Nouveau message pour tous les clients</h2>
+          <p className="text-sm text-gray-500 mb-4">Ce message sera cree dans la messagerie de chaque client actif</p>
+          <form onSubmit={handleBroadcast} className="space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Categorie</label>
+                <select name="category" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                  <option value="information">Information</option>
+                  <option value="general">Question generale</option>
+                  <option value="compte">Mon compte</option>
+                  <option value="carte">Cartes bancaires</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Objet</label>
+                <input name="subject" required placeholder="Ex: Mise a jour de nos services"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <textarea name="message" rows={4} required placeholder="Votre message pour tous les clients..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div className="flex gap-3">
+              <button type="submit" disabled={isPending}
+                className="bg-[#003d82] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c] disabled:opacity-50">
+                {isPending ? "Envoi..." : "Envoyer a tous les clients"}
+              </button>
+              <button type="button" onClick={() => setShowBroadcast(false)} className="text-sm text-gray-500 hover:text-gray-700">
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
 
       <div className="flex gap-2 mb-4">
         {(["all", "ouvert", "ferme"] as const).map((f) => (

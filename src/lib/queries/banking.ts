@@ -1,5 +1,7 @@
 import { db } from "@/lib/db";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { getNotificationsForClient } from "@/lib/notifications-store";
+import { getLoansForClient } from "@/lib/loans-store";
 import type { RowDataPacket } from "mysql2";
 
 // ============================================================
@@ -199,7 +201,19 @@ function getDemoCards(clientId: number): BankCard[] {
 }
 
 function getDemoLoans(clientId: number): BankLoan[] {
-  return [];
+  return getLoansForClient(clientId).map((l) => ({
+    id: l.id,
+    client_id: l.clientId,
+    loan_type: l.loanType,
+    amount: l.amount,
+    interest_rate: l.interestRate,
+    duration_months: l.durationMonths,
+    monthly_payment: l.monthlyPayment,
+    remaining_amount: l.remainingAmount,
+    status: l.status,
+    start_date: l.startDate,
+    end_date: l.endDate,
+  }));
 }
 
 function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
@@ -265,6 +279,20 @@ function getDemoNotifications(clientId: number): BankNotification[] {
     message: "Profitez d'un taux promotionnel de 4.5% sur votre livret epargne",
     type: "promotion", is_read: false, created_at: "2026-08-28",
   });
+
+  const adminNotifs = getNotificationsForClient(clientId);
+  for (const an of adminNotifs) {
+    notifs.unshift({
+      id: an.id,
+      client_id: clientId,
+      title: an.title,
+      message: an.message,
+      type: an.type,
+      is_read: false,
+      created_at: an.createdAt,
+    });
+  }
+
   return notifs;
 }
 

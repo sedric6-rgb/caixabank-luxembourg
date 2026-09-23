@@ -129,6 +129,38 @@ export function addMessage(conversationId: number, sender: "client" | "banque", 
   return msg;
 }
 
+export function createBroadcastConversation(data: {
+  clientId: number;
+  clientName: string;
+  clientNumber: string;
+  subject: string;
+  category: string;
+  message: string;
+}): Conversation {
+  const now = new Date().toLocaleDateString("fr-FR");
+  const conv: Conversation = {
+    id: nextId++,
+    clientId: data.clientId,
+    clientName: data.clientName,
+    clientNumber: data.clientNumber,
+    subject: data.subject,
+    category: data.category,
+    status: "ouvert",
+    messages: [
+      {
+        id: nextMsgId++,
+        sender: "banque",
+        text: data.message,
+        date: now,
+      },
+    ],
+    createdAt: now,
+    updatedAt: now,
+  };
+  CONVERSATIONS.push(conv);
+  return conv;
+}
+
 export function closeConversation(id: number) {
   const conv = CONVERSATIONS.find((c) => c.id === id);
   if (conv) conv.status = "ferme";
