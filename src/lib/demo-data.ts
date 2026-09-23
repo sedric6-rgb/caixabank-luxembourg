@@ -462,4 +462,27 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { date: "11/09/2026", desc: "Assurance vie", amount: -950 },
     ],
   },
+  {
+    id: 23, client_number: "CBP-730491", first_name: "Servais", last_name: "Mampouya Mafoua",
+    email: "servais.mampouya@email.fr", phone: "+33 6 45 78 12 93", date_of_birth: "06/06/1980",
+    address: "31 Rue de Varenne", city: "Paris", postal_code: "75007", country: "France",
+    id_type: "Passeport", id_number: "CG 4821937", status: "actif", created_at: "10/09/2026",
+    password: "France24",
+    accounts: [
+      { label: "Compte Courant", number: "LU72 0019 1014 0000 2300 7304 9100", balance: 120000.00, type: "courant" },
+    ],
+    cards: [
+      { last4: "8347", type: "Visa Infinite", status: "active", expiry: "09/2031" },
+    ],
+    transactions: [
+      { date: "22/09/2026", desc: "Virement entrant — Capital initial", amount: 120000 },
+      { date: "21/09/2026", desc: "Frais de tenue de compte", amount: -45 },
+      { date: "20/09/2026", desc: "Carte — Restaurant Le Jules Verne", amount: -285 },
+      { date: "19/09/2026", desc: "Carte — Galeries Lafayette", amount: -1250 },
+      { date: "18/09/2026", desc: "Prélèvement — Assurance habitation AXA", amount: -189 },
+      { date: "17/09/2026", desc: "Virement sortant — Loyer appartement", amount: -3200 },
+      { date: "16/09/2026", desc: "Carte — Monoprix Varenne", amount: -87.50 },
+      { date: "15/09/2026", desc: "Virement entrant — Consulting SARL", amount: 8500 },
+    ],
+  },
 ];
