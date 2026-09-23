@@ -1,28 +1,68 @@
 "use client";
 
 import { useState } from "react";
+import { DEMO_CLIENTS } from "@/lib/demo-data";
 
-const INITIAL_TXS = [
-  { id: 1, date: "15/09/2026 14:23", account: "LU61...2874", type: "Carte", amount: -125.5, counterparty: "Cactus", ref: "CB-2026091514230001" },
-  { id: 2, date: "15/09/2026 11:05", account: "LU61...2874", type: "Virement entrant", amount: 4500, counterparty: "Entreprise ABC", ref: "VIR-2026091511050002" },
-  { id: 3, date: "14/09/2026 18:47", account: "LU61...2874", type: "Carte", amount: -42.3, counterparty: "Delhaize", ref: "CB-2026091418470003" },
-  { id: 4, date: "14/09/2026 09:00", account: "LU61...2874", type: "Prélèvement", amount: -1567.23, counterparty: "Crédit Immobilier CBL", ref: "PRLV-2026091409000004" },
-  { id: 5, date: "13/09/2026 16:30", account: "LU10...9012", type: "Virement sortant", amount: -8500, counterparty: "Fournisseur XYZ S.à r.l.", ref: "VIR-2026091316300005" },
-  { id: 6, date: "13/09/2026 12:15", account: "LU27...5387", type: "Intérêt", amount: 122.34, counterparty: "Intérêts Livret Épargne", ref: "INT-2026091312150006" },
-  { id: 7, date: "12/09/2026 20:10", account: "LU61...2874", type: "Carte", amount: -89.9, counterparty: "Amazon.lu", ref: "CB-2026091220100007" },
-  { id: 8, date: "12/09/2026 08:00", account: "LU61...2874", type: "Virement sortant", amount: -2800, counterparty: "Immobiliare S.à r.l.", ref: "VIR-2026091208000008" },
-  { id: 9, date: "11/09/2026 15:45", account: "LU10...9012", type: "Virement entrant", amount: 15000, counterparty: "Client Projekt Alfa", ref: "VIR-2026091115450009" },
-  { id: 10, date: "11/09/2026 10:30", account: "LU61...2874", type: "Retrait", amount: -500, counterparty: "DAB Luxembourg-Gare", ref: "ATM-2026091110300010" },
-  { id: 11, date: "10/09/2026 19:20", account: "LU61...2874", type: "Carte", amount: -234.5, counterparty: "CFL", ref: "CB-2026091019200011" },
-  { id: 12, date: "10/09/2026 14:00", account: "LU61...2874", type: "Prélèvement", amount: -350, counterparty: "Enovos", ref: "PRLV-2026091014000012" },
-];
+type AdminTx = {
+  id: number;
+  date: string;
+  account: string;
+  client: string;
+  type: string;
+  amount: number;
+  counterparty: string;
+  ref: string;
+};
 
-const ACCOUNTS = [
-  { value: "LU61...2874", label: "Courant — LU61...2874 (Jan Kowalski)" },
-  { value: "LU27...5387", label: "Épargne — LU27...5387 (Jan Kowalski)" },
-  { value: "LU10...9012", label: "Pro — LU10...9012 (Jan Kowalski)" },
-  { value: "LU83...1234", label: "Courant — LU83...1234 (Anna Nowak)" },
-];
+function buildTransactions(): AdminTx[] {
+  const txs: AdminTx[] = [];
+  let txId = 1;
+  for (const c of DEMO_CLIENTS) {
+    if (c.transactions.length === 0) continue;
+    const acctShort = c.accounts[0]
+      ? `${c.accounts[0].number.split(" ")[0]}...${c.accounts[0].number.split(" ").pop()}`
+      : "—";
+    for (const tx of c.transactions) {
+      if (tx.amount === 0) continue;
+      const isCredit = tx.amount > 0;
+      const parts = tx.desc.split(" — ");
+      const prefix = isCredit ? "VIR" : tx.desc.toLowerCase().includes("carte") || tx.desc.toLowerCase().includes("cactus") || tx.desc.toLowerCase().includes("delhaize") || tx.desc.toLowerCase().includes("auchan") || tx.desc.toLowerCase().includes("monoprix") || tx.desc.toLowerCase().includes("zara") || tx.desc.toLowerCase().includes("ikea") || tx.desc.toLowerCase().includes("amazon") ? "CB" : tx.desc.toLowerCase().includes("loyer") || tx.desc.toLowerCase().includes("credit") || tx.desc.toLowerCase().includes("assurance") || tx.desc.toLowerCase().includes("abonnement") || tx.desc.toLowerCase().includes("charges") || tx.desc.toLowerCase().includes("taxe") || tx.desc.toLowerCase().includes("cotisation") ? "PRLV" : tx.desc.toLowerCase().includes("retrait") || tx.desc.toLowerCase().includes("dab") ? "ATM" : tx.desc.toLowerCase().includes("interet") || tx.desc.toLowerCase().includes("dividende") ? "INT" : "OP";
+      const type = isCredit
+        ? tx.desc.toLowerCase().includes("salaire") ? "Virement entrant" : tx.desc.toLowerCase().includes("interet") || tx.desc.toLowerCase().includes("dividende") ? "Intérêt" : "Virement entrant"
+        : tx.desc.toLowerCase().includes("carte") || ["cactus", "delhaize", "auchan", "monoprix", "zara", "ikea", "amazon", "restaurant", "spotify", "netflix", "uber", "cfl", "parking", "pharmacie", "fitness"].some((k) => tx.desc.toLowerCase().includes(k)) ? "Carte"
+        : tx.desc.toLowerCase().includes("loyer") || tx.desc.toLowerCase().includes("credit") || tx.desc.toLowerCase().includes("assurance") || tx.desc.toLowerCase().includes("abonnement") || tx.desc.toLowerCase().includes("charges") || tx.desc.toLowerCase().includes("taxe") || tx.desc.toLowerCase().includes("cotisation") || tx.desc.toLowerCase().includes("leasing") || tx.desc.toLowerCase().includes("enovos") || tx.desc.toLowerCase().includes("edf") ? "Prélèvement"
+        : tx.desc.toLowerCase().includes("retrait") || tx.desc.toLowerCase().includes("dab") ? "Retrait"
+        : "Virement sortant";
+
+      const [day, month, year] = tx.date.split("/");
+      const hour = String(8 + (txId * 3) % 14).padStart(2, "0");
+      const min = String((txId * 7) % 60).padStart(2, "0");
+
+      txs.push({
+        id: txId++,
+        date: `${tx.date} ${hour}:${min}`,
+        account: acctShort,
+        client: `${c.first_name} ${c.last_name}`,
+        type,
+        amount: tx.amount,
+        counterparty: parts.length > 1 ? parts[1] : parts[0],
+        ref: `${prefix}-${year}${month}${day}${hour}${min}${String(txId).padStart(4, "0")}`,
+      });
+    }
+  }
+  return txs.sort((a, b) => {
+    const da = a.date.split(" ")[0].split("/").reverse().join("");
+    const db = b.date.split(" ")[0].split("/").reverse().join("");
+    return db.localeCompare(da) || b.date.localeCompare(a.date);
+  });
+}
+
+const ALL_ACCOUNTS = DEMO_CLIENTS.filter((c) => c.accounts.length > 0).flatMap((c) =>
+  c.accounts.map((a) => {
+    const parts = a.number.split(" ");
+    return { value: `${parts[0]}...${parts[parts.length - 1]}`, label: `${a.type === "courant" ? "Courant" : a.type === "epargne" ? "Épargne" : "Pro"} — ${parts[0]}...${parts[parts.length - 1]} (${c.first_name} ${c.last_name})` };
+  })
+);
 
 const TYPES = ["Virement entrant", "Virement sortant", "Prélèvement", "Carte", "Retrait", "Intérêt", "Crédit", "Débit"];
 const FILTERS = ["Tout", "Virements", "Prélèvements", "Cartes", "Retraits"];
@@ -38,11 +78,11 @@ function now() {
 }
 
 export default function AdminTransactionsPage() {
-  const [txs, setTxs] = useState(INITIAL_TXS);
+  const [txs, setTxs] = useState(buildTransactions);
   const [filter, setFilter] = useState("Tout");
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [selected, setSelected] = useState<typeof INITIAL_TXS[0] | null>(null);
+  const [selected, setSelected] = useState<AdminTx | null>(null);
   const [toast, setToast] = useState("");
 
   const filtered = txs.filter((tx) => {
@@ -52,7 +92,7 @@ export default function AdminTransactionsPage() {
     if (filter === "Retraits" && tx.type !== "Retrait") return false;
     if (search) {
       const q = search.toLowerCase();
-      return tx.counterparty.toLowerCase().includes(q) || tx.ref.toLowerCase().includes(q);
+      return tx.counterparty.toLowerCase().includes(q) || tx.ref.toLowerCase().includes(q) || tx.client.toLowerCase().includes(q);
     }
     return true;
   });
@@ -64,10 +104,11 @@ export default function AdminTransactionsPage() {
     const prefix = type.includes("Virement") ? "VIR" : type === "Prélèvement" ? "PRLV" : type === "Retrait" ? "ATM" : type === "Carte" ? "CB" : "OP";
     const rawAmount = Number(fd.get("amount"));
     const isCredit = type === "Virement entrant" || type === "Intérêt" || type === "Crédit";
-    const newTx = {
+    const newTx: AdminTx = {
       id: Date.now(),
       date: now(),
       account: String(fd.get("account")),
+      client: "—",
       type,
       amount: isCredit ? rawAmount : -rawAmount,
       counterparty: String(fd.get("counterparty")),
@@ -88,7 +129,7 @@ export default function AdminTransactionsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-          <p className="text-sm text-gray-500 mt-1">{filtered.length} opération{filtered.length > 1 ? "s" : ""}</p>
+          <p className="text-sm text-gray-500 mt-1">{filtered.length} opération{filtered.length > 1 ? "s" : ""} — tous les clients</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="inline-flex items-center gap-2 bg-[#003d82] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[#002a5c]">
           <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -109,7 +150,7 @@ export default function AdminTransactionsPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Compte</label>
               <select name="account" required className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                {ACCOUNTS.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
+                {ALL_ACCOUNTS.map((a) => <option key={a.value} value={a.value}>{a.label}</option>)}
               </select>
             </div>
             <div>
@@ -138,28 +179,30 @@ export default function AdminTransactionsPage() {
             <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${filter === f ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>{f}</button>
           ))}
         </div>
-        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher..." className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-60" />
+        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher client, contrepartie..." className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-60" />
       </div>
 
       <div className="bg-white rounded-lg border border-gray-200 overflow-x-auto">
         <table className="w-full text-sm">
           <thead><tr className="bg-gray-50 border-b border-gray-200">
             <th className="text-left px-4 py-3 font-medium text-gray-500">Date</th>
-            <th className="text-left px-4 py-3 font-medium text-gray-500">Compte</th>
+            <th className="text-left px-4 py-3 font-medium text-gray-500">Client</th>
+            <th className="text-left px-4 py-3 font-medium text-gray-500 hidden lg:table-cell">Compte</th>
             <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
             <th className="text-right px-4 py-3 font-medium text-gray-500">Montant (EUR)</th>
             <th className="text-left px-4 py-3 font-medium text-gray-500 hidden md:table-cell">Contrepartie</th>
-            <th className="text-left px-4 py-3 font-medium text-gray-500 hidden lg:table-cell">Référence</th>
+            <th className="text-left px-4 py-3 font-medium text-gray-500 hidden xl:table-cell">Référence</th>
           </tr></thead>
           <tbody>
             {filtered.map((tx) => (
               <tr key={tx.id} onClick={() => setSelected(tx)} className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
                 <td className="px-4 py-3 text-gray-600 text-xs whitespace-nowrap">{tx.date}</td>
-                <td className="px-4 py-3 font-mono text-xs text-gray-500">{tx.account}</td>
+                <td className="px-4 py-3 text-gray-900 font-medium text-xs whitespace-nowrap">{tx.client}</td>
+                <td className="px-4 py-3 font-mono text-xs text-gray-500 hidden lg:table-cell">{tx.account}</td>
                 <td className="px-4 py-3 text-gray-700">{tx.type}</td>
                 <td className={`px-4 py-3 text-right font-medium ${tx.amount >= 0 ? "text-green-600" : "text-red-600"}`}>{fmt(tx.amount)}</td>
                 <td className="px-4 py-3 text-gray-600 hidden md:table-cell">{tx.counterparty}</td>
-                <td className="px-4 py-3 font-mono text-xs text-gray-400 hidden lg:table-cell">{tx.ref}</td>
+                <td className="px-4 py-3 font-mono text-xs text-gray-400 hidden xl:table-cell">{tx.ref}</td>
               </tr>
             ))}
           </tbody>
@@ -173,6 +216,7 @@ export default function AdminTransactionsPage() {
             <div className="space-y-3 text-sm">
               <Row label="Référence" value={selected.ref} />
               <Row label="Date" value={selected.date} />
+              <Row label="Client" value={selected.client} />
               <Row label="Type" value={selected.type} />
               <Row label="Compte" value={selected.account} />
               <Row label="Contrepartie" value={selected.counterparty} />

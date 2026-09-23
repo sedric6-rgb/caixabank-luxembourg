@@ -1,4 +1,5 @@
 import { loginAction } from "@/lib/actions/auth";
+import { PasswordInput } from "@/components/password-input";
 
 export default async function AdminLoginPage({
   searchParams,
@@ -31,8 +32,7 @@ export default async function AdminLoginPage({
             <input type="hidden" name="next" value={next || "/admin"} />
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="password">Mot de passe</label>
-              <input id="password" name="password" type="password" required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <PasswordInput id="password" name="password" className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 pr-11" />
             </div>
             <button type="submit" className="w-full bg-[#003d82] text-white py-3 rounded-lg font-medium hover:bg-[#002a5c] transition-colors">
               Se connecter

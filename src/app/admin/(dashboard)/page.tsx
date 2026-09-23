@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { getDashboardStats } from "@/lib/queries/banking";
+import { DEMO_CLIENTS } from "@/lib/demo-data";
 
 export default async function AdminDashboard() {
   const stats = await getDashboardStats();
+  const totalCards = DEMO_CLIENTS.reduce((sum, c) => sum + c.cards.length, 0);
+  const recentClients = DEMO_CLIENTS.filter((c) => c.status === "actif").slice(-3).reverse();
 
   return (
     <div>
@@ -21,8 +24,8 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <StatCard label="Nouveaux clients (mois)" value={String(stats.newClientsThisMonth)} icon="plus" color="teal" />
         <StatCard label="Transactions aujourd'hui" value={stats.transactionsToday.toLocaleString("fr-FR")} icon="arrows" color="purple" />
-        <StatCard label="Cartes en fabrication" value="12" icon="card" color="orange" />
-        <StatCard label="Messages non lus" value="8" icon="mail" color="rose" />
+        <StatCard label="Cartes émises" value={String(totalCards)} icon="card" color="orange" />
+        <StatCard label="Messages non lus" value="0" icon="mail" color="rose" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -30,11 +33,11 @@ export default async function AdminDashboard() {
           <h2 className="font-semibold text-gray-900 mb-4">Activité récente</h2>
           <div className="space-y-3">
             {[
-              { action: "Nouveau client enregistré", detail: "Anna Nowak — CBP-384921", time: "Il y a 12 min" },
-              { action: "Compte ouvert", detail: "Compte courant pour Piotr Wiśniewski", time: "Il y a 34 min" },
-              { action: "Crédit approuvé", detail: "Prêt immobilier 280 000 EUR — Kamil Wójcik", time: "Il y a 1h" },
-              { action: "Carte émise", detail: "Visa Gold *4827 pour Jan Kowalski", time: "Il y a 2h" },
-              { action: "Virement traité", detail: "15 000 EUR — Entreprise ABC → DEF S.à r.l.", time: "Il y a 3h" },
+              { action: "Nouveau client enregistré", detail: `${recentClients[0] ? `${recentClients[0].first_name} ${recentClients[0].last_name} — ${recentClients[0].client_number}` : "—"}`, time: "Il y a 12 min" },
+              { action: "Compte ouvert", detail: `Compte courant pour ${recentClients[1] ? `${recentClients[1].first_name} ${recentClients[1].last_name}` : "—"}`, time: "Il y a 34 min" },
+              { action: "Virement entrant", detail: `${DEMO_CLIENTS[20] ? `Salaire — ${DEMO_CLIENTS[20].first_name} ${DEMO_CLIENTS[20].last_name}` : "—"}`, time: "Il y a 1h" },
+              { action: "Carte émise", detail: `${DEMO_CLIENTS[0]?.cards[0] ? `${DEMO_CLIENTS[0].cards[0].type} *${DEMO_CLIENTS[0].cards[0].last4} pour ${DEMO_CLIENTS[0].first_name} ${DEMO_CLIENTS[0].last_name}` : "—"}`, time: "Il y a 2h" },
+              { action: "Virement traité", detail: `${DEMO_CLIENTS[19] ? `${DEMO_CLIENTS[19].first_name} ${DEMO_CLIENTS[19].last_name} — Virement international` : "—"}`, time: "Il y a 3h" },
             ].map((item, i) => (
               <div key={i} className="flex items-start justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>
