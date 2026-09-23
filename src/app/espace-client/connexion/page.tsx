@@ -1,5 +1,6 @@
 import { clientLoginAction } from "@/lib/actions/client-auth";
 import Link from "next/link";
+import { PasswordInput } from "@/components/password-input";
 
 export default async function ClientLoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
@@ -40,8 +41,7 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-              <input id="password" name="password" type="password" required
-                className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+              <PasswordInput id="password" name="password" />
             </div>
             <button type="submit" className="w-full bg-[#003d82] text-white py-3 rounded-lg font-medium hover:bg-[#002a5c] transition-colors">
               Se connecter
@@ -53,9 +53,6 @@ export default async function ClientLoginPage({ searchParams }: { searchParams: 
             <a href="#" className="text-blue-600 hover:underline">Premiere connexion</a>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-gray-200 text-center">
-            <p className="text-xs text-gray-400">Compte demo : CBP-918274 / Azerty31@</p>
-          </div>
         </div>
 
         <div className="mt-6 text-center">
