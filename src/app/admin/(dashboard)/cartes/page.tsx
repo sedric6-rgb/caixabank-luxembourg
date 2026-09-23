@@ -174,7 +174,7 @@ export default function AdminCartesPage() {
                       <button onClick={() => setConfirm({ id: c.id, action: "oppose" })} className="text-xs text-orange-600 hover:underline">Opposition</button>
                     </>
                   )}
-                  {(c.status === "bloquee" || c.status === "opposed") && (
+                  {(c.status === "bloquee" || c.status === "opposed" || c.status === "en_fabrication") && (
                     <button onClick={() => setConfirm({ id: c.id, action: "activate" })} className="text-xs text-green-600 hover:underline">Activer</button>
                   )}
                 </td>
