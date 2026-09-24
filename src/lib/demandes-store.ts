@@ -5,6 +5,7 @@ export type DemandeType =
   | "plafond"
   | "compte_epargne"
   | "opposition"
+  | "mot_de_passe"
   | "autre";
 
 export type DemandeStatus = "en_attente" | "en_cours" | "validee" | "refusee";
@@ -28,6 +29,7 @@ const TYPE_LABELS: Record<DemandeType, string> = {
   plafond: "Augmentation de plafond",
   compte_epargne: "Ouverture compte epargne",
   opposition: "Opposition carte",
+  mot_de_passe: "Reinitialisation du mot de passe",
   autre: "Autre demande",
 };
 

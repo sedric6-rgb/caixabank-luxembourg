@@ -9,6 +9,7 @@ import {
   CLIENT_SESSION_COOKIE_NAME,
 } from "@/lib/auth-client";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { DEMANDES, addDemande } from "@/lib/demandes-store";
 import type { RowDataPacket } from "mysql2";
 
 const DEMO_PASSWORD = "demo2024";
@@ -88,28 +89,36 @@ export async function clientLogoutAction(): Promise<void> {
   redirect("/espace-client/connexion");
 }
 
-export async function resetPasswordAction(formData: FormData): Promise<{ success: boolean; error?: string; newPassword?: string }> {
-  await ensureState();
-  const clientNumber = String(formData.get("client_number") || "").trim();
-  const email = String(formData.get("email") || "").trim();
+// Never reveals whether the account exists and never changes the password: an adviser resets it from the admin.
+export async function requestPasswordResetAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  const clientNumber = String(formData.get("client_number") || "").trim().toUpperCase();
+  const email = String(formData.get("email") || "").trim().toLowerCase();
 
   if (!clientNumber || !email) {
     return { success: false, error: "Veuillez remplir tous les champs" };
   }
 
+  await ensureState();
   const client = DEMO_CLIENTS.find(
-    (c) => c.client_number === clientNumber && c.email === email && c.status === "actif"
+    (c) => c.client_number.toUpperCase() === clientNumber && c.email.toLowerCase() === email
+  );
+  const alreadyPending = client && DEMANDES.some(
+    (d) => d.clientId === client.id && d.type === "mot_de_passe" && (d.status === "en_attente" || d.status === "en_cours")
   );
 
-  if (!client) {
-    return { success: false, error: "Aucun compte ne correspond a ces informations" };
+  if (client && !alreadyPending) {
+    addDemande({
+      clientId: client.id,
+      clientName: `${client.first_name} ${client.last_name}`,
+      clientNumber: client.client_number,
+      type: "mot_de_passe",
+      label: "Mot de passe oublie",
+      details: "Demande faite depuis la page Mot de passe oublie. Verifier l'identite du client avant de lui communiquer un nouveau mot de passe.",
+    });
+    await persist("demandes");
   }
 
-  const newPassword = "Temp" + String(Math.floor(1000 + Math.random() * 9000)) + "!";
-  client.password = newPassword;
-
-  await persist("clients");
-  return { success: true, newPassword };
+  return { success: true };
 }
 
 export async function changePasswordAction(formData: FormData): Promise<{ success: boolean; error?: string }> {

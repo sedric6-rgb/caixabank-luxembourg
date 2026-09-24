@@ -6,6 +6,8 @@ import { ensureState, persist } from "@/lib/state";
 import { DEMO_CLIENTS, type DemoAccount, type DemoCard, type DemoTx } from "@/lib/demo-data";
 import { INSURANCES, newInsuranceId, type Insurance } from "@/lib/insurances-store";
 import { MANDATES, newMandateId, type Mandate } from "@/lib/mandates-store";
+import { DEMANDES } from "@/lib/demandes-store";
+import { randomInt } from "crypto";
 
 type Result<T = object> = ({ success: true } & T) | { success: false; error: string };
 
@@ -245,4 +247,29 @@ export async function adminToggleMandateAction(id: number): Promise<Result<{ sta
   await persist("mandates");
   refresh();
   return { success: true, status: mandate.status };
+}
+
+const PASSWORD_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+
+export async function adminResetClientPasswordAction(clientId: number): Promise<Result<{ password: string }>> {
+  await requireAdmin();
+  await ensureState();
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false, error: "Client introuvable" };
+
+  let password = "";
+  for (let i = 0; i < 10; i++) password += PASSWORD_CHARS[randomInt(PASSWORD_CHARS.length)];
+  password += `${randomInt(10)}!`;
+  client.password = password;
+
+  const date = today();
+  for (const d of DEMANDES) {
+    if (d.clientId === clientId && d.type === "mot_de_passe" && (d.status === "en_attente" || d.status === "en_cours")) {
+      d.status = "validee";
+      d.updatedAt = date;
+    }
+  }
+  await persist("clients", "demandes");
+  refresh();
+  return { success: true, password };
 }

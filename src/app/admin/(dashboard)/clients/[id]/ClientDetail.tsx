@@ -10,6 +10,7 @@ import {
   adminAddTransactionAction,
   adminAddAccountAction,
 } from "@/lib/actions/virements";
+import { adminResetClientPasswordAction } from "@/lib/actions/admin-data";
 import { formatAmount } from "@/lib/format";
 
 export default function ClientDetail({ initial }: { initial: DemoClient }) {
@@ -22,6 +23,8 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
   const [txOpen, setTxOpen] = useState(false);
   const [addAcctOpen, setAddAcctOpen] = useState(false);
   const [confirmBlockTx, setConfirmBlockTx] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
   const [txBlocked, setTxBlocked] = useState(initial._transactions_blocked || false);
   const [toast, setToast] = useState("");
 
@@ -53,6 +56,13 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
     setClient((prev) => ({ ...prev, status: newStatus }));
     notify(newStatus === "bloque" ? "Client bloque" : "Client reactive");
     setConfirmBlock(false);
+  };
+
+  const resetPassword = async () => {
+    setConfirmReset(false);
+    const res = await adminResetClientPasswordAction(initial.id);
+    if (!res.success) { notify(res.error); return; }
+    setNewPassword(res.password);
   };
 
   const toggleBlockTx = async () => {
@@ -169,6 +179,7 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
           <div className="space-y-2">
             <button onClick={() => setEditing(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50">Modifier le profil</button>
             <button onClick={() => setMsgOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50">Envoyer un message</button>
+            <button onClick={() => setConfirmReset(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50">Reinitialiser le mot de passe</button>
             <button onClick={() => setAddAcctOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-[#003d82] hover:bg-blue-50">Ouvrir un compte</button>
             <button onClick={() => setTxOpen(true)} className="w-full text-left px-4 py-2.5 rounded-lg border border-gray-200 text-sm text-[#003d82] hover:bg-blue-50">Nouvelle transaction</button>
             <button onClick={() => setConfirmBlockTx(true)} className={`w-full text-left px-4 py-2.5 rounded-lg border text-sm ${!txBlocked ? "border-orange-200 text-orange-600 hover:bg-orange-50" : "border-green-200 text-green-600 hover:bg-green-50"}`}>
@@ -341,6 +352,29 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
             <button onClick={toggleBlockTx} className={`flex-1 py-2.5 rounded-lg text-sm font-medium text-white ${!txBlocked ? "bg-orange-500 hover:bg-orange-600" : "bg-green-600 hover:bg-green-700"}`}>Confirmer</button>
             <button onClick={() => setConfirmBlockTx(false)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
           </div>
+        </Modal>
+      )}
+
+      {confirmReset && (
+        <Modal onClose={() => setConfirmReset(false)}>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Reinitialiser le mot de passe ?</h2>
+          <p className="text-sm text-gray-500 mb-6">L&apos;ancien mot de passe ne fonctionnera plus. Verifiez l&apos;identite du client avant de lui communiquer le nouveau.</p>
+          <div className="flex gap-3">
+            <button onClick={resetPassword} className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-[#003d82] hover:bg-[#002a5c]">Confirmer</button>
+            <button onClick={() => setConfirmReset(false)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
+          </div>
+        </Modal>
+      )}
+
+      {newPassword && (
+        <Modal onClose={() => setNewPassword("")}>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Nouveau mot de passe temporaire</h2>
+          <p className="text-sm text-gray-500 mb-4">Communiquez-le au client par telephone ou en agence. Il ne sera plus affiche apres fermeture.</p>
+          <div className="bg-gray-50 rounded-lg p-4 mb-4 text-center">
+            <p data-testid="new-password" className="text-lg font-mono font-bold text-gray-900 select-all">{newPassword}</p>
+          </div>
+          <p className="text-xs text-gray-400 mb-6">Le client pourra le changer depuis Mon profil apres connexion.</p>
+          <button onClick={() => setNewPassword("")} className="w-full bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Fermer</button>
         </Modal>
       )}
 
