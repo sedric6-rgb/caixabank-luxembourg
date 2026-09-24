@@ -471,12 +471,13 @@ export const DEMO_CLIENTS: DemoClient[] = [
     id_type: "Passeport", id_number: "CG 4821937", status: "bloque", created_at: "10/09/2026",
     password: "France24",
     accounts: [
-      { label: "Compte Courant", number: "LU72 0019 1014 0000 2300 7304 9100", balance: 520000.00, type: "courant" },
+      { label: "Compte Courant", number: "LU72 0019 1014 0000 2300 7304 9100", balance: 120000.00, type: "courant" },
     ],
     cards: [
       { last4: "8347", type: "Visa Infinite", status: "active", expiry: "09/2031" },
     ],
     transactions: [
+      { date: "24/09/2026", desc: "Annulation pret Immobilier — reprise des fonds", amount: -400000 },
       { date: "23/09/2026", desc: "Deblocage pret Immobilier — CaixaBank Luxembourg", amount: 400000 },
       { date: "22/09/2026", desc: "Virement entrant — Capital initial", amount: 120000 },
       { date: "21/09/2026", desc: "Frais de tenue de compte", amount: -45 },
