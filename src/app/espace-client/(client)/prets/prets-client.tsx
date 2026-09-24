@@ -30,7 +30,7 @@ export default function PretsClient({ initialLoans }: { initialLoans: Loan[] }) 
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-gray-900">{loan.type}</h3>
                     <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${loan.status === "en_cours" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
-                      {loan.status === "en_cours" ? "En cours" : loan.status}
+                      {loan.status === "en_cours" ? "En cours" : loan.status === "annule" ? "Annulé" : loan.status}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4 text-sm">
@@ -39,15 +39,17 @@ export default function PretsClient({ initialLoans }: { initialLoans: Loan[] }) 
                     <div><p className="text-gray-500">Taux</p><p className="font-bold text-gray-900">{loan.rate}%</p></div>
                     <div><p className="text-gray-500">Mensualite</p><p className="font-bold text-gray-900">{loan.monthly.toLocaleString("fr-FR", { minimumFractionDigits: 2 }).replace(/ /g, " ")} EUR</p></div>
                   </div>
-                  <div className="mb-2">
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>Rembourse</span>
-                      <span>{progress.toFixed(1)}%</span>
+                  {loan.status !== "annule" && (
+                    <div className="mb-2">
+                      <div className="flex justify-between text-xs text-gray-500 mb-1">
+                        <span>Rembourse</span>
+                        <span>{progress.toFixed(1)}%</span>
+                      </div>
+                      <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                      </div>
                     </div>
-                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-600 rounded-full transition-all" style={{ width: `${progress}%` }} />
-                    </div>
-                  </div>
+                  )}
                   <p className="text-xs text-gray-400">Du {loan.start} au {loan.end}</p>
                 </div>
               );
