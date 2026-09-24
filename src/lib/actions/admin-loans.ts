@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "./admin-guard";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 import { createLoan, approveLoan, refuseLoan } from "@/lib/loans-store";
 import { revalidatePath } from "next/cache";
@@ -13,6 +14,7 @@ const RATES: Record<string, number> = {
 };
 
 export async function adminCreateLoanAction(formData: FormData): Promise<{ success: boolean; error?: string; loanId?: number }> {
+  await requireAdmin();
   const clientId = Number(formData.get("clientId"));
   const type = String(formData.get("type") || "").trim();
   const amount = Number(formData.get("amount"));
@@ -59,6 +61,7 @@ export async function adminCreateLoanAction(formData: FormData): Promise<{ succe
 }
 
 export async function adminApproveLoanAction(loanId: number): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin();
   const loan = approveLoan(loanId);
   if (!loan) return { success: false, error: "Pret introuvable" };
 
@@ -84,6 +87,7 @@ export async function adminApproveLoanAction(loanId: number): Promise<{ success:
 }
 
 export async function adminRefuseLoanAction(loanId: number): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin();
   const loan = refuseLoan(loanId);
   if (!loan) return { success: false, error: "Pret introuvable" };
 

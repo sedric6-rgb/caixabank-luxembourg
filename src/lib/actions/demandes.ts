@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
 import { getClientById } from "@/lib/queries/banking";
 import { addDemande, updateDemandeStatus, type DemandeType, type DemandeStatus } from "@/lib/demandes-store";
@@ -39,5 +40,6 @@ export async function createDemandeAction(formData: FormData): Promise<{ success
 }
 
 export async function updateDemandeStatusAction(id: number, status: DemandeStatus): Promise<void> {
+  await requireAdmin();
   updateDemandeStatus(id, status);
 }

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "./admin-guard";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 import { createAdminNotification } from "@/lib/notifications-store";
 import {
@@ -9,6 +10,7 @@ import {
 import { revalidatePath } from "next/cache";
 
 export async function sendNotificationToAllAction(formData: FormData): Promise<{ success: boolean; error?: string; count?: number }> {
+  await requireAdmin();
   const title = String(formData.get("title") || "").trim();
   const message = String(formData.get("message") || "").trim();
   const type = (String(formData.get("type") || "info")) as "info" | "alerte" | "promotion";
@@ -26,6 +28,7 @@ export async function sendNotificationToAllAction(formData: FormData): Promise<{
 }
 
 export async function sendNotificationToClientAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
+  await requireAdmin();
   const clientId = Number(formData.get("clientId"));
   const title = String(formData.get("title") || "").trim();
   const message = String(formData.get("message") || "").trim();
@@ -47,6 +50,7 @@ export async function sendNotificationToClientAction(formData: FormData): Promis
 }
 
 export async function sendMessageToAllAction(formData: FormData): Promise<{ success: boolean; error?: string; count?: number }> {
+  await requireAdmin();
   const subject = String(formData.get("subject") || "").trim();
   const message = String(formData.get("message") || "").trim();
   const category = String(formData.get("category") || "information");
