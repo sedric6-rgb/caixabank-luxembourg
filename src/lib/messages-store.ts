@@ -1,3 +1,5 @@
+import { shared, nextId } from "@/lib/shared-store";
+
 export interface ConversationMessage {
   id: number;
   sender: "client" | "banque";
@@ -18,17 +20,22 @@ export interface Conversation {
   updatedAt: string;
 }
 
-let nextId = 100;
-let nextMsgId = 1000;
+export const CONVERSATIONS: Conversation[] = shared<Conversation>("conversations", () => []);
 
-export const CONVERSATIONS: Conversation[] = [];
+function newConversationId(): number {
+  return nextId(CONVERSATIONS, 100);
+}
 
-export function initClientConversations(clientId: number, clientName: string, clientNumber: string) {
-  if (CONVERSATIONS.some((c) => c.clientId === clientId)) return;
+function newMessageId(): number {
+  return nextId(CONVERSATIONS.flatMap((c) => c.messages), 1000);
+}
+
+export function initClientConversations(clientId: number, clientName: string, clientNumber: string): boolean {
+  if (CONVERSATIONS.some((c) => c.clientId === clientId)) return false;
 
   const now = new Date().toLocaleDateString("fr-FR");
   CONVERSATIONS.push({
-    id: nextId++,
+    id: newConversationId(),
     clientId,
     clientName,
     clientNumber,
@@ -37,7 +44,7 @@ export function initClientConversations(clientId: number, clientName: string, cl
     status: "ferme",
     messages: [
       {
-        id: nextMsgId++,
+        id: newMessageId(),
         sender: "banque",
         text: `Cher(e) ${clientName}, nous avons le plaisir de vous accueillir parmi nos clients. Votre espace personnel est desormais actif.\n\nN'hesitez pas a nous contacter pour toute question.\n\nCordialement,\nL'equipe CaixaBank Luxembourg`,
         date: "15/01/2026",
@@ -48,7 +55,7 @@ export function initClientConversations(clientId: number, clientName: string, cl
   });
 
   CONVERSATIONS.push({
-    id: nextId++,
+    id: newConversationId(),
     clientId,
     clientName,
     clientNumber,
@@ -57,7 +64,7 @@ export function initClientConversations(clientId: number, clientName: string, cl
     status: "ouvert",
     messages: [
       {
-        id: nextMsgId++,
+        id: newMessageId(),
         sender: "banque",
         text: "Nous vous informons que vos conditions tarifaires ont ete mises a jour a compter du 1er octobre 2026.\n\nVous pouvez consulter le detail dans la rubrique Tarifs de votre espace client.\n\nPour toute question, n'hesitez pas a repondre a ce message.\n\nCordialement,\nService Client CaixaBank Luxembourg",
         date: "10/09/2026",
@@ -66,6 +73,7 @@ export function initClientConversations(clientId: number, clientName: string, cl
     createdAt: "10/09/2026",
     updatedAt: "10/09/2026",
   });
+  return true;
 }
 
 export function getClientConversations(clientId: number): Conversation[] {
@@ -92,7 +100,7 @@ export function createConversation(data: {
 }): Conversation {
   const now = new Date().toLocaleDateString("fr-FR");
   const conv: Conversation = {
-    id: nextId++,
+    id: newConversationId(),
     clientId: data.clientId,
     clientName: data.clientName,
     clientNumber: data.clientNumber,
@@ -101,7 +109,7 @@ export function createConversation(data: {
     status: "ouvert",
     messages: [
       {
-        id: nextMsgId++,
+        id: newMessageId(),
         sender: "client",
         text: data.message,
         date: now,
@@ -118,7 +126,7 @@ export function addMessage(conversationId: number, sender: "client" | "banque", 
   const conv = CONVERSATIONS.find((c) => c.id === conversationId);
   if (!conv) return null;
   const msg: ConversationMessage = {
-    id: nextMsgId++,
+    id: newMessageId(),
     sender,
     text,
     date: new Date().toLocaleDateString("fr-FR"),
@@ -139,7 +147,7 @@ export function createBroadcastConversation(data: {
 }): Conversation {
   const now = new Date().toLocaleDateString("fr-FR");
   const conv: Conversation = {
-    id: nextId++,
+    id: newConversationId(),
     clientId: data.clientId,
     clientName: data.clientName,
     clientNumber: data.clientNumber,
@@ -148,7 +156,7 @@ export function createBroadcastConversation(data: {
     status: "ouvert",
     messages: [
       {
-        id: nextMsgId++,
+        id: newMessageId(),
         sender: "banque",
         text: data.message,
         date: now,

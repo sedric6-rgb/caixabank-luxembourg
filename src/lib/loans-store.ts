@@ -1,3 +1,4 @@
+import { shared, nextId } from "@/lib/shared-store";
 export interface StoredLoan {
   id: number;
   clientId: number;
@@ -10,11 +11,32 @@ export interface StoredLoan {
   status: string;
   startDate: string;
   endDate: string;
+  clientName?: string;
 }
 
-let nextLoanId = 80000;
+// clientId 0: file kept from the former admin list whose borrower is not a client of the bank.
+function legacyLoan(id: number, clientId: number, loanType: string, amount: number, interestRate: number, years: number, status: string, startDate: string, clientName?: string): StoredLoan {
+  const months = years * 12;
+  const [y, m, d] = startDate.split("-");
+  return {
+    id, clientId, loanType, amount, interestRate,
+    durationMonths: months,
+    monthlyPayment: Math.round(calcMonthly(amount, interestRate, months) * 100) / 100,
+    remainingAmount: amount,
+    status,
+    startDate,
+    endDate: `${Number(y) + years}-${m}-${d}`,
+    ...(clientName ? { clientName } : {}),
+  };
+}
 
-export const LOANS: StoredLoan[] = [
+export const LOANS: StoredLoan[] = shared<StoredLoan>("loans", () => [
+  legacyLoan(1, 19, "Immobilier", 350000, 3.45, 25, "en_cours", "2022-06-01"),
+  legacyLoan(2, 20, "Professionnel", 120000, 4.10, 7, "en_cours", "2026-01-15"),
+  legacyLoan(3, 0, "Auto", 45000, 4.30, 5, "en_cours", "2025-03-10", "Sophie Laurent"),
+  legacyLoan(4, 0, "Immobilier", 280000, 3.45, 20, "demande", "2026-09-05", "Michel Weber"),
+  legacyLoan(5, 21, "Professionnel", 500000, 4.10, 10, "en_cours", "2026-08-20"),
+  legacyLoan(6, 0, "Consommation", 25000, 5.80, 4, "demande", "2026-09-12", "Elena Popov"),
   {
     id: 70001,
     clientId: 23,
@@ -28,7 +50,7 @@ export const LOANS: StoredLoan[] = [
     startDate: "2026-09-23",
     endDate: "2051-09-23",
   },
-];
+]);
 
 function calcMonthly(amount: number, rate: number, months: number): number {
   const r = rate / 100 / 12;
@@ -52,7 +74,7 @@ export function createLoan(data: {
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
   const loan: StoredLoan = {
-    id: nextLoanId++,
+    id: nextId(LOANS, 80000),
     clientId: data.clientId,
     loanType: data.loanType,
     amount: data.amount,

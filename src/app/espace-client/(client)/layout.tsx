@@ -7,7 +7,7 @@ import { clientLogoutAction } from "@/lib/actions/client-auth";
 import ClientMobileNav from "./ClientMobileNav";
 import NotificationBell from "./NotificationBell";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
-import { syncClientStatuses } from "@/lib/client-status";
+import { readState } from "@/lib/state";
 
 const NAV = [
   { href: "/espace-client", label: "Tableau de bord", icon: "dashboard" },
@@ -35,7 +35,7 @@ export default async function EspaceClientLayout({ children }: { children: React
     redirect("/espace-client/connexion");
   }
 
-  await syncClientStatuses();
+  await readState();
   const demoClient = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (demoClient && demoClient.status !== "actif") {
     redirect("/espace-client/connexion");

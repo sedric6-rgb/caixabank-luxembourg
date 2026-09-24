@@ -1,3 +1,4 @@
+import { shared, nextId } from "@/lib/shared-store";
 export type DemandeType =
   | "carte"
   | "chequier"
@@ -34,7 +35,7 @@ export function getTypeLabel(type: DemandeType): string {
   return TYPE_LABELS[type] || type;
 }
 
-export const DEMANDES: Demande[] = [
+export const DEMANDES: Demande[] = shared<Demande>("demandes", () => [
   {
     id: 1, clientId: 1, clientName: "Jan Kowalski", clientNumber: "CBP-284751",
     type: "plafond", label: "Augmentation plafond Visa Gold",
@@ -47,15 +48,13 @@ export const DEMANDES: Demande[] = [
     details: "Demande de carte Visa Business pour le compte professionnel",
     status: "validee", createdAt: "10/09/2026", updatedAt: "12/09/2026",
   },
-];
-
-let nextId = 3;
+]);
 
 export function addDemande(d: Omit<Demande, "id" | "createdAt" | "updatedAt" | "status">): Demande {
   const now = new Date().toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" });
   const demande: Demande = {
     ...d,
-    id: nextId++,
+    id: nextId(DEMANDES, 3),
     status: "en_attente",
     createdAt: now,
     updatedAt: now,

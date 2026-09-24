@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
-import { syncClientStatuses } from "@/lib/client-status";
+import { readState } from "@/lib/state";
 import ClientDetail from "./ClientDetail";
 
 export const dynamic = "force-dynamic";
 
 export default async function ClientDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  await syncClientStatuses();
+  await readState();
   const found = DEMO_CLIENTS.find((c) => c.id === Number(id));
 
   if (!found) {

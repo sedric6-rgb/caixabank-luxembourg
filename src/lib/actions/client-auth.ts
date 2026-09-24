@@ -1,5 +1,6 @@
 "use server";
 
+import { ensureState, persist, readState } from "@/lib/state";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
@@ -8,7 +9,6 @@ import {
   CLIENT_SESSION_COOKIE_NAME,
 } from "@/lib/auth-client";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
-import { syncClientStatuses } from "@/lib/client-status";
 import type { RowDataPacket } from "mysql2";
 
 const DEMO_PASSWORD = "demo2024";
@@ -49,7 +49,7 @@ export async function clientLoginAction(formData: FormData): Promise<void> {
   }
 
   if (clientId === null) {
-    await syncClientStatuses();
+    await readState();
     const demoClient = DEMO_CLIENTS.find(
       (c) => c.client_number === clientNumber && c.status === "actif"
     );
@@ -89,6 +89,7 @@ export async function clientLogoutAction(): Promise<void> {
 }
 
 export async function resetPasswordAction(formData: FormData): Promise<{ success: boolean; error?: string; newPassword?: string }> {
+  await ensureState();
   const clientNumber = String(formData.get("client_number") || "").trim();
   const email = String(formData.get("email") || "").trim();
 
@@ -107,12 +108,14 @@ export async function resetPasswordAction(formData: FormData): Promise<{ success
   const newPassword = "Temp" + String(Math.floor(1000 + Math.random() * 9000)) + "!";
   client.password = newPassword;
 
+  await persist("clients");
   return { success: true, newPassword };
 }
 
 export async function changePasswordAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const session = await (await import("@/lib/auth-client")).getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const current = String(formData.get("current_password") || "");
   const newPwd = String(formData.get("new_password") || "");
@@ -137,5 +140,6 @@ export async function changePasswordAction(formData: FormData): Promise<{ succes
   }
 
   client.password = newPwd;
+  await persist("clients");
   return { success: true };
 }

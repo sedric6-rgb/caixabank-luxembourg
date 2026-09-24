@@ -1,22 +1,26 @@
 "use server";
 
+import { ensureState, persist } from "@/lib/state";
 import { getClientSession } from "@/lib/auth-client";
 import { DEMO_CLIENTS, type DemoAccount } from "@/lib/demo-data";
+import { nextId } from "@/lib/shared-store";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "./admin-guard";
-import { saveClientStatus } from "@/lib/client-status";
 
-let nextBenId = 10000;
-let nextTxId = 900000;
+function newBeneficiaryId(): number {
+  return nextId(DEMO_CLIENTS.flatMap((c) => c._beneficiaries ?? []), 10001);
+}
 
 export async function updateClientProfileAction(
   clientId: number,
   updates: { first_name: string; last_name: string; email: string; phone: string; address: string; city: string; postal_code: string }
 ): Promise<{ success: boolean }> {
   await requireAdmin();
+  await ensureState();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   Object.assign(client, updates);
+  await persist("clients");
   return { success: true };
 }
 
@@ -25,10 +29,13 @@ export async function toggleClientStatusAction(
   newStatus: string
 ): Promise<{ success: boolean }> {
   await requireAdmin();
+  await ensureState();
   if (newStatus !== "actif" && newStatus !== "bloque") return { success: false };
-  if (!DEMO_CLIENTS.some((c) => c.id === clientId)) return { success: false };
-  await saveClientStatus(clientId, newStatus);
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false };
+  client.status = newStatus;
   revalidatePath("/admin/clients", "layout");
+  await persist("clients");
   return { success: true };
 }
 
@@ -38,11 +45,13 @@ export async function adminAddTransactionAction(
   tx: { date: string; desc: string; amount: number }
 ): Promise<{ success: boolean }> {
   await requireAdmin();
+  await ensureState();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.transactions.unshift(tx);
   const acct = client.accounts.find((a) => a.number === accountNumber);
   if (acct) acct.balance += tx.amount;
+  await persist("clients");
   return { success: true };
 }
 
@@ -51,23 +60,28 @@ export async function adminAddAccountAction(
   newAcct: DemoAccount
 ): Promise<{ success: boolean }> {
   await requireAdmin();
+  await ensureState();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.accounts.push(newAcct);
+  await persist("clients");
   return { success: true };
 }
 
 export async function toggleBlockTransactionsAction(clientId: number, block: boolean): Promise<{ success: boolean }> {
   await requireAdmin();
+  await ensureState();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client._transactions_blocked = block;
+  await persist("clients");
   return { success: true };
 }
 
 export async function addBeneficiaryAction(formData: FormData): Promise<{ success: boolean; error?: string; id?: number }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const label = String(formData.get("label") || "").trim();
   const name = String(formData.get("name") || "").trim();
@@ -85,19 +99,21 @@ export async function addBeneficiaryAction(formData: FormData): Promise<{ succes
   const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
-  const id = ++nextBenId;
+  const id = newBeneficiaryId();
 
   if (!client._beneficiaries) {
     client._beneficiaries = [];
   }
   client._beneficiaries.push({ id, label, name, iban, bic, favorite: false });
 
+  await persist("clients");
   return { success: true, id };
 }
 
 export async function deleteBeneficiaryAction(beneficiaryId: number): Promise<{ success: boolean; error?: string }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
@@ -107,12 +123,14 @@ export async function deleteBeneficiaryAction(beneficiaryId: number): Promise<{ 
 
   client._beneficiaries.splice(idx, 1);
   revalidatePath("/espace-client", "layout");
+  await persist("clients");
   return { success: true };
 }
 
 export async function toggleBeneficiaryFavoriteAction(beneficiaryId: number): Promise<{ success: boolean; error?: string; favorite?: boolean }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
@@ -122,12 +140,14 @@ export async function toggleBeneficiaryFavoriteAction(beneficiaryId: number): Pr
 
   ben.favorite = !ben.favorite;
   revalidatePath("/espace-client", "layout");
+  await persist("clients");
   return { success: true, favorite: ben.favorite };
 }
 
 export async function executeVirementAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const client0 = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (client0?._transactions_blocked) {
@@ -203,7 +223,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
 
     if (!alreadyExists) {
       client._beneficiaries.push({
-        id: ++nextBenId,
+        id: newBeneficiaryId(),
         label: benLabel,
         name: beneficiaryName,
         iban: beneficiaryIban,
@@ -216,5 +236,6 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
   revalidatePath("/espace-client", "layout");
   revalidatePath("/admin", "layout");
 
+  await persist("clients");
   return { success: true };
 }
