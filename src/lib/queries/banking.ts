@@ -216,10 +216,21 @@ function getDemoLoans(clientId: number): BankLoan[] {
   }));
 }
 
+const LINKED_GROUP = [19, 21, 22, 23];
+
 function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
   const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
-  const otherClients = DEMO_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
+
+  let otherClients: typeof DEMO_CLIENTS;
+  if (LINKED_GROUP.includes(clientId)) {
+    otherClients = DEMO_CLIENTS.filter(
+      (cl) => cl.id !== clientId && LINKED_GROUP.includes(cl.id)
+    );
+  } else {
+    otherClients = DEMO_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
+  }
+
   const base: BankBeneficiary[] = otherClients.map((oc, i) => ({
     id: clientId * 100 + i + 1,
     client_id: clientId,
