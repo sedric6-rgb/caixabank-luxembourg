@@ -2,10 +2,10 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { resetPasswordAction } from "@/lib/actions/client-auth";
+import { requestPasswordResetAction } from "@/lib/actions/client-auth";
 
 export default function ForgotPasswordPage() {
-  const [result, setResult] = useState<{ newPassword: string } | null>(null);
+  const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -15,9 +15,9 @@ export default function ForgotPasswordPage() {
     const fd = new FormData(e.currentTarget);
 
     startTransition(async () => {
-      const res = await resetPasswordAction(fd);
-      if (res.success && res.newPassword) {
-        setResult({ newPassword: res.newPassword });
+      const res = await requestPasswordResetAction(fd);
+      if (res.success) {
+        setSent(true);
       } else {
         setError(res.error || "Erreur");
       }
@@ -37,17 +37,14 @@ export default function ForgotPasswordPage() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-2xl p-8">
-          {result ? (
+          {sent ? (
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
                 <svg width="32" height="32" fill="none" viewBox="0 0 32 32"><path d="M10 16l4 4 8-8" stroke="#0d8a3e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
-              <h1 className="text-xl font-bold text-gray-900 mb-2">Mot de passe reinitialise</h1>
-              <p className="text-sm text-gray-500 mb-4">Votre nouveau mot de passe temporaire :</p>
-              <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                <p className="text-lg font-mono font-bold text-gray-900">{result.newPassword}</p>
-              </div>
-              <p className="text-xs text-gray-400 mb-6">Notez ce mot de passe et changez-le depuis votre profil apres connexion.</p>
+              <h1 className="text-xl font-bold text-gray-900 mb-2">Demande transmise</h1>
+              <p className="text-sm text-gray-500 mb-4">Si ces informations correspondent a un compte, votre demande a ete transmise a votre conseiller.</p>
+              <p className="text-sm text-gray-500 mb-6">Pour votre securite, il vous contactera pour verifier votre identite et vous communiquer un mot de passe temporaire. Aucun mot de passe n&apos;est envoye par email ni affiche en ligne.</p>
               <Link href="/espace-client/connexion"
                 className="inline-block bg-[#003d82] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#002a5c] transition-colors">
                 Se connecter
@@ -56,7 +53,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               <h1 className="text-xl font-bold text-gray-900 mb-1">Mot de passe oublie</h1>
-              <p className="text-sm text-gray-500 mb-6">Saisissez votre numero client et l&apos;email associe pour reinitialiser votre mot de passe.</p>
+              <p className="text-sm text-gray-500 mb-6">Saisissez votre numero client et l&apos;email associe. Votre conseiller vous contactera pour reinitialiser votre mot de passe.</p>
 
               {error && (
                 <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
@@ -77,7 +74,7 @@ export default function ForgotPasswordPage() {
                 </div>
                 <button type="submit" disabled={isPending}
                   className="w-full bg-[#003d82] text-white py-3 rounded-lg font-medium hover:bg-[#002a5c] transition-colors disabled:opacity-50">
-                  {isPending ? "Verification..." : "Reinitialiser le mot de passe"}
+                  {isPending ? "Envoi..." : "Envoyer la demande"}
                 </button>
               </form>
 
