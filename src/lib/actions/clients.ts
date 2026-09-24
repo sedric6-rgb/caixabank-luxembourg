@@ -1,8 +1,10 @@
 "use server";
 
+import { requireAdmin } from "./admin-guard";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 
 export async function createClientAction(formData: FormData): Promise<{ success: boolean; clientNumber?: string; error?: string }> {
+  await requireAdmin();
   const firstName = String(formData.get("first_name") || "").trim();
   const lastName = String(formData.get("last_name") || "").trim();
   const email = String(formData.get("email") || "").trim();

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 import {
@@ -61,6 +62,7 @@ export async function replyConversationAction(formData: FormData) {
 }
 
 export async function adminReplyAction(formData: FormData) {
+  await requireAdmin();
   const conversationId = Number(formData.get("conversationId"));
   const text = String(formData.get("message") || "").trim();
 
