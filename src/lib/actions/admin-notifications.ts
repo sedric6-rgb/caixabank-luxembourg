@@ -1,5 +1,6 @@
 "use server";
 
+import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 import { createAdminNotification } from "@/lib/notifications-store";
@@ -11,6 +12,7 @@ import { revalidatePath } from "next/cache";
 
 export async function sendNotificationToAllAction(formData: FormData): Promise<{ success: boolean; error?: string; count?: number }> {
   await requireAdmin();
+  await ensureState();
   const title = String(formData.get("title") || "").trim();
   const message = String(formData.get("message") || "").trim();
   const type = (String(formData.get("type") || "info")) as "info" | "alerte" | "promotion";
@@ -24,11 +26,13 @@ export async function sendNotificationToAllAction(formData: FormData): Promise<{
   revalidatePath("/espace-client", "layout");
   revalidatePath("/admin", "layout");
 
+  await persist("notifications");
   return { success: true, count: DEMO_CLIENTS.length };
 }
 
 export async function sendNotificationToClientAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   await requireAdmin();
+  await ensureState();
   const clientId = Number(formData.get("clientId"));
   const title = String(formData.get("title") || "").trim();
   const message = String(formData.get("message") || "").trim();
@@ -46,11 +50,13 @@ export async function sendNotificationToClientAction(formData: FormData): Promis
   revalidatePath("/espace-client", "layout");
   revalidatePath("/admin", "layout");
 
+  await persist("notifications");
   return { success: true };
 }
 
 export async function sendMessageToAllAction(formData: FormData): Promise<{ success: boolean; error?: string; count?: number }> {
   await requireAdmin();
+  await ensureState();
   const subject = String(formData.get("subject") || "").trim();
   const message = String(formData.get("message") || "").trim();
   const category = String(formData.get("category") || "information");
@@ -79,5 +85,6 @@ export async function sendMessageToAllAction(formData: FormData): Promise<{ succ
   revalidatePath("/espace-client", "layout");
   revalidatePath("/admin", "layout");
 
+  await persist("conversations");
   return { success: true, count };
 }

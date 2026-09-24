@@ -1,11 +1,11 @@
 import { DEMO_CLIENTS } from "@/lib/demo-data";
-import { syncClientStatuses } from "@/lib/client-status";
+import { readState } from "@/lib/state";
 import ClientsTable from "./ClientsTable";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminClientsPage() {
-  await syncClientStatuses();
+  await readState();
   const clients = DEMO_CLIENTS.map((c) => ({
     id: c.id,
     client_number: c.client_number,

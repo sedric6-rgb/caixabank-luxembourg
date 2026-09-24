@@ -1,5 +1,6 @@
 "use server";
 
+import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
 import { getClientById } from "@/lib/queries/banking";
@@ -9,6 +10,7 @@ import { DEMO_CLIENTS } from "@/lib/demo-data";
 export async function createDemandeAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const client = await getClientById(session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
@@ -36,10 +38,13 @@ export async function createDemandeAction(formData: FormData): Promise<{ success
     }
   }
 
+  await persist("demandes");
   return { success: true };
 }
 
 export async function updateDemandeStatusAction(id: number, status: DemandeStatus): Promise<void> {
   await requireAdmin();
+  await ensureState();
   updateDemandeStatus(id, status);
+  await persist("demandes");
 }

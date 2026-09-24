@@ -1,5 +1,6 @@
 "use server";
 
+import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
@@ -13,6 +14,7 @@ import {
 export async function createConversationAction(formData: FormData) {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const subject = String(formData.get("subject") || "").trim();
   const category = String(formData.get("category") || "general");
@@ -36,12 +38,14 @@ export async function createConversationAction(formData: FormData) {
     message,
   });
 
+  await persist("conversations");
   return { success: true, conversationId: conv.id };
 }
 
 export async function replyConversationAction(formData: FormData) {
   const session = await getClientSession();
   if (!session) return { success: false, error: "Non connecte" };
+  await ensureState();
 
   const conversationId = Number(formData.get("conversationId"));
   const text = String(formData.get("message") || "").trim();
@@ -58,11 +62,13 @@ export async function replyConversationAction(formData: FormData) {
   const msg = addMessage(conversationId, "client", text);
   if (!msg) return { success: false, error: "Erreur" };
 
+  await persist("conversations");
   return { success: true };
 }
 
 export async function adminReplyAction(formData: FormData) {
   await requireAdmin();
+  await ensureState();
   const conversationId = Number(formData.get("conversationId"));
   const text = String(formData.get("message") || "").trim();
 
@@ -73,5 +79,6 @@ export async function adminReplyAction(formData: FormData) {
   const msg = addMessage(conversationId, "banque", text);
   if (!msg) return { success: false, error: "Conversation introuvable" };
 
+  await persist("conversations");
   return { success: true };
 }

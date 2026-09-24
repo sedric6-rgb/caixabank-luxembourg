@@ -1,3 +1,5 @@
+import { shared } from "@/lib/shared-store";
+
 export interface DemoClient {
   id: number;
   client_number: string;
@@ -42,7 +44,7 @@ export interface DemoTx {
   amount: number;
 }
 
-export const DEMO_CLIENTS: DemoClient[] = [
+export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
   {
     id: 1, client_number: "CBP-284751", first_name: "Jan", last_name: "Kowalski",
     email: "jan.kowalski@email.lu", phone: "+352 621 345 678", date_of_birth: "15/03/1985",
@@ -489,4 +491,4 @@ export const DEMO_CLIENTS: DemoClient[] = [
       { date: "15/09/2026", desc: "Virement entrant — Consulting SARL", amount: 8500 },
     ],
   },
-];
+]);

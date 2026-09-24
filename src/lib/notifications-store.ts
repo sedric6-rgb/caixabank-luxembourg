@@ -1,3 +1,4 @@
+import { shared, nextId } from "@/lib/shared-store";
 export interface AdminNotification {
   id: number;
   title: string;
@@ -7,9 +8,7 @@ export interface AdminNotification {
   createdAt: string;
 }
 
-let nextNotifId = 50000;
-
-export const ADMIN_NOTIFICATIONS: AdminNotification[] = [];
+export const ADMIN_NOTIFICATIONS: AdminNotification[] = shared<AdminNotification>("notifications", () => []);
 
 export function createAdminNotification(data: {
   title: string;
@@ -19,7 +18,7 @@ export function createAdminNotification(data: {
 }): AdminNotification {
   const now = new Date().toISOString().split("T")[0];
   const notif: AdminNotification = {
-    id: nextNotifId++,
+    id: nextId(ADMIN_NOTIFICATIONS, 50000),
     title: data.title,
     message: data.message,
     type: data.type,
