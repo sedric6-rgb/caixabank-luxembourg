@@ -447,7 +447,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     id: 22, client_number: "CBP-641823", first_name: "Andre Claude Davin", last_name: "Obame",
     email: "acd.obame@email.lu", phone: "+352 621 472 839", date_of_birth: "16/08/1984",
     address: "21 Av. Monterey", city: "Luxembourg", postal_code: "2163", country: "Luxembourg",
-    id_type: "Passeport", id_number: "GA 7391028", status: "actif", created_at: "03/04/2023",
+    id_type: "Passeport", id_number: "GA 7391028", status: "bloque", created_at: "03/04/2023",
     password: "France24",
     accounts: [
       { label: "Compte Courant", number: "LU95 0019 1014 0000 2200 6418 2300", balance: 310000.00, type: "courant" },
@@ -468,7 +468,7 @@ export const DEMO_CLIENTS: DemoClient[] = [
     id: 23, client_number: "CBP-730491", first_name: "Servais", last_name: "Mampouya Mafoua",
     email: "servais.mampouya@email.fr", phone: "+33 6 45 78 12 93", date_of_birth: "06/06/1980",
     address: "31 Rue de Varenne", city: "Paris", postal_code: "75007", country: "France",
-    id_type: "Passeport", id_number: "CG 4821937", status: "actif", created_at: "10/09/2026",
+    id_type: "Passeport", id_number: "CG 4821937", status: "bloque", created_at: "10/09/2026",
     password: "France24",
     accounts: [
       { label: "Compte Courant", number: "LU72 0019 1014 0000 2300 7304 9100", balance: 520000.00, type: "courant" },

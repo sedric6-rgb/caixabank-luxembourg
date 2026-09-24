@@ -8,6 +8,7 @@ import {
   CLIENT_SESSION_COOKIE_NAME,
 } from "@/lib/auth-client";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { syncClientStatuses } from "@/lib/client-status";
 import type { RowDataPacket } from "mysql2";
 
 const DEMO_PASSWORD = "demo2024";
@@ -48,6 +49,7 @@ export async function clientLoginAction(formData: FormData): Promise<void> {
   }
 
   if (clientId === null) {
+    await syncClientStatuses();
     const demoClient = DEMO_CLIENTS.find(
       (c) => c.client_number === clientNumber && c.status === "actif"
     );
