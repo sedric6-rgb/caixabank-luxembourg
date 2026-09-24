@@ -3,6 +3,8 @@
 import { getClientSession } from "@/lib/auth-client";
 import { DEMO_CLIENTS, type DemoAccount } from "@/lib/demo-data";
 import { revalidatePath } from "next/cache";
+import { requireAdmin } from "./admin-guard";
+import { saveClientStatus } from "@/lib/client-status";
 
 let nextBenId = 10000;
 let nextTxId = 900000;
@@ -11,6 +13,7 @@ export async function updateClientProfileAction(
   clientId: number,
   updates: { first_name: string; last_name: string; email: string; phone: string; address: string; city: string; postal_code: string }
 ): Promise<{ success: boolean }> {
+  await requireAdmin();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   Object.assign(client, updates);
@@ -21,9 +24,11 @@ export async function toggleClientStatusAction(
   clientId: number,
   newStatus: string
 ): Promise<{ success: boolean }> {
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
-  if (!client) return { success: false };
-  client.status = newStatus;
+  await requireAdmin();
+  if (newStatus !== "actif" && newStatus !== "bloque") return { success: false };
+  if (!DEMO_CLIENTS.some((c) => c.id === clientId)) return { success: false };
+  await saveClientStatus(clientId, newStatus);
+  revalidatePath("/admin/clients", "layout");
   return { success: true };
 }
 
@@ -32,6 +37,7 @@ export async function adminAddTransactionAction(
   accountNumber: string,
   tx: { date: string; desc: string; amount: number }
 ): Promise<{ success: boolean }> {
+  await requireAdmin();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.transactions.unshift(tx);
@@ -44,6 +50,7 @@ export async function adminAddAccountAction(
   clientId: number,
   newAcct: DemoAccount
 ): Promise<{ success: boolean }> {
+  await requireAdmin();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.accounts.push(newAcct);
@@ -51,6 +58,7 @@ export async function adminAddAccountAction(
 }
 
 export async function toggleBlockTransactionsAction(clientId: number, block: boolean): Promise<{ success: boolean }> {
+  await requireAdmin();
   const client = DEMO_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client._transactions_blocked = block;
@@ -85,6 +93,36 @@ export async function addBeneficiaryAction(formData: FormData): Promise<{ succes
   client._beneficiaries.push({ id, label, name, iban, bic, favorite: false });
 
   return { success: true, id };
+}
+
+export async function deleteBeneficiaryAction(beneficiaryId: number): Promise<{ success: boolean; error?: string }> {
+  const session = await getClientSession();
+  if (!session) return { success: false, error: "Non connecte" };
+
+  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
+
+  const idx = client._beneficiaries.findIndex((b) => b.id === beneficiaryId);
+  if (idx === -1) return { success: false, error: "Beneficiaire introuvable" };
+
+  client._beneficiaries.splice(idx, 1);
+  revalidatePath("/espace-client", "layout");
+  return { success: true };
+}
+
+export async function toggleBeneficiaryFavoriteAction(beneficiaryId: number): Promise<{ success: boolean; error?: string; favorite?: boolean }> {
+  const session = await getClientSession();
+  if (!session) return { success: false, error: "Non connecte" };
+
+  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
+
+  const ben = client._beneficiaries.find((b) => b.id === beneficiaryId);
+  if (!ben) return { success: false, error: "Beneficiaire introuvable" };
+
+  ben.favorite = !ben.favorite;
+  revalidatePath("/espace-client", "layout");
+  return { success: true, favorite: ben.favorite };
 }
 
 export async function executeVirementAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
