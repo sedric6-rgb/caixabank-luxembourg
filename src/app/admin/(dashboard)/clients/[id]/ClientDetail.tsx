@@ -39,6 +39,7 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
   const waTemplates = [
     { label: "Bienvenue", text: `Bonjour ${client.first_name} ${client.last_name},\n\nBienvenue chez CaixaBank Luxembourg. Votre conseiller est a votre disposition pour toute question.\n\nCordialement,\nCaixaBank Luxembourg` },
     { label: "Confirmation de virement", text: `Bonjour ${client.first_name},\n\nNous confirmons que votre virement a ete effectue avec succes.\n\nCordialement,\nCaixaBank Luxembourg` },
+    { label: "Virement recu", text: `Bonjour ${client.first_name},\n\nVous avez recu un nouveau virement sur votre compte CaixaBank Luxembourg. Nous vous invitons a consulter votre espace client pour plus de details.\n\nCordialement,\nCaixaBank Luxembourg` },
     { label: "Rendez-vous", text: `Bonjour ${client.first_name},\n\nNous vous rappelons votre rendez-vous avec votre conseiller CaixaBank Luxembourg.\n\nCordialement,\nCaixaBank Luxembourg` },
     { label: "Document disponible", text: `Bonjour ${client.first_name},\n\nUn nouveau document est disponible dans votre espace client CaixaBank Luxembourg. Nous vous invitons a le consulter.\n\nCordialement,\nCaixaBank Luxembourg` },
     { label: "Alerte securite", text: `Bonjour ${client.first_name},\n\nUne activite inhabituelle a ete detectee sur votre compte. Veuillez contacter votre conseiller dans les meilleurs delais.\n\nCaixaBank Luxembourg` },
