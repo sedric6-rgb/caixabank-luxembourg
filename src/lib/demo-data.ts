@@ -428,7 +428,6 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
     accounts: [
       { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1148000.00, type: "courant" },
       { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 450000.00, type: "epargne" },
-      { label: "Compte Pro", number: "LU84 0019 0099 0000 2100 7364 5600", balance: 875000.00, type: "professionnel" },
     ],
     cards: [
       { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2031" },
@@ -489,6 +488,22 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { date: "17/09/2026", desc: "Virement sortant — Loyer appartement", amount: -3200 },
       { date: "16/09/2026", desc: "Carte — Monoprix Varenne", amount: -87.50 },
       { date: "15/09/2026", desc: "Virement entrant — Consulting SARL", amount: 8500 },
+    ],
+  },
+  {
+    id: 24, client_number: "CBP-100024", first_name: "Holding ATS International", last_name: "Group",
+    email: "contact@ats-international-group.lu", phone: "+352 621 100 240", date_of_birth: "01/01/2020",
+    address: "6 Av. de la Liberte", city: "Luxembourg", postal_code: "1930", country: "Luxembourg",
+    id_type: "RCS Luxembourg", id_number: "B 100240", status: "actif", created_at: "24/09/2026",
+    password: "AtsGroup2026!",
+    accounts: [
+      { label: "Compte Courant", number: "LU29 0019 1014 0000 2400 1002 4000", balance: 875000.00, type: "courant" },
+    ],
+    cards: [
+      { last4: "1024", type: "Visa Infinite", status: "Active", expiry: "09/2031" },
+    ],
+    transactions: [
+      { date: "24/09/2026", desc: "Ouverture — transfert du compte professionnel de Fritz Mambouka", amount: 875000 },
     ],
   },
 ]);

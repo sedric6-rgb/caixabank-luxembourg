@@ -12,4 +12,6 @@ export async function register() {
   ]);
   const { readState } = await import("@/lib/state");
   await readState();
+  const { runMigrations } = await import("@/lib/migrations");
+  await runMigrations();
 }

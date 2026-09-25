@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import jsPDF from "jspdf";
+import { createDemandeAction } from "@/lib/actions/demandes";
 
 interface Transaction {
   id: number;
@@ -27,6 +29,22 @@ function fmtCurrency(n: number, currency = "EUR") {
 }
 
 export default function AccountActions({ accountLabel, accountNumber, clientName, balance, currency, transactions }: AccountActionsProps) {
+  const [choosing, setChoosing] = useState(false);
+  const [toast, setToast] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  function orderChequier(qty: number) {
+    setChoosing(false);
+    const fd = new FormData();
+    fd.set("type", "chequier");
+    fd.set("label", `Chequier ${qty} cheques`);
+    fd.set("details", `Demande de chequier de ${qty} cheques pour le compte ${accountLabel} (${accountNumber})`);
+    startTransition(async () => {
+      const res = await createDemandeAction(fd);
+      setToast(res.success ? "Demande de chequier envoyee a votre conseiller" : (res.error || "Erreur"));
+      setTimeout(() => setToast(""), 4000);
+    });
+  }
 
   function downloadRIB() {
     const doc = new jsPDF();
@@ -227,7 +245,7 @@ export default function AccountActions({ accountLabel, accountNumber, clientName
   }
 
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <button onClick={downloadRIB} className="text-xs px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition-colors">
         <span className="flex items-center gap-1.5">
           <svg width="14" height="14" fill="none" viewBox="0 0 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M7 2v8M4 7l3 3 3-3M2 12h10"/></svg>
@@ -240,6 +258,22 @@ export default function AccountActions({ accountLabel, accountNumber, clientName
           Releve de compte
         </span>
       </button>
+      {choosing ? (
+        <span className="flex items-center gap-2 text-xs">
+          <span className="text-gray-500">Nombre de cheques :</span>
+          <button onClick={() => orderChequier(25)} disabled={isPending} className="px-3 py-2 rounded-lg bg-[#003d82] text-white font-medium hover:bg-[#002a5c] disabled:opacity-50">25</button>
+          <button onClick={() => orderChequier(50)} disabled={isPending} className="px-3 py-2 rounded-lg bg-[#003d82] text-white font-medium hover:bg-[#002a5c] disabled:opacity-50">50</button>
+          <button onClick={() => setChoosing(false)} disabled={isPending} className="px-2 py-2 text-gray-500 hover:text-gray-700">Annuler</button>
+        </span>
+      ) : (
+        <button onClick={() => setChoosing(true)} className="text-xs px-4 py-2 rounded-lg bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-colors">
+          <span className="flex items-center gap-1.5">
+            <svg width="14" height="14" fill="none" viewBox="0 0 14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M2 4h10v6H2zM2 7h10"/></svg>
+            Commander un chequier
+          </span>
+        </button>
+      )}
+      {toast && <span className="text-xs text-green-700 font-medium">{toast}</span>}
     </div>
   );
 }
