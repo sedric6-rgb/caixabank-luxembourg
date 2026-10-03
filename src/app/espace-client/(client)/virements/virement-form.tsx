@@ -8,8 +8,7 @@ type Account = { id: number; label: string; balance: number; iban: string };
 type Beneficiary = { id: number; label: string; iban: string };
 
 const TRANSFER_TYPES = [
-  { key: "immediat", label: "Virement immédiat", desc: "SEPA — Exécution sous 24h", icon: "send" },
-  { key: "instantane", label: "Virement instantané", desc: "SEPA Instant — Exécution en 10 secondes", icon: "zap" },
+  { key: "immediat", label: "Virement immédiat", desc: "SEPA — Exécution sous 48h", icon: "send" },
   { key: "programme", label: "Virement programmé", desc: "Exécution à une date choisie", icon: "calendar" },
   { key: "permanent", label: "Virement permanent", desc: "Récurrent — mensuel, hebdomadaire...", icon: "repeat" },
   { key: "international", label: "Virement international", desc: "SWIFT — Hors zone SEPA", icon: "globe" },
@@ -123,7 +122,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
           <svg width="32" height="32" fill="none" viewBox="0 0 32 32"><path d="M10 16l4 4 8-8" stroke="#0d8a3e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </div>
         <h2 className="text-xl font-bold text-gray-900 mb-2">
-          {transferType === "programme" ? "Virement programmé" : transferType === "permanent" ? "Virement permanent créé" : transferType === "instantane" ? "Virement instantané exécuté" : "Virement effectué"}
+          {transferType === "programme" ? "Virement programmé" : transferType === "permanent" ? "Virement permanent créé" : "Virement effectué"}
         </h2>
         <p className="text-gray-500 mb-1">
           {typeLabel} de <strong>{formatAmount(Number(amount))} {currency}</strong> vers <strong>{benName}</strong>
@@ -156,13 +155,7 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
               {endDate && <Row label="Date de fin" value={endDate} />}
             </>
           )}
-          {transferType === "instantane" && (
-            <div className="flex items-center gap-2 text-xs text-blue-600">
-              <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M7 1l1.5 4.5H13L9 8l1.5 5L7 10 3.5 13 5 8 1 5.5h4.5z" fill="currentColor"/></svg>
-              Exécution en 10 secondes
-            </div>
-          )}
-          {transferType === "international" && <Row label="Devise" value={currency} />}
+{transferType === "international" && <Row label="Devise" value={currency} />}
           {benMode === "new" && saveBen && (
             <div className="flex items-center gap-2 text-xs text-green-600">
               <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M5 7l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -216,7 +209,6 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
       </div>
       <p className="text-sm text-gray-500 mb-6">
         {transferType === "immediat" && "Virement SEPA en zone euro — Exécution sous 24h"}
-        {transferType === "instantane" && "Virement SEPA Instant — Exécution en 10 secondes"}
         {transferType === "programme" && "Programmez un virement à une date future"}
         {transferType === "permanent" && "Mettez en place un virement récurrent"}
         {transferType === "international" && "Virement SWIFT hors zone SEPA"}
@@ -300,7 +292,6 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
           </div>
           {sourceAcc && <p className="text-xs text-gray-400 mt-1">Solde disponible : {formatAmount(sourceAcc.balance)} EUR</p>}
           {transferType === "international" && <p className="text-xs text-orange-600 mt-1">Frais : 25,00 EUR par virement</p>}
-          {transferType === "instantane" && <p className="text-xs text-blue-600 mt-1">Gratuit — Limité à 100 000 EUR</p>}
         </div>
 
         {transferType === "programme" && (

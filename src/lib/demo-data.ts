@@ -435,7 +435,7 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { last4: "7834", type: "Visa Infinite", status: "Active", expiry: "11/2031" },
     ],
     transactions: [
-      { date: "23/09/2026", desc: "Virement instantané vers Andre Claude Davin Obame", amount: -85000 },
+      { date: "23/09/2026", desc: "Virement vers Andre Claude Davin Obame", amount: -85000 },
       { date: "12/09/2026", desc: "Gestion patrimoine premium", amount: -5800 },
       { date: "11/09/2026", desc: "Assurance vie capitalisation", amount: -12000 },
       { date: "10/09/2026", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
@@ -456,7 +456,7 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2031" },
     ],
     transactions: [
-      { date: "23/09/2026", desc: "Virement instantané de Fritz Mambouka", amount: 85000 },
+      { date: "23/09/2026", desc: "Virement de Fritz Mambouka", amount: 85000 },
       { date: "15/09/2026", desc: "Virement entrant — Investissements ACD", amount: 35000 },
       { date: "14/09/2026", desc: "Gestion de patrimoine", amount: -2800 },
       { date: "13/09/2026", desc: "Virement sortant — Immobilier", amount: -18000 },
