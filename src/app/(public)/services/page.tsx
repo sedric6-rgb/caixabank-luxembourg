@@ -32,7 +32,7 @@ const SERVICES = [
     title: "Services digitaux",
     items: [
       { name: "Application mobile", desc: "Gérez vos comptes, effectuez des virements et suivez vos dépenses depuis votre smartphone.", price: "Gratuit" },
-      { name: "Virements instantanés", desc: "Transférez de l'argent en temps réel, 24h/24 et 7j/7, en zone SEPA.", price: "0 EUR" },
+      { name: "Virements immédiats", desc: "Transférez de l'argent en zone SEPA — exécution sous 48h ouvrées.", price: "0 EUR" },
       { name: "Apple Pay & Google Pay", desc: "Payez sans contact avec votre téléphone ou montre connectée.", price: "Inclus" },
       { name: "Notifications en temps réel", desc: "Recevez une alerte instantanée pour chaque opération sur votre compte.", price: "Inclus" },
     ],

@@ -26,7 +26,7 @@ export default function TarifsPage() {
         <Table title="Tarifs des opérations" headers={["Opération", "Tarif"]} rows={[
           ["Virement SEPA (en ligne)", "Gratuit"],
           ["Virement SEPA (en agence)", "5 EUR"],
-          ["Virement instantané", "Gratuit"],
+          ["Virement immédiat (48h)", "Gratuit"],
           ["Virement international", "25 EUR"],
           ["Prélèvement automatique", "Gratuit"],
           ["Retrait DAB CaixaBank", "Gratuit"],
