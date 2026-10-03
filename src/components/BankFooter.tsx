@@ -5,36 +5,34 @@ const FOOTER_COLS = [
     title: "La Banque",
     links: [
       { href: "/about", label: "A propos" },
-      { href: "/careers", label: "Carrieres" },
-      { href: "/presse", label: "Presse" },
-      { href: "/rse", label: "RSE" },
+      { href: "/services", label: "Notre expertise" },
+      { href: "/contact", label: "Nous contacter" },
     ],
   },
   {
-    title: "Particuliers",
+    title: "Gestion privee",
     links: [
-      { href: "/services", label: "Comptes" },
-      { href: "/services", label: "Epargne" },
-      { href: "/services", label: "Credits" },
-      { href: "/services", label: "Cartes" },
-      { href: "/services", label: "Assurances" },
+      { href: "/services", label: "Gestion de patrimoine" },
+      { href: "/services", label: "Conseil en investissements" },
+      { href: "/services", label: "Planification successorale" },
+      { href: "/services", label: "Family Office" },
     ],
   },
   {
-    title: "Professionnels",
+    title: "Services bancaires",
     links: [
-      { href: "/services", label: "Compte pro" },
-      { href: "/services", label: "Credit pro" },
-      { href: "/services", label: "Terminal de paiement" },
-    ],
-  },
-  {
-    title: "Aide",
-    links: [
-      { href: "/contact", label: "FAQ" },
-      { href: "/contact", label: "Contact" },
-      { href: "/contact", label: "Reclamations" },
+      { href: "/services", label: "Comptes prives" },
+      { href: "/services", label: "Cartes premium" },
+      { href: "/services", label: "Financements" },
       { href: "/tarifs", label: "Tarifs" },
+    ],
+  },
+  {
+    title: "Aide & Contact",
+    links: [
+      { href: "/contact", label: "Prendre rendez-vous" },
+      { href: "/contact", label: "Votre gestionnaire" },
+      { href: "/contact", label: "Reclamations" },
     ],
   },
 ];

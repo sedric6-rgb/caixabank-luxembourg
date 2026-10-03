@@ -4,11 +4,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
-  { href: "/", label: "Particuliers" },
-  { href: "/services", label: "Professionnels" },
-  { href: "/services", label: "Services" },
+  { href: "/services", label: "Gestion de patrimoine" },
+  { href: "/services", label: "Investissements" },
   { href: "/tarifs", label: "Tarifs" },
-  { href: "/agences", label: "Agences" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -53,7 +51,7 @@ export function BankHeader() {
             Espace Client
           </Link>
           <Link href="/contact" className="btn btn-accent text-sm">
-            Ouvrir un compte
+            Prendre rendez-vous
           </Link>
         </div>
 
@@ -104,7 +102,7 @@ export function BankHeader() {
                 onClick={() => setOpen(false)}
                 className="btn btn-accent w-full"
               >
-                Ouvrir un compte
+                Prendre rendez-vous
               </Link>
             </div>
           </nav>
