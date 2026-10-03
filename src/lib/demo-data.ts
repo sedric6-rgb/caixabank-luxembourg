@@ -506,4 +506,20 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { date: "24/09/2026", desc: "Ouverture — transfert du compte professionnel de Fritz Mambouka", amount: 875000 },
     ],
   },
+  {
+    id: 25, client_number: "CBP-250925", first_name: "Dominique", last_name: "Schmit Blocher",
+    email: "shmit@gmail.com", phone: "+33 7 56 67 78", date_of_birth: "07/12/1949",
+    address: "15 Rue de Passy", city: "Paris", postal_code: "75015", country: "France",
+    id_type: "Passeport", id_number: "DG 56889", status: "actif", created_at: "30/09/2026",
+    password: "France24",
+    accounts: [
+      { label: "Compte Courant", number: "LU53 0019 1014 0000 2500 2509 2500", balance: 0, type: "courant" },
+    ],
+    cards: [
+      { last4: "2509", type: "Visa Platinum", status: "Active", expiry: "09/2031" },
+    ],
+    transactions: [
+      { date: "30/09/2026", desc: "Ouverture de compte — CaixaBank Luxembourg", amount: 0 },
+    ],
+  },
 ]);
