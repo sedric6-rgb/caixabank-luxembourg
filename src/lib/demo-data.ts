@@ -442,6 +442,8 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { date: "12/09/2026", desc: "Gestion patrimoine premium", amount: -5800 },
       { date: "11/09/2026", desc: "Assurance vie capitalisation", amount: -12000 },
       { date: "10/09/2026", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
+      { date: "22/08/2026", desc: "Virement interne vers Livret Epargne", amount: -450000 },
+      { date: "18/08/2026", desc: "Virement entrant — SCP Mambuka Notaire, Mouyaga (Gabon) — Vente immobiliere", amount: 1698800 },
     ],
   },
   {
