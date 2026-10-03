@@ -437,13 +437,12 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
     transactions: [
       { date: "23/09/2026", desc: "Virement instantané vers Andre Claude Davin Obame", amount: -85000 },
       { date: "15/09/2026", desc: "Virement entrant — Holdings International", amount: 185000 },
-      { date: "14/09/2026", desc: "Acquisition immobiliere — Kirchberg", amount: -320000 },
       { date: "13/09/2026", desc: "Dividendes portefeuille", amount: 42000 },
       { date: "12/09/2026", desc: "Gestion patrimoine premium", amount: -5800 },
       { date: "11/09/2026", desc: "Assurance vie capitalisation", amount: -12000 },
       { date: "10/09/2026", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
       { date: "22/08/2026", desc: "Virement interne vers Livret Epargne", amount: -450000 },
-      { date: "18/08/2026", desc: "Virement entrant — SCP Mambuka Notaire, Mouyaga (Gabon) — Vente immobiliere", amount: 1698800 },
+      { date: "18/08/2026", desc: "Virement entrant — SCP Mambuka Notaire, Mouyaga (Gabon) — Vente immobiliere", amount: 1378800 },
     ],
   },
   {
