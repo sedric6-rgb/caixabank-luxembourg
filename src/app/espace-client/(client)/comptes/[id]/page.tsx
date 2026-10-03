@@ -56,7 +56,7 @@ export default async function AccountDetailPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      <TransactionsTable transactions={transactions} currency={account.currency} />
+      <TransactionsTable transactions={transactions} currency={account.currency} accountLabel={account.label} accountIban={account.account_number} />
     </div>
   );
 }

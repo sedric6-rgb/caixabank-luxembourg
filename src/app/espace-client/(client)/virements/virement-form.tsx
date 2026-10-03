@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { executeVirementAction, addBeneficiaryAction } from "@/lib/actions/virements";
 import { formatAmount } from "@/lib/format";
+import { downloadJustificatif } from "@/lib/justificatif";
 
 type Account = { id: number; label: string; balance: number; iban: string };
 type Beneficiary = { id: number; label: string; iban: string };
@@ -131,7 +132,26 @@ export default function VirementForm({ accounts, beneficiaries: initialBens, blo
         </p>
         <p className="text-xs text-gray-400 font-mono mb-6">{benIban}</p>
         {benMode === "new" && saveBen && <p className="text-sm text-green-600 mb-4">Le bénéficiaire a été enregistré.</p>}
-        <button onClick={resetForm} className="mt-2 text-sm text-blue-600 hover:underline">Faire un autre virement</button>
+        <button
+          onClick={() => downloadJustificatif({
+            type: typeLabel,
+            amount: Number(amount),
+            currency,
+            sourceLabel: sourceAcc?.label || "",
+            sourceIban: sourceAcc?.iban || "",
+            beneficiaryName: benName,
+            beneficiaryIban: benIban,
+            motif: motif || undefined,
+            frequency: transferType === "permanent" ? frequency : undefined,
+            date: transferType === "programme" ? scheduleDate : undefined,
+          })}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#003d82] text-white text-sm font-medium hover:bg-[#002a5c] transition-colors"
+        >
+          <svg width="16" height="16" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg>
+          Télécharger le justificatif
+        </button>
+        <br />
+        <button onClick={resetForm} className="mt-4 text-sm text-blue-600 hover:underline">Faire un autre virement</button>
       </div>
     );
   }

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { downloadJustificatif } from "@/lib/justificatif";
 
 interface Transaction {
   id: number;
@@ -29,7 +30,7 @@ const CATEGORIES = [
   { value: "divers", label: "Divers" },
 ];
 
-export default function TransactionsTable({ transactions, currency }: { transactions: Transaction[]; currency: string }) {
+export default function TransactionsTable({ transactions, currency, accountLabel, accountIban }: { transactions: Transaction[]; currency: string; accountLabel?: string; accountIban?: string }) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [typeFilter, setTypeFilter] = useState<"" | "credit" | "debit">("");
@@ -125,6 +126,7 @@ export default function TransactionsTable({ transactions, currency }: { transact
               <th className="text-left px-6 py-3 font-medium text-gray-500 hidden md:table-cell">Catégorie</th>
               <th className="text-right px-6 py-3 font-medium text-gray-500">Montant</th>
               <th className="text-right px-6 py-3 font-medium text-gray-500 hidden sm:table-cell">Solde après</th>
+              <th className="px-3 py-3 w-10"></th>
             </tr>
           </thead>
           <tbody>
@@ -140,10 +142,31 @@ export default function TransactionsTable({ transactions, currency }: { transact
                   {tx.type === "credit" ? "+" : "-"}{formatCurrency(tx.amount)}
                 </td>
                 <td className="px-6 py-3 text-right text-gray-500 hidden sm:table-cell">{formatCurrency(tx.balance_after)}</td>
+                <td className="px-3 py-3 text-center">
+                  {tx.category === "virement" && (
+                    <button
+                      title="Télécharger le justificatif"
+                      onClick={() => downloadJustificatif({
+                        type: tx.type === "credit" ? "Virement entrant" : "Virement sortant",
+                        amount: tx.amount,
+                        currency,
+                        sourceLabel: tx.type === "credit" ? (tx.counterparty || "—") : (accountLabel || "—"),
+                        sourceIban: tx.type === "credit" ? "—" : (accountIban || "—"),
+                        beneficiaryName: tx.type === "credit" ? (accountLabel || "—") : (tx.counterparty || tx.description),
+                        beneficiaryIban: tx.type === "credit" ? (accountIban || "—") : "—",
+                        motif: tx.description,
+                        date: new Date(tx.executed_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }),
+                      })}
+                      className="p-1.5 rounded-md hover:bg-gray-100 text-gray-400 hover:text-[#003d82] transition-colors"
+                    >
+                      <svg width="16" height="16" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M8 2v8M5 7l3 3 3-3M2 12h12"/></svg>
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
             {filtered.length === 0 && (
-              <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-400">Aucune opération trouvée</td></tr>
+              <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">Aucune opération trouvée</td></tr>
             )}
           </tbody>
         </table>
