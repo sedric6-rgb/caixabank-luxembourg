@@ -108,133 +108,29 @@ const CATALOG: CatalogProduct[] = [
   },
 ];
 
-function getFritzDavinProducts(): SavingsProduct[] {
-  return [
-    {
-      id: "ep-01",
-      type: "epargne_remuneree",
-      label: "Compte Epargne Remunere",
-      balance: 80000,
-      currency: "EUR",
-      rate: 2.50,
-      rateLabel: "Taux brut annuel",
-      availability: "Disponible a tout moment",
-      icon: "\u{1F3E6}",
-      color: "emerald",
-    },
-    {
-      id: "ct-01",
-      type: "compte_terme",
-      label: "Depot a terme 12 mois",
-      balance: 120000,
-      currency: "EUR",
-      rate: 3.75,
-      rateLabel: "Taux fixe garanti",
-      availability: "Bloque jusqu’au 22/08/2027",
-      maturity: "22/08/2027",
-      icon: "\u{1F512}",
-      color: "blue",
-    },
-    {
-      id: "dd-01",
-      type: "depot_devises",
-      label: "Depot USD",
-      balance: 48000,
-      currency: "USD",
-      rate: 4.10,
-      rateLabel: "Taux USD annuel",
-      availability: "Disponible a echeance (6 mois)",
-      maturity: "22/02/2027",
-      icon: "\u{1F30D}",
-      color: "violet",
-    },
-    {
-      id: "fm-01",
-      type: "fonds_monetaire",
-      label: "Fonds Monetaire Rendement+",
-      balance: 77000,
-      currency: "EUR",
-      rate: 3.42,
-      rateLabel: "Rendement net annualise",
-      availability: "Liquidite J+1",
-      icon: "\u{1F4CA}",
-      color: "amber",
-    },
-    {
-      id: "av-01",
-      type: "assurance_vie",
-      label: "Contrat de Capitalisation",
-      balance: 65000,
-      currency: "EUR",
-      rate: 3.20,
-      rateLabel: "Taux fonds en euros 2026",
-      availability: "Rachat partiel possible",
-      icon: "\u{1F6E1}️",
-      color: "teal",
-    },
-    {
-      id: "tp-01",
-      type: "tresorerie_perso",
-      label: "Tresorerie Sur Mesure",
-      balance: 60000,
-      currency: "EUR",
-      rate: 3.85,
-      rateLabel: "Taux negocie",
-      availability: "Echeance renouvelable 3 mois",
-      maturity: "04/01/2027",
-      icon: "\u{1F48E}",
-      color: "rose",
-    },
-  ];
-}
-
-function getDefaultProducts(totalBalance: number): SavingsProduct[] {
+function getProducts(totalBalance: number): SavingsProduct[] {
   if (totalBalance <= 0) return [];
-  const pct = (p: number) => Math.round(totalBalance * p);
-  return [
-    {
-      id: "ep-01",
-      type: "epargne_remuneree",
-      label: "Livret Epargne",
-      balance: pct(0.45),
-      currency: "EUR",
-      rate: 2.50,
-      rateLabel: "Taux brut annuel",
-      availability: "Disponible a tout moment",
-      icon: "\u{1F3E6}",
-      color: "emerald",
-    },
-    {
-      id: "ct-01",
-      type: "compte_terme",
-      label: "Depot a terme 6 mois",
-      balance: pct(0.30),
-      currency: "EUR",
-      rate: 3.50,
-      rateLabel: "Taux fixe garanti",
-      availability: "Bloque jusqu’au 04/04/2027",
-      maturity: "04/04/2027",
-      icon: "\u{1F512}",
-      color: "blue",
-    },
-    {
-      id: "fm-01",
-      type: "fonds_monetaire",
-      label: "Fonds Monetaire",
-      balance: pct(0.25),
-      currency: "EUR",
-      rate: 3.35,
-      rateLabel: "Rendement net annualise",
-      availability: "Liquidite J+2",
-      icon: "\u{1F4CA}",
-      color: "amber",
-    },
+  const ALLOC: { pct: number; id: string; type: SavingsType; label: string; rate: number; rateLabel: string; availability: string; maturity?: string; icon: string; color: string; currency: string }[] = [
+    { pct: 0.18, id: "ep-01", type: "epargne_remuneree", label: "Compte Epargne Remunere", rate: 2.50, rateLabel: "Taux brut annuel", availability: "Disponible a tout moment", icon: "\u{1F3E6}", color: "emerald", currency: "EUR" },
+    { pct: 0.27, id: "ct-01", type: "compte_terme", label: "Depot a terme 12 mois", rate: 3.75, rateLabel: "Taux fixe garanti", availability: "Bloque jusqu’au 22/08/2027", maturity: "22/08/2027", icon: "\u{1F512}", color: "blue", currency: "EUR" },
+    { pct: 0.11, id: "dd-01", type: "depot_devises", label: "Depot USD", rate: 4.10, rateLabel: "Taux USD annuel", availability: "Disponible a echeance (6 mois)", maturity: "22/02/2027", icon: "\u{1F30D}", color: "violet", currency: "USD" },
+    { pct: 0.17, id: "fm-01", type: "fonds_monetaire", label: "Fonds Monetaire Rendement+", rate: 3.42, rateLabel: "Rendement net annualise", availability: "Liquidite J+1", icon: "\u{1F4CA}", color: "amber", currency: "EUR" },
+    { pct: 0.14, id: "av-01", type: "assurance_vie", label: "Contrat de Capitalisation", rate: 3.20, rateLabel: "Taux fonds en euros 2026", availability: "Rachat partiel possible", icon: "\u{1F6E1}️", color: "teal", currency: "EUR" },
+    { pct: 0.13, id: "tp-01", type: "tresorerie_perso", label: "Tresorerie Sur Mesure", rate: 3.85, rateLabel: "Taux negocie", availability: "Echeance renouvelable 3 mois", maturity: "04/01/2027", icon: "\u{1F48E}", color: "rose", currency: "EUR" },
   ];
-}
-
-function isFritzOrDavin(name: string): boolean {
-  const n = name.toLowerCase();
-  return n.includes("fritz") || n.includes("davin");
+  return ALLOC.map((a) => ({
+    id: a.id,
+    type: a.type,
+    label: a.label,
+    balance: Math.round(totalBalance * a.pct),
+    currency: a.currency,
+    rate: a.rate,
+    rateLabel: a.rateLabel,
+    availability: a.availability,
+    maturity: a.maturity,
+    icon: a.icon,
+    color: a.color,
+  }));
 }
 
 function getInterestHistory(products: SavingsProduct[]) {
@@ -260,9 +156,7 @@ export default function EpargneClient({
   clientName: string;
 }) {
   const totalEpargne = epargneAccounts.reduce((s, a) => s + a.balance, 0);
-  const products = isFritzOrDavin(clientName)
-    ? getFritzDavinProducts()
-    : getDefaultProducts(totalEpargne);
+  const products = getProducts(totalEpargne);
 
   const [tab, setTab] = useState<"portfolio" | "catalog">("portfolio");
   const [expandedProduct, setExpandedProduct] = useState<string | null>(null);

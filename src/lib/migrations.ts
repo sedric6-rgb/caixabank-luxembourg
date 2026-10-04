@@ -43,6 +43,18 @@ const MIGRATIONS: Migration[] = [
       await persist("clients");
     },
   },
+  {
+    name: "2026-10-unblock-davin-servais",
+    run: async () => {
+      for (const id of [22, 23]) {
+        const client = DEMO_CLIENTS.find((c) => c.id === id);
+        if (client && client.status !== "actif") {
+          client.status = "actif";
+        }
+      }
+      await persist("clients");
+    },
+  },
 ];
 
 // Applied-once data fixups for existing databases, recorded in app_migrations so an admin can

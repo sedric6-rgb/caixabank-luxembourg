@@ -173,37 +173,27 @@ const PRODUCTS: Product[] = [
 /*  Personalized portfolio holdings                                    */
 /* ------------------------------------------------------------------ */
 
-const FRITZ_DAVIN_HOLDINGS: Holding[] = [
-  { productId: "imm-01", name: "SCPI Bureaux Prime Europe", category: "immobilier", invested: 100000, currentValue: 104200, perf: 4.2, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "liq-01", name: "Compte de liquidités", category: "liquidites", invested: 50000, currentValue: 50000, perf: 0, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "act-01", name: "Actions Européennes Large Cap", category: "actions", invested: 15000, currentValue: 15750, perf: 5.0, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "act-02", name: "ETF S&P 500", category: "actions", invested: 15000, currentValue: 15900, perf: 6.0, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "obl-01", name: "Obligations d'État Zone Euro AAA", category: "obligations", invested: 15000, currentValue: 15450, perf: 3.0, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "obl-02", name: "Corporate Bonds Investment Grade", category: "obligations", invested: 10000, currentValue: 10420, perf: 4.2, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "str-01", name: "Autocall Euro Stoxx 50 — Coupon 7 %", category: "produits_structures", invested: 15000, currentValue: 15525, perf: 3.5, dateAchat: "04/10/2026", currency: "EUR" },
-  { productId: "pe-02", name: "Secondaire Private Equity Global", category: "private_equity", invested: 15000, currentValue: 15000, perf: 0, dateAchat: "04/10/2026", currency: "EUR" },
+const HOLDING_TEMPLATE: { productId: string; name: string; category: AssetCategory; pct: number; perf: number; dateAchat: string; currency: string }[] = [
+  { productId: "asv-01", name: "Contrat Patrimoine Sécurité", category: "assurance_vie", pct: 0.30, perf: 3.36, dateAchat: "15/11/2024", currency: "EUR" },
+  { productId: "obl-04", name: "Dépôt à terme 12 mois", category: "obligations", pct: 0.18, perf: 1.75, dateAchat: "01/04/2026", currency: "EUR" },
+  { productId: "act-01", name: "Actions Européennes Large Cap", category: "actions", pct: 0.14, perf: 9.4, dateAchat: "15/03/2025", currency: "EUR" },
+  { productId: "obl-02", name: "Corporate Bonds Investment Grade", category: "obligations", pct: 0.11, perf: 4.2, dateAchat: "22/01/2025", currency: "EUR" },
+  { productId: "imm-01", name: "SCPI Bureaux Prime Europe", category: "immobilier", pct: 0.10, perf: 7.1, dateAchat: "10/06/2024", currency: "EUR" },
+  { productId: "act-02", name: "ETF S&P 500", category: "actions", pct: 0.08, perf: 6.0, dateAchat: "03/09/2024", currency: "USD" },
+  { productId: "str-01", name: "Autocall Euro Stoxx 50 — Coupon 7 %", category: "produits_structures", pct: 0.05, perf: 3.5, dateAchat: "04/10/2026", currency: "EUR" },
+  { productId: "pe-02", name: "Secondaire Private Equity Global", category: "private_equity", pct: 0.04, perf: 0, dateAchat: "04/10/2026", currency: "EUR" },
 ];
 
-const DEFAULT_HOLDINGS: Holding[] = [
-  { productId: "act-01", name: "Actions Européennes Large Cap", category: "actions", invested: 80000, currentValue: 87500, perf: 9.4, dateAchat: "15/03/2025", currency: "EUR" },
-  { productId: "obl-02", name: "Corporate Bonds Investment Grade", category: "obligations", invested: 60000, currentValue: 62500, perf: 4.2, dateAchat: "22/01/2025", currency: "EUR" },
-  { productId: "imm-01", name: "SCPI Bureaux Prime Europe", category: "immobilier", invested: 35000, currentValue: 37500, perf: 7.1, dateAchat: "10/06/2024", currency: "EUR" },
-  { productId: "act-02", name: "ETF S&P 500 (réplication physique)", category: "actions", invested: 30000, currentValue: 37500, perf: 25.0, dateAchat: "03/09/2024", currency: "USD" },
-  { productId: "obl-04", name: "Dépôt à terme 12 mois", category: "obligations", invested: 100000, currentValue: 101750, perf: 1.75, dateAchat: "01/04/2026", currency: "EUR" },
-  { productId: "asv-01", name: "Contrat Patrimoine Sécurité", category: "assurance_vie", invested: 250000, currentValue: 258400, perf: 3.36, dateAchat: "15/11/2024", currency: "EUR" },
-];
-
-function getInitialHoldings(clientName: string): Holding[] {
-  const lower = clientName.toLowerCase();
-  if (lower.includes("fritz") || lower.includes("davin")) {
-    return FRITZ_DAVIN_HOLDINGS;
-  }
-  return DEFAULT_HOLDINGS;
+function getInitialHoldings(_clientName: string, totalBalance: number): Holding[] {
+  if (totalBalance <= 0) return [];
+  return HOLDING_TEMPLATE.map((t) => {
+    const invested = Math.round(totalBalance * t.pct);
+    const currentValue = Math.round(invested * (1 + t.perf / 100));
+    return { productId: t.productId, name: t.name, category: t.category, invested, currentValue, perf: t.perf, dateAchat: t.dateAchat, currency: t.currency };
+  });
 }
 
-function getRiskProfile(clientName: string): number {
-  const lower = clientName.toLowerCase();
-  if (lower.includes("fritz") || lower.includes("davin")) return 2;
+function getRiskProfile(_clientName: string): number {
   return 1;
 }
 
@@ -216,18 +206,9 @@ const PERF_MONTHS = [
   "Avr 26", "Mai 26", "Jun 26", "Jul 26", "Aoû 26", "Sep 26", "Oct 26",
 ];
 
-function getPortfolioPerf(clientName: string): number[] {
-  const lower = clientName.toLowerCase();
-  if (lower.includes("fritz") || lower.includes("davin")) {
-    return [
-      228000, 229500, 231200, 229800, 230500,
-      232800, 231000, 233500, 234200, 233000, 234800, 236245,
-    ];
-  }
-  return [
-    560000, 565000, 572000, 568000, 575000,
-    580000, 577000, 583000, 585000, 582000, 584000, 585150,
-  ];
+function getPortfolioPerf(_clientName: string, totalBalance: number): number[] {
+  const factors = [0.96, 0.967, 0.978, 0.972, 0.984, 0.993, 0.988, 0.998, 1.002, 0.996, 1.000, 1.002];
+  return factors.map((f) => Math.round(totalBalance * f));
 }
 
 interface CategoryEvolution {
@@ -236,23 +217,15 @@ interface CategoryEvolution {
   values: number[];
 }
 
-function getCategoryEvolution(clientName: string): CategoryEvolution[] {
-  const lower = clientName.toLowerCase();
-  if (lower.includes("fritz") || lower.includes("davin")) {
-    return [
-      { label: "Immobilier", color: "#f59e0b", values: [100000, 100200, 100500, 100800, 101000, 101400, 101800, 102200, 102800, 103200, 103700, 104200] },
-      { label: "Liquidités", color: "#0ea5e9", values: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000] },
-      { label: "Actions & ETF", color: "#10b981", values: [30000, 29400, 29800, 28900, 29200, 30100, 29600, 30500, 31000, 30200, 31200, 31650] },
-      { label: "Obligations", color: "#3b82f6", values: [25000, 25100, 25200, 25350, 25400, 25500, 25600, 25700, 25750, 25800, 25850, 25870] },
-      { label: "Produits structurés", color: "#ec4899", values: [15000, 15050, 15100, 14900, 15100, 15200, 15150, 15300, 15350, 15250, 15400, 15525] },
-      { label: "Private Equity", color: "#8b5cf6", values: [15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000] },
-    ];
-  }
+function getCategoryEvolution(_clientName: string, totalBalance: number): CategoryEvolution[] {
+  const scale = (base: number[], pct: number) => base.map((v) => Math.round(totalBalance * pct * v));
   return [
-    { label: "Assurance-vie", color: "#06b6d4", values: [250000, 251200, 252500, 253800, 254200, 255000, 255500, 256200, 256800, 257200, 257800, 258400] },
-    { label: "Actions", color: "#10b981", values: [100000, 102000, 105000, 103000, 107000, 110000, 108000, 112000, 115000, 113000, 117000, 125000] },
-    { label: "Obligations", color: "#3b82f6", values: [155000, 155800, 156500, 157000, 157500, 158000, 158500, 159200, 159800, 160200, 160800, 164250] },
-    { label: "Immobilier", color: "#f59e0b", values: [35000, 35200, 35500, 35800, 36000, 36400, 36800, 37000, 37200, 37300, 37400, 37500] },
+    { label: "Assurance-vie", color: "#06b6d4", values: scale([0.97, 0.974, 0.98, 0.985, 0.987, 0.99, 0.992, 0.995, 0.997, 0.999, 1.0, 1.003], 0.30) },
+    { label: "Actions", color: "#10b981", values: scale([0.92, 0.94, 0.96, 0.95, 0.98, 1.0, 0.99, 1.02, 1.05, 1.03, 1.06, 1.08], 0.22) },
+    { label: "Obligations", color: "#3b82f6", values: scale([0.97, 0.975, 0.98, 0.983, 0.986, 0.99, 0.993, 0.996, 0.998, 1.0, 1.002, 1.005], 0.29) },
+    { label: "Immobilier", color: "#f59e0b", values: scale([0.96, 0.965, 0.97, 0.98, 0.985, 0.99, 0.995, 1.0, 1.003, 1.005, 1.007, 1.01], 0.10) },
+    { label: "Produits structurés", color: "#ec4899", values: scale([0.98, 0.985, 0.99, 0.975, 0.99, 0.995, 0.99, 1.0, 1.003, 0.998, 1.005, 1.01], 0.05) },
+    { label: "Private Equity", color: "#8b5cf6", values: scale([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 0.04) },
   ];
 }
 
@@ -268,7 +241,7 @@ export default function InvestissementsClient({
   totalBalance: number;
 }) {
   const [tab, setTab] = useState<"portefeuille" | "marche">("portefeuille");
-  const [holdings, setHoldings] = useState<Holding[]>(() => getInitialHoldings(clientName));
+  const [holdings, setHoldings] = useState<Holding[]>(() => getInitialHoldings(clientName, totalBalance));
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | "all">("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderAmount, setOrderAmount] = useState("");
@@ -282,8 +255,8 @@ export default function InvestissementsClient({
   const chartRef = useRef<ChartJS<"line"> | null>(null);
 
   const riskLevel = getRiskProfile(clientName);
-  const perfData = getPortfolioPerf(clientName);
-  const catEvolution = getCategoryEvolution(clientName);
+  const perfData = getPortfolioPerf(clientName, totalBalance);
+  const catEvolution = getCategoryEvolution(clientName, totalBalance);
 
   const notify = (msg: string) => {
     setToast(msg);

@@ -1,12 +1,14 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { requireAdmin } from "./admin-guard";
 import { ensureState, persist } from "@/lib/state";
 import { DEMO_CLIENTS, type DemoAccount, type DemoCard, type DemoTx } from "@/lib/demo-data";
 import { INSURANCES, newInsuranceId, type Insurance } from "@/lib/insurances-store";
 import { MANDATES, newMandateId, type Mandate } from "@/lib/mandates-store";
 import { DEMANDES } from "@/lib/demandes-store";
+import { createClientSessionToken } from "@/lib/auth-client";
 import { randomInt } from "crypto";
 
 type Result<T = object> = ({ success: true } & T) | { success: false; error: string };
@@ -272,4 +274,22 @@ export async function adminResetClientPasswordAction(clientId: number): Promise<
   await persist("clients", "demandes");
   refresh();
   return { success: true, password };
+}
+
+export async function adminLoginAsClientAction(clientId: number): Promise<Result> {
+  await requireAdmin();
+  await ensureState();
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false, error: "Client introuvable" };
+
+  const session = createClientSessionToken(clientId);
+  const cookieStore = await cookies();
+  cookieStore.set(session.name, session.value, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    expires: session.expires,
+  });
+  return { success: true };
 }
