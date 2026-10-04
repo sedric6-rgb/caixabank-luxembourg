@@ -420,7 +420,7 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
     ],
   },
   {
-    id: 21, client_number: "CBP-918274", first_name: "Fritz", last_name: "Mambouka",
+    id: 21, client_number: "CBP-918274", first_name: "Dienhy Fritz", last_name: "Mambouka",
     email: "f.mambouka@email.lu", phone: "+352 621 930 471", date_of_birth: "08/03/1980",
     address: "51 Av. de la Porte-Neuve", city: "Luxembourg", postal_code: "2227", country: "Luxembourg",
     id_type: "Passeport", id_number: "CG 4829103", status: "actif", created_at: "12/02/2022",
@@ -458,7 +458,7 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { last4: "5219", type: "Visa Platinum", status: "Active", expiry: "04/2031" },
     ],
     transactions: [
-      { date: "23/09/2026", desc: "Virement de Fritz Mambouka", amount: 85000 },
+      { date: "23/09/2026", desc: "Virement de Dienhy Fritz Mambouka", amount: 85000 },
       { date: "15/09/2026", desc: "Virement entrant — Investissements ACD", amount: 35000 },
       { date: "14/09/2026", desc: "Gestion de patrimoine", amount: -2800 },
       { date: "13/09/2026", desc: "Virement sortant — Immobilier", amount: -18000 },
@@ -504,7 +504,7 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { last4: "1024", type: "Visa Infinite", status: "Active", expiry: "09/2031" },
     ],
     transactions: [
-      { date: "24/09/2026", desc: "Ouverture — transfert du compte professionnel de Fritz Mambouka", amount: 875000 },
+      { date: "24/09/2026", desc: "Ouverture — transfert du compte professionnel de Dienhy Fritz Mambouka", amount: 875000 },
     ],
   },
   {

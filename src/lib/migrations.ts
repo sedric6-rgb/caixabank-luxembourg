@@ -74,6 +74,16 @@ const MIGRATIONS: Migration[] = [
       await persist("clients");
     },
   },
+  {
+    name: "2026-10-fritz-rename-dienhy",
+    run: async () => {
+      const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
+      if (fritz && fritz.first_name === "Fritz") {
+        fritz.first_name = "Dienhy Fritz";
+      }
+      await persist("clients");
+    },
+  },
 ];
 
 // Applied-once data fixups for existing databases, recorded in app_migrations so an admin can
