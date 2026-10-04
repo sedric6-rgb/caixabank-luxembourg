@@ -656,8 +656,8 @@ export default function InvestissementsClient({
                         </td>
                         <td className="px-4 py-3 text-right text-gray-600 tabular-nums">{fmtCurrency(h.invested)}</td>
                         <td className="px-4 py-3 text-right font-medium text-gray-900 tabular-nums">{fmtCurrency(h.currentValue)}</td>
-                        <td className={`px-4 py-3 text-right font-semibold tabular-nums ${h.perf >= 0 ? "text-green-600" : "text-red-600"}`}>
-                          {h.perf >= 0 ? "+" : ""}{h.perf.toFixed(2)} %
+                        <td className={`px-4 py-3 text-right font-semibold tabular-nums whitespace-nowrap ${h.perf >= 0 ? "text-green-600" : "text-red-600"}`}>
+                          {h.perf >= 0 ? "+" : ""}{h.perf.toFixed(2)}&nbsp;%
                         </td>
                         <td className="px-4 py-3 text-center">
                           <button
