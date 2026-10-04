@@ -7,12 +7,13 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  LineController,
   Filler,
   Tooltip as ChartTooltip,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, ChartTooltip);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, LineController, Filler, ChartTooltip);
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
