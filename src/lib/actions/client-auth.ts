@@ -143,12 +143,46 @@ export async function changePasswordAction(formData: FormData): Promise<{ succes
   const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
-  const expected = client.password || DEMO_PASSWORD;
-  if (current !== expected) {
+  let passwordValid = false;
+
+  if (db) {
+    try {
+      const crypto = await import("crypto");
+      const inputHash = crypto.createHash("sha256").update(current).digest("hex");
+      const [rows] = await db.query<RowDataPacket[]>(
+        "SELECT id FROM bank_clients WHERE id = ? AND password_hash = ?",
+        [session.clientId, inputHash]
+      );
+      if (rows.length > 0) passwordValid = true;
+    } catch {
+      // DB unavailable, fall through to in-memory check
+    }
+  }
+
+  if (!passwordValid) {
+    const expected = client.password || DEMO_PASSWORD;
+    if (current === expected) passwordValid = true;
+  }
+
+  if (!passwordValid) {
     return { success: false, error: "Mot de passe actuel incorrect" };
   }
 
   client.password = newPwd;
   await persist("clients");
+
+  if (db) {
+    try {
+      const crypto = await import("crypto");
+      const newHash = crypto.createHash("sha256").update(newPwd).digest("hex");
+      await db.query(
+        "UPDATE bank_clients SET password_hash = ? WHERE id = ?",
+        [newHash, session.clientId]
+      );
+    } catch {
+      // DB update failed but in-memory password is still updated
+    }
+  }
+
   return { success: true };
 }

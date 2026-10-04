@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { changePasswordAction } from "@/lib/actions/client-auth";
 
 interface ClientData {
   first_name: string;
@@ -20,6 +21,7 @@ export default function ProfilClient({ client }: { client: ClientData }) {
   const [form, setForm] = useState({ email: client.email, phone: client.phone, address: client.address, postal_code: client.postal_code, city: client.city });
   const [toast, setToast] = useState("");
   const [showPwdForm, setShowPwdForm] = useState(false);
+  const [pwdPending, startPwdTransition] = useTransition();
   const [twoFA, setTwoFA] = useState(false);
   const [notifs, setNotifs] = useState([true, true, false]);
 
@@ -32,13 +34,23 @@ export default function ProfilClient({ client }: { client: ClientData }) {
 
   const changePwd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const newPwd = String(fd.get("newPwd"));
-    const confirmPwd = String(fd.get("confirmPwd"));
-    if (newPwd !== confirmPwd) { notify("Les mots de passe ne correspondent pas"); return; }
-    if (newPwd.length < 8) { notify("Le mot de passe doit contenir au moins 8 caracteres"); return; }
-    setShowPwdForm(false);
-    notify("Mot de passe modifie avec succes");
+    const formEl = e.currentTarget;
+    const fd = new FormData(formEl);
+    const serverFd = new FormData();
+    serverFd.set("current_password", String(fd.get("currentPwd") || ""));
+    serverFd.set("new_password", String(fd.get("newPwd") || ""));
+    serverFd.set("confirm_password", String(fd.get("confirmPwd") || ""));
+
+    startPwdTransition(async () => {
+      const res = await changePasswordAction(serverFd);
+      if (res.success) {
+        setShowPwdForm(false);
+        formEl.reset();
+        notify("Mot de passe modifie avec succes");
+      } else {
+        notify(res.error || "Erreur lors du changement de mot de passe");
+      }
+    });
   };
 
   const toggleNotif = (i: number) => {
@@ -106,8 +118,8 @@ export default function ProfilClient({ client }: { client: ClientData }) {
                 <div><label className="block text-xs text-gray-500 mb-1">Nouveau mot de passe</label><input name="newPwd" type="password" required minLength={8} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                 <div><label className="block text-xs text-gray-500 mb-1">Confirmer</label><input name="confirmPwd" type="password" required minLength={8} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" /></div>
                 <div className="flex gap-3">
-                  <button type="submit" className="bg-[#003d82] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#002a5c]">Changer le mot de passe</button>
-                  <button type="button" onClick={() => setShowPwdForm(false)} className="text-sm text-gray-500 hover:text-gray-700">Annuler</button>
+                  <button type="submit" disabled={pwdPending} className="bg-[#003d82] text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-[#002a5c] disabled:opacity-50">{pwdPending ? "Modification..." : "Changer le mot de passe"}</button>
+                  <button type="button" onClick={() => setShowPwdForm(false)} disabled={pwdPending} className="text-sm text-gray-500 hover:text-gray-700">Annuler</button>
                 </div>
               </form>
             )}
