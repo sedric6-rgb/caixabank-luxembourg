@@ -5,7 +5,7 @@ import { useState, useTransition } from "react";
 import type { DemoAccount, DemoTx, DemoCard } from "@/lib/demo-data";
 import type { AdminClient } from "@/lib/admin-view";
 import { adminAddTransactionAction } from "@/lib/actions/virements";
-import { adminUpdateTransactionAction, adminDeleteTransactionAction } from "@/lib/actions/admin-data";
+import { adminUpdateTransactionAction, adminDeleteTransactionAction, adminCloseAccountAction } from "@/lib/actions/admin-data";
 import { formatAmount } from "@/lib/format";
 
 function today() {
@@ -21,6 +21,8 @@ export default function AccountView({ client, initialAccount }: { client: AdminC
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [toast, setToast] = useState("");
   const [tab, setTab] = useState<"mouvements" | "cartes" | "infos">("mouvements");
+  const [confirmClose, setConfirmClose] = useState(false);
+  const [closed, setClosed] = useState(false);
   const [, startTransition] = useTransition();
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
@@ -100,7 +102,14 @@ export default function AccountView({ client, initialAccount }: { client: AdminC
               <Link href={`/admin/clients/${client.id}`} className="text-blue-600 hover:underline">{client.first_name} {client.last_name}</Link>
             </p>
           </div>
-          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium self-start ${statusColor}`}>{statusLabel}</span>
+          <div className="flex items-center gap-2 self-start">
+            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${statusColor}`}>{statusLabel}</span>
+            {!closed && (
+              <button onClick={() => setConfirmClose(true)} className="px-3 py-1 rounded-full text-sm font-medium border border-red-200 text-red-600 hover:bg-red-50">
+                Cloturer
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -266,6 +275,43 @@ export default function AccountView({ client, initialAccount }: { client: AdminC
             <Info label="Adresse" value={`${client.address}, ${client.postal_code} ${client.city}`} />
             <Info label="Ouvert le" value={client.created_at} />
             <Info label="Statut" value={statusLabel} />
+          </div>
+        </div>
+      )}
+
+      {closed && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+          <p className="text-red-700 font-semibold">Ce compte a ete cloture.</p>
+          <Link href="/admin/comptes" className="text-sm text-blue-600 hover:underline mt-2 inline-block">Retour aux comptes</Link>
+        </div>
+      )}
+
+      {confirmClose && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-xl">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Cloturer ce compte ?</h2>
+            <p className="text-sm text-gray-500 mb-1">Compte : <span className="font-mono text-gray-700">{account.number}</span></p>
+            {account.balance !== 0 ? (
+              <p className="text-sm text-red-600 mb-4">Le solde doit etre a zero avant cloture (solde actuel : {formatAmount(account.balance)} EUR).</p>
+            ) : (
+              <p className="text-sm text-gray-500 mb-4">Cette action est irreversible. Le compte sera supprime definitivement.</p>
+            )}
+            <div className="flex gap-3">
+              <button
+                onClick={async () => {
+                  const res = await adminCloseAccountAction(client.id, account.number);
+                  if (res.success) {
+                    setConfirmClose(false);
+                    setClosed(true);
+                    notify("Compte cloture avec succes");
+                  } else {
+                    notify(res.error);
+                  }
+                }}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700"
+              >Cloturer</button>
+              <button onClick={() => setConfirmClose(false)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
+            </div>
           </div>
         </div>
       )}

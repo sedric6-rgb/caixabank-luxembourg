@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { formatAmount } from "@/lib/format";
 import type { AdminClient } from "@/lib/admin-view";
-import { adminCreateAccountAction, adminInternalTransferAction } from "@/lib/actions/admin-data";
+import { adminCreateAccountAction, adminInternalTransferAction, adminCloseAccountAction } from "@/lib/actions/admin-data";
 
 type Account = {
   id: number;
@@ -63,6 +63,7 @@ export default function ComptesClient({ clients }: { clients: AdminClient[] }) {
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState("");
   const [showTransfer, setShowTransfer] = useState(false);
+  const [confirmClose, setConfirmClose] = useState<Account | null>(null);
 
   const filtered = accounts.filter((a) => {
     if (filter !== "Tous" && a.type !== filter) return false;
@@ -251,11 +252,16 @@ export default function ComptesClient({ clients }: { clients: AdminClient[] }) {
                 <td className="px-4 py-3 text-gray-500">{a.type}</td>
                 <td className="px-4 py-3 text-right font-medium text-gray-900 whitespace-nowrap">{formatAmount(a.balance)}</td>
                 <td className="px-4 py-3"><span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${S[a.status]}`}>{L[a.status]}</span></td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-3 text-right space-x-2">
                   {a.clientId > 0 ? (
-                    <Link href={`/admin/comptes/${a.clientId}-${a.acctIdx}`} className="text-blue-600 hover:text-blue-800 text-xs font-medium">
-                      Ouvrir
-                    </Link>
+                    <>
+                      <Link href={`/admin/comptes/${a.clientId}-${a.acctIdx}`} className="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                        Ouvrir
+                      </Link>
+                      <button onClick={() => setConfirmClose(a)} className="text-red-500 hover:text-red-700 text-xs font-medium">
+                        Cloturer
+                      </button>
+                    </>
                   ) : <span className="text-xs text-gray-400">—</span>}
                 </td>
               </tr>
@@ -264,6 +270,41 @@ export default function ComptesClient({ clients }: { clients: AdminClient[] }) {
           </tbody>
         </table>
       </div>
+
+      {confirmClose && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl p-6 max-w-md mx-4 shadow-xl">
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Cloturer ce compte ?</h2>
+            <p className="text-sm text-gray-500 mb-1">Titulaire : <span className="font-medium text-gray-700">{confirmClose.holder}</span></p>
+            <p className="text-sm text-gray-500 mb-1">Compte : <span className="font-mono text-gray-700">{confirmClose.shortNumber}</span></p>
+            {confirmClose.balance !== 0 ? (
+              <p className="text-sm text-red-600 mb-4">Le solde doit etre a zero avant cloture (solde actuel : {formatAmount(confirmClose.balance)} EUR).</p>
+            ) : (
+              <p className="text-sm text-gray-500 mb-4">Cette action est irreversible.</p>
+            )}
+            <div className="flex gap-3">
+              <button
+                disabled={isPending}
+                onClick={() => {
+                  const acct = confirmClose;
+                  startTransition(async () => {
+                    const res = await adminCloseAccountAction(acct.clientId, acct.number);
+                    if (res.success) {
+                      setAccounts((prev) => prev.filter((a) => a.number !== acct.number));
+                      setConfirmClose(null);
+                      notify("Compte cloture avec succes");
+                    } else {
+                      notify(res.error);
+                    }
+                  });
+                }}
+                className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+              >Cloturer</button>
+              <button onClick={() => setConfirmClose(null)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

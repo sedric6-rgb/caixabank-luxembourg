@@ -10,7 +10,7 @@ import {
   adminAddTransactionAction,
   adminAddAccountAction,
 } from "@/lib/actions/virements";
-import { adminResetClientPasswordAction, adminLoginAsClientAction } from "@/lib/actions/admin-data";
+import { adminResetClientPasswordAction, adminLoginAsClientAction, adminCloseAccountAction } from "@/lib/actions/admin-data";
 import { formatAmount } from "@/lib/format";
 
 export default function ClientDetail({ initial }: { initial: DemoClient }) {
@@ -28,6 +28,7 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
   const [txBlocked, setTxBlocked] = useState(initial._transactions_blocked || false);
   const [waOpen, setWaOpen] = useState(false);
   const [waCustom, setWaCustom] = useState("");
+  const [confirmCloseAcct, setConfirmCloseAcct] = useState<string | null>(null);
   const [toast, setToast] = useState("");
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
@@ -248,7 +249,12 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
                     <p className="text-sm font-medium text-gray-900">{a.label}</p>
                     <p className="text-xs font-mono text-gray-400">{a.number}</p>
                   </div>
-                  <span className={`text-sm font-bold ${a.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{formatAmount(a.balance)} EUR</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-bold ${a.balance >= 0 ? "text-gray-900" : "text-red-600"}`}>{formatAmount(a.balance)} EUR</span>
+                    <button onClick={() => setConfirmCloseAcct(a.number)} className="p-1.5 rounded-md hover:bg-red-100 text-gray-400 hover:text-red-600" title="Cloturer ce compte">
+                      <svg width="14" height="14" fill="none" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    </button>
+                  </div>
                 </div>
               ))}
               <p className="text-right text-sm font-bold text-gray-900 pt-2 border-t border-gray-200">
@@ -398,6 +404,30 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
           <div className="flex gap-3">
             <button onClick={resetPassword} className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-[#003d82] hover:bg-[#002a5c]">Confirmer</button>
             <button onClick={() => setConfirmReset(false)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
+          </div>
+        </Modal>
+      )}
+
+      {confirmCloseAcct && (
+        <Modal onClose={() => setConfirmCloseAcct(null)}>
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Cloturer ce compte ?</h2>
+          <p className="text-sm text-gray-500 mb-2">Compte : <span className="font-mono text-gray-700">{confirmCloseAcct}</span></p>
+          {(() => { const a = accounts.find((x) => x.number === confirmCloseAcct); return a && a.balance !== 0 ? <p className="text-sm text-red-600 mb-4">Le solde doit etre a zero avant cloture (solde actuel : {formatAmount(a.balance)} EUR). Effectuez un virement du solde restant avant de cloturer.</p> : <p className="text-sm text-gray-500 mb-4">Cette action est irreversible. Le compte sera supprime definitivement.</p>; })()}
+          <div className="flex gap-3">
+            <button
+              onClick={async () => {
+                const res = await adminCloseAccountAction(initial.id, confirmCloseAcct);
+                if (res.success) {
+                  setAccounts((prev) => prev.filter((a) => a.number !== confirmCloseAcct));
+                  setConfirmCloseAcct(null);
+                  notify("Compte cloture avec succes");
+                } else {
+                  notify(res.error);
+                }
+              }}
+              className="flex-1 py-2.5 rounded-lg text-sm font-medium text-white bg-red-600 hover:bg-red-700"
+            >Cloturer</button>
+            <button onClick={() => setConfirmCloseAcct(null)} className="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-200">Annuler</button>
           </div>
         </Modal>
       )}
