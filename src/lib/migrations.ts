@@ -55,6 +55,25 @@ const MIGRATIONS: Migration[] = [
       await persist("clients");
     },
   },
+  {
+    name: "2026-10-fritz-investment-debit",
+    run: async () => {
+      const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
+      if (!fritz) return;
+      const courant = fritz.accounts.find((a) => a.type === "courant");
+      const epargne = fritz.accounts.find((a) => a.type === "epargne");
+      if (courant && courant.balance > 160000) courant.balance -= 160000;
+      if (epargne && epargne.balance > 100000) epargne.balance -= 100000;
+      const hasTx = fritz.transactions.some((t) => t.desc.includes("Souscription portefeuille investissement"));
+      if (!hasTx) {
+        fritz.transactions.splice(4, 0,
+          { date: "01/09/2026", desc: "Souscription portefeuille investissement — Livret Epargne", amount: -100000 },
+          { date: "01/09/2026", desc: "Souscription portefeuille investissement — Compte Courant", amount: -160000 },
+        );
+      }
+      await persist("clients");
+    },
+  },
 ];
 
 // Applied-once data fixups for existing databases, recorded in app_migrations so an admin can

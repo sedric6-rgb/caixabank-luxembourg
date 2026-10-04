@@ -426,8 +426,8 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
     id_type: "Passeport", id_number: "CG 4829103", status: "actif", created_at: "12/02/2022",
     password: "Azerty31@",
     accounts: [
-      { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 1148000.00, type: "courant" },
-      { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 450000.00, type: "epargne" },
+      { label: "Compte Courant", number: "LU62 0019 1014 0000 2100 9182 7400", balance: 988000.00, type: "courant" },
+      { label: "Livret Epargne", number: "LU73 0019 2004 0000 2100 8273 6500", balance: 350000.00, type: "epargne" },
     ],
     cards: [
       { last4: "9012", type: "Visa Platinum", status: "Active", expiry: "02/2031" },
@@ -439,6 +439,8 @@ export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
       { date: "12/09/2026", desc: "Gestion patrimoine premium", amount: -5800 },
       { date: "11/09/2026", desc: "Assurance vie capitalisation", amount: -12000 },
       { date: "10/09/2026", desc: "Virement entrant — Societe FM Consulting", amount: 95000 },
+      { date: "01/09/2026", desc: "Souscription portefeuille investissement — Livret Epargne", amount: -100000 },
+      { date: "01/09/2026", desc: "Souscription portefeuille investissement — Compte Courant", amount: -160000 },
       { date: "22/08/2026", desc: "Virement interne vers Livret Epargne", amount: -450000 },
       { date: "18/08/2026", desc: "Virement entrant — SCP Mambuka Notaire, Mouyaga (Gabon) — Vente immobiliere", amount: 1605800 },
     ],
