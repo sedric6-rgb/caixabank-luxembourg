@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
+import type { MarketScenario } from "@/lib/market-simulation";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -184,12 +185,30 @@ const HOLDING_TEMPLATE: { productId: string; name: string; category: AssetCatego
   { productId: "pe-02", name: "Secondaire Private Equity Global", category: "private_equity", pct: 0.04, perf: 0, dateAchat: "04/10/2026", currency: "EUR" },
 ];
 
-function getInitialHoldings(_clientName: string, totalBalance: number): Holding[] {
+const CATEGORY_SENSITIVITY: Partial<Record<AssetCategory, number>> = {
+  actions: 1.5,
+  private_equity: 1.3,
+  fonds_alternatifs: 1.2,
+  matieres_premieres: 1.1,
+  produits_structures: 0.8,
+  immobilier: 0.6,
+  obligations: 0.3,
+  assurance_vie: 0.2,
+  dette_privee: 0.4,
+  infrastructures: 0.5,
+  gestion_mandat: 0.7,
+  liquidites: 0,
+};
+
+function getInitialHoldings(_clientName: string, totalBalance: number, multiplier = 1.0): Holding[] {
   if (totalBalance <= 0) return [];
   return HOLDING_TEMPLATE.map((t) => {
     const invested = Math.round(totalBalance * t.pct);
-    const currentValue = Math.round(invested * (1 + t.perf / 100));
-    return { productId: t.productId, name: t.name, category: t.category, invested, currentValue, perf: t.perf, dateAchat: t.dateAchat, currency: t.currency };
+    const sensitivity = CATEGORY_SENSITIVITY[t.category] ?? 1.0;
+    const effectiveMultiplier = 1 + (multiplier - 1) * sensitivity;
+    const currentValue = Math.round(invested * (1 + t.perf / 100) * effectiveMultiplier);
+    const perf = invested > 0 ? ((currentValue - invested) / invested) * 100 : 0;
+    return { productId: t.productId, name: t.name, category: t.category, invested, currentValue, perf, dateAchat: t.dateAchat, currency: t.currency };
   });
 }
 
@@ -206,9 +225,13 @@ const PERF_MONTHS = [
   "Avr 26", "Mai 26", "Jun 26", "Jul 26", "Aoû 26", "Sep 26", "Oct 26",
 ];
 
-function getPortfolioPerf(_clientName: string, totalBalance: number): number[] {
-  const factors = [0.96, 0.967, 0.978, 0.972, 0.984, 0.993, 0.988, 0.998, 1.002, 0.996, 1.000, 1.002];
-  return factors.map((f) => Math.round(totalBalance * f));
+function getPortfolioPerf(_clientName: string, totalBalance: number, multiplier = 1.0): number[] {
+  const baseFactors = [0.96, 0.967, 0.978, 0.972, 0.984, 0.993, 0.988, 0.998, 1.002, 0.996, 1.000, 1.002];
+  return baseFactors.map((f, i) => {
+    const progress = i / (baseFactors.length - 1);
+    const scenarioEffect = 1 + (multiplier - 1) * progress;
+    return Math.round(totalBalance * f * scenarioEffect);
+  });
 }
 
 interface CategoryEvolution {
@@ -217,15 +240,20 @@ interface CategoryEvolution {
   values: number[];
 }
 
-function getCategoryEvolution(_clientName: string, totalBalance: number): CategoryEvolution[] {
-  const scale = (base: number[], pct: number) => base.map((v) => Math.round(totalBalance * pct * v));
+function getCategoryEvolution(_clientName: string, totalBalance: number, multiplier = 1.0): CategoryEvolution[] {
+  const scale = (base: number[], pct: number, sensitivity: number) =>
+    base.map((v, i) => {
+      const progress = i / (base.length - 1);
+      const scenarioEffect = 1 + (multiplier - 1) * sensitivity * progress;
+      return Math.round(totalBalance * pct * v * scenarioEffect);
+    });
   return [
-    { label: "Assurance-vie", color: "#06b6d4", values: scale([0.97, 0.974, 0.98, 0.985, 0.987, 0.99, 0.992, 0.995, 0.997, 0.999, 1.0, 1.003], 0.30) },
-    { label: "Actions", color: "#10b981", values: scale([0.92, 0.94, 0.96, 0.95, 0.98, 1.0, 0.99, 1.02, 1.05, 1.03, 1.06, 1.08], 0.22) },
-    { label: "Obligations", color: "#3b82f6", values: scale([0.97, 0.975, 0.98, 0.983, 0.986, 0.99, 0.993, 0.996, 0.998, 1.0, 1.002, 1.005], 0.29) },
-    { label: "Immobilier", color: "#f59e0b", values: scale([0.96, 0.965, 0.97, 0.98, 0.985, 0.99, 0.995, 1.0, 1.003, 1.005, 1.007, 1.01], 0.10) },
-    { label: "Produits structurés", color: "#ec4899", values: scale([0.98, 0.985, 0.99, 0.975, 0.99, 0.995, 0.99, 1.0, 1.003, 0.998, 1.005, 1.01], 0.05) },
-    { label: "Private Equity", color: "#8b5cf6", values: scale([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 0.04) },
+    { label: "Assurance-vie", color: "#06b6d4", values: scale([0.97, 0.974, 0.98, 0.985, 0.987, 0.99, 0.992, 0.995, 0.997, 0.999, 1.0, 1.003], 0.30, 0.2) },
+    { label: "Actions", color: "#10b981", values: scale([0.92, 0.94, 0.96, 0.95, 0.98, 1.0, 0.99, 1.02, 1.05, 1.03, 1.06, 1.08], 0.22, 1.5) },
+    { label: "Obligations", color: "#3b82f6", values: scale([0.97, 0.975, 0.98, 0.983, 0.986, 0.99, 0.993, 0.996, 0.998, 1.0, 1.002, 1.005], 0.29, 0.3) },
+    { label: "Immobilier", color: "#f59e0b", values: scale([0.96, 0.965, 0.97, 0.98, 0.985, 0.99, 0.995, 1.0, 1.003, 1.005, 1.007, 1.01], 0.10, 0.6) },
+    { label: "Produits structurés", color: "#ec4899", values: scale([0.98, 0.985, 0.99, 0.975, 0.99, 0.995, 0.99, 1.0, 1.003, 0.998, 1.005, 1.01], 0.05, 0.8) },
+    { label: "Private Equity", color: "#8b5cf6", values: scale([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], 0.04, 1.3) },
   ];
 }
 
@@ -233,15 +261,27 @@ function getCategoryEvolution(_clientName: string, totalBalance: number): Catego
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 
+const SCENARIO_LABELS: Record<MarketScenario, { label: string; color: string; icon: string }> = {
+  normal: { label: "Normal", color: "bg-gray-100 text-gray-600", icon: "⚖️" },
+  bull: { label: "Marché haussier", color: "bg-green-100 text-green-700", icon: "📈" },
+  correction: { label: "Correction", color: "bg-orange-100 text-orange-700", icon: "📉" },
+  crash: { label: "Krach", color: "bg-red-100 text-red-700", icon: "💥" },
+  stable: { label: "Marché stable", color: "bg-blue-100 text-blue-700", icon: "➡️" },
+};
+
 export default function InvestissementsClient({
   clientName,
   totalBalance,
+  marketScenario = "normal",
+  marketMultiplier = 1.0,
 }: {
   clientName: string;
   totalBalance: number;
+  marketScenario?: MarketScenario;
+  marketMultiplier?: number;
 }) {
   const [tab, setTab] = useState<"portefeuille" | "marche">("portefeuille");
-  const [holdings, setHoldings] = useState<Holding[]>(() => getInitialHoldings(clientName, totalBalance));
+  const [holdings, setHoldings] = useState<Holding[]>(() => getInitialHoldings(clientName, totalBalance, marketMultiplier));
   const [selectedCategory, setSelectedCategory] = useState<AssetCategory | "all">("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderAmount, setOrderAmount] = useState("");
@@ -255,8 +295,8 @@ export default function InvestissementsClient({
   const chartRef = useRef<ChartJS<"line"> | null>(null);
 
   const riskLevel = getRiskProfile(clientName);
-  const perfData = getPortfolioPerf(clientName, totalBalance);
-  const catEvolution = getCategoryEvolution(clientName, totalBalance);
+  const perfData = getPortfolioPerf(clientName, totalBalance, marketMultiplier);
+  const catEvolution = getCategoryEvolution(clientName, totalBalance, marketMultiplier);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -420,6 +460,19 @@ export default function InvestissementsClient({
       {/* TAB 1: PORTEFEUILLE */}
       {tab === "portefeuille" && (
         <>
+          {/* Simulation banner */}
+          {marketScenario !== "normal" && (
+            <div className={`rounded-xl px-4 py-3 mb-4 flex items-center gap-3 ${SCENARIO_LABELS[marketScenario].color}`}>
+              <span className="text-xl">{SCENARIO_LABELS[marketScenario].icon}</span>
+              <div className="text-sm">
+                <span className="font-bold">Simulation active :</span>{" "}
+                <span>{SCENARIO_LABELS[marketScenario].label}</span>
+                <span className="ml-2 opacity-75">
+                  (multiplicateur {marketMultiplier.toFixed(2)}x)
+                </span>
+              </div>
+            </div>
+          )}
           {/* Hero card */}
           <div className="bg-gradient-to-br from-[#001f42] to-[#003d82] rounded-2xl p-8 text-center mb-6">
             <p className="text-xs font-bold tracking-widest uppercase text-white/60 mb-2">Valeur totale du portefeuille</p>
