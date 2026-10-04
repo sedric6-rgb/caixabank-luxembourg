@@ -8,6 +8,7 @@ import ClientMobileNav from "./ClientMobileNav";
 import NotificationBell from "./NotificationBell";
 import { DEMO_CLIENTS } from "@/lib/demo-data";
 import { readState } from "@/lib/state";
+import { isValidSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 
 const NAV = [
   { href: "/espace-client", label: "Tableau de bord", icon: "dashboard" },
@@ -46,9 +47,24 @@ export default async function EspaceClientLayout({ children }: { children: React
   const clientNumber = client?.client_number || "";
   const notifications = await getClientNotifications(session.clientId);
 
+  const adminToken = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  const isAdmin = isValidSessionToken(adminToken);
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <aside className="hidden lg:flex lg:flex-col w-[270px] bg-[#001f42] text-gray-300 fixed inset-y-0 left-0 z-30">
+    <div className="flex min-h-screen bg-gray-50 flex-col">
+      {isAdmin && (
+        <div className="bg-amber-500 text-white px-4 py-2 flex items-center justify-between z-50 relative">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <svg width="16" height="16" fill="none" viewBox="0 0 16 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 1l2 4h4l-3 3 1 4-4-2-4 2 1-4-3-3h4z"/></svg>
+            Mode administrateur — Consultation du compte de {clientName}
+          </div>
+          <Link href={`/admin/clients/${session.clientId}`} className="text-sm bg-white/20 hover:bg-white/30 px-3 py-1 rounded-md transition-colors">
+            Retour à l&apos;administration
+          </Link>
+        </div>
+      )}
+      <div className="flex flex-1">
+      <aside className={`hidden lg:flex lg:flex-col w-[270px] bg-[#001f42] text-gray-300 fixed ${isAdmin ? "top-[40px]" : "top-0"} bottom-0 left-0 z-30`}>
         <div className="p-6 border-b border-white/10">
           <Link href="/" className="flex items-center gap-2.5">
             <img src="/logo-caixa.png" alt="CaixaBank" width={32} height={32} className="h-8 w-8" />
@@ -96,6 +112,7 @@ export default async function EspaceClientLayout({ children }: { children: React
           </div>
         </header>
         <div className="p-4 sm:p-6">{children}</div>
+      </div>
       </div>
     </div>
   );
