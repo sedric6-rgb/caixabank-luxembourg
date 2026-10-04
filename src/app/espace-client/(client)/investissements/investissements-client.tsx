@@ -229,6 +229,32 @@ function getPortfolioPerf(clientName: string): number[] {
   ];
 }
 
+interface CategoryEvolution {
+  label: string;
+  color: string;
+  values: number[];
+}
+
+function getCategoryEvolution(clientName: string): CategoryEvolution[] {
+  const lower = clientName.toLowerCase();
+  if (lower.includes("fritz") || lower.includes("davin")) {
+    return [
+      { label: "Immobilier", color: "#f59e0b", values: [100000, 100200, 100500, 100800, 101000, 101400, 101800, 102200, 102800, 103200, 103700, 104200] },
+      { label: "Liquidités", color: "#0ea5e9", values: [50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000, 50000] },
+      { label: "Actions & ETF", color: "#10b981", values: [30000, 29400, 29800, 28900, 29200, 30100, 29600, 30500, 31000, 30200, 31200, 31650] },
+      { label: "Obligations", color: "#3b82f6", values: [25000, 25100, 25200, 25350, 25400, 25500, 25600, 25700, 25750, 25800, 25850, 25870] },
+      { label: "Produits structurés", color: "#ec4899", values: [15000, 15050, 15100, 14900, 15100, 15200, 15150, 15300, 15350, 15250, 15400, 15525] },
+      { label: "Private Equity", color: "#8b5cf6", values: [15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000, 15000] },
+    ];
+  }
+  return [
+    { label: "Assurance-vie", color: "#06b6d4", values: [250000, 251200, 252500, 253800, 254200, 255000, 255500, 256200, 256800, 257200, 257800, 258400] },
+    { label: "Actions", color: "#10b981", values: [100000, 102000, 105000, 103000, 107000, 110000, 108000, 112000, 115000, 113000, 117000, 125000] },
+    { label: "Obligations", color: "#3b82f6", values: [155000, 155800, 156500, 157000, 157500, 158000, 158500, 159200, 159800, 160200, 160800, 164250] },
+    { label: "Immobilier", color: "#f59e0b", values: [35000, 35200, 35500, 35800, 36000, 36400, 36800, 37000, 37200, 37300, 37400, 37500] },
+  ];
+}
+
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
@@ -256,6 +282,7 @@ export default function InvestissementsClient({
 
   const riskLevel = getRiskProfile(clientName);
   const perfData = getPortfolioPerf(clientName);
+  const catEvolution = getCategoryEvolution(clientName);
 
   const notify = (msg: string) => {
     setToast(msg);
@@ -540,9 +567,30 @@ export default function InvestissementsClient({
             )}
           </div>
 
+          {/* Category evolution chart */}
+          <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+            <div className="mb-4">
+              <p className="text-base font-bold text-gray-900">{"É"}volution par classe d&apos;actifs</p>
+              <p className="text-[10px] font-semibold tracking-wider uppercase text-gray-400 mt-0.5">Performance individuelle sur 12 mois</p>
+            </div>
+
+            <div className="flex flex-wrap gap-x-5 gap-y-1.5 mb-4">
+              {catEvolution.map((cat) => (
+                <div key={cat.label} className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <span className="w-3 h-0.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                  {cat.label}
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-gray-50 rounded-xl p-3">
+              <CategoryEvolutionChart months={PERF_MONTHS} categories={catEvolution} />
+            </div>
+          </div>
+
           {/* Holdings detail table */}
           <div className="mb-6">
-            <h2 className="text-base font-bold text-gray-900 mb-3">Détail du portefeuille</h2>
+            <h2 className="text-base font-bold text-gray-900 mb-3">D{"é"}tail du portefeuille</h2>
             <div className="bg-white rounded-xl border border-gray-200 overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
@@ -950,6 +998,99 @@ function PerformanceChart({ months, values }: { months: string[]; values: number
       chartInstance.current = null;
     };
   }, [months, values]);
+
+  return <canvas ref={canvasRef} />;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Category Evolution Chart                                           */
+/* ------------------------------------------------------------------ */
+
+function CategoryEvolutionChart({ months, categories }: { months: string[]; categories: CategoryEvolution[] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const chartInstance = useRef<ChartJS<"line"> | null>(null);
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    chartInstance.current = new ChartJS(ctx, {
+      type: "line",
+      data: {
+        labels: months,
+        datasets: categories.map((cat) => ({
+          label: cat.label,
+          data: cat.values,
+          borderColor: cat.color,
+          borderWidth: 2,
+          pointRadius: cat.values.map((_, i) => (i === cat.values.length - 1 ? 4 : 0)),
+          pointHoverRadius: 4,
+          pointBackgroundColor: cat.color,
+          pointBorderColor: "#ffffff",
+          pointBorderWidth: 2,
+          fill: false,
+          tension: 0.35,
+        })),
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 2.2,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "#ffffff",
+            titleColor: "#1a1e2c",
+            bodyColor: "#5c6070",
+            borderColor: "#e6e5e1",
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8,
+            titleFont: { family: "Inter, system-ui, sans-serif", weight: "bold" as const, size: 12 },
+            bodyFont: { family: "system-ui, sans-serif", size: 12 },
+            callbacks: {
+              label: (item) => {
+                const val = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(item.parsed.y ?? 0);
+                return `${item.dataset.label} : ${val}`;
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: "#92959e",
+              font: { family: "system-ui, sans-serif", size: 11 },
+              maxRotation: 0,
+            },
+            border: { color: "#e6e5e1" },
+          },
+          y: {
+            grid: { color: "#f3f4f6" },
+            ticks: {
+              color: "#92959e",
+              font: { family: "system-ui, sans-serif", size: 11 },
+              callback: (v: string | number) =>
+                new Intl.NumberFormat("fr-FR", { notation: "compact", compactDisplay: "short", style: "currency", currency: "EUR" }).format(Number(v)),
+            },
+            border: { display: false },
+          },
+        },
+        interaction: { intersect: false, mode: "index" as const },
+      },
+    });
+
+    return () => {
+      chartInstance.current?.destroy();
+      chartInstance.current = null;
+    };
+  }, [months, categories]);
 
   return <canvas ref={canvasRef} />;
 }
