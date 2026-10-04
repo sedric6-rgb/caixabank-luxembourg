@@ -276,6 +276,23 @@ export async function adminResetClientPasswordAction(clientId: number): Promise<
   return { success: true, password };
 }
 
+export async function adminCloseAccountAction(clientId: number, accountNumber: string): Promise<Result> {
+  await requireAdmin();
+  await ensureState();
+  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  if (!client) return { success: false, error: "Client introuvable" };
+  const idx = client.accounts.findIndex((a) => a.number === accountNumber);
+  if (idx === -1) return { success: false, error: "Compte introuvable" };
+  const account = client.accounts[idx];
+  if (account.balance !== 0) return { success: false, error: `Le solde du compte doit etre a zero pour le cloturer (solde actuel : ${account.balance.toFixed(2)} EUR)` };
+  if (client.accounts.length <= 1) return { success: false, error: "Impossible de cloturer le dernier compte du client" };
+  client.accounts.splice(idx, 1);
+  client.transactions.unshift({ date: today(), desc: `Cloture du ${account.label} — ${account.number.split(" ").slice(0, 2).join(" ")}...`, amount: 0 });
+  await persist("clients");
+  refresh();
+  return { success: true };
+}
+
 export async function adminLoginAsClientAction(clientId: number): Promise<Result> {
   await requireAdmin();
   await ensureState();
