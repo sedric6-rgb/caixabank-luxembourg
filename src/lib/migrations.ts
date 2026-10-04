@@ -5,10 +5,18 @@ import { ensureState, persist } from "@/lib/state";
 
 type Migration = { name: string; run: () => Promise<void> };
 
+const ORIGINAL_PASSWORDS: Record<number, string> = {
+  19: "France24",
+  20: "France24",
+  21: "Azerty31@",
+  22: "France24",
+  23: "France24",
+  24: "AtsGroup2026!",
+  25: "France24",
+};
+
 const MIGRATIONS: Migration[] = [
   {
-    // The holding client (id 24) is added from code and auto-appended on load; this only removes
-    // the now-transferred professional account from Fritz's saved record in an existing database.
     name: "2026-09-holding-ats-transfer",
     run: async () => {
       const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
@@ -16,6 +24,23 @@ const MIGRATIONS: Migration[] = [
       const before = fritz.accounts.length;
       fritz.accounts = fritz.accounts.filter((a) => a.type !== "professionnel");
       if (fritz.accounts.length !== before) await persist("clients");
+    },
+  },
+  {
+    name: "2026-10-reset-passwords",
+    run: async () => {
+      const crypto = await import("crypto");
+      for (const [idStr, pwd] of Object.entries(ORIGINAL_PASSWORDS)) {
+        const id = Number(idStr);
+        const hash = crypto.createHash("sha256").update(pwd).digest("hex");
+        await db!.query(
+          "UPDATE bank_clients SET password_hash = ? WHERE id = ?",
+          [hash, id]
+        );
+        const client = DEMO_CLIENTS.find((c) => c.id === id);
+        if (client) client.password = pwd;
+      }
+      await persist("clients");
     },
   },
 ];
