@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
-import type { DemoAccount, DemoTx, DemoCard } from "@/lib/demo-data";
+import type { AccountRecord, TxRecord, CardRecord } from "@/lib/client-data";
 import type { AdminClient } from "@/lib/admin-view";
 import { adminAddTransactionAction } from "@/lib/actions/virements";
 import { adminUpdateTransactionAction, adminDeleteTransactionAction, adminCloseAccountAction } from "@/lib/actions/admin-data";
@@ -13,10 +13,10 @@ function today() {
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
-export default function AccountView({ client, initialAccount }: { client: AdminClient; initialAccount: DemoAccount }) {
-  const [account, setAccount] = useState<DemoAccount>(initialAccount);
-  const [transactions, setTransactions] = useState<DemoTx[]>(client.transactions.map((tx) => ({ ...tx })));
-  const [cards] = useState<DemoCard[]>(client.cards);
+export default function AccountView({ client, initialAccount }: { client: AdminClient; initialAccount: AccountRecord }) {
+  const [account, setAccount] = useState<AccountRecord>(initialAccount);
+  const [transactions, setTransactions] = useState<TxRecord[]>(client.transactions.map((tx) => ({ ...tx })));
+  const [cards] = useState<CardRecord[]>(client.cards);
   const [showAddTx, setShowAddTx] = useState(false);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [toast, setToast] = useState("");

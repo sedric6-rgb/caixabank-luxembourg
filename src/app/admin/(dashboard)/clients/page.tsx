@@ -1,4 +1,4 @@
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { readState } from "@/lib/state";
 import ClientsTable from "./ClientsTable";
 
@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminClientsPage() {
   await readState();
-  const clients = DEMO_CLIENTS.map((c) => ({
+  const clients = BANK_CLIENTS.map((c) => ({
     id: c.id,
     client_number: c.client_number,
     first_name: c.first_name,

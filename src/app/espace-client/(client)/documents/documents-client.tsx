@@ -13,7 +13,7 @@ const DOCUMENT_CATEGORIES = [
   { key: "correspondance", label: "Correspondance", icon: "mail", count: 4 },
 ];
 
-const DEMO_DOCUMENTS: Record<string, { id: number; name: string; date: string; type: string; size: string }[]> = {
+const DOCUMENTS: Record<string, { id: number; name: string; date: string; type: string; size: string }[]> = {
   releves: [
     { id: 1, name: "Relevé mensuel — Septembre 2026", date: "30/09/2026", type: "PDF", size: "245 Ko" },
     { id: 2, name: "Relevé mensuel — Août 2026", date: "31/08/2026", type: "PDF", size: "238 Ko" },
@@ -60,7 +60,7 @@ export default function DocumentsClient({
 
   const notify = (msg: string) => { setToast(msg); setTimeout(() => setToast(""), 3000); };
 
-  const docs = [...(DEMO_DOCUMENTS[activeCategory] || []), ...(activeCategory === "correspondance" ? uploadedFiles : [])];
+  const docs = [...(DOCUMENTS[activeCategory] || []), ...(activeCategory === "correspondance" ? uploadedFiles : [])];
   const filteredDocs = searchQuery
     ? docs.filter((d) => d.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : docs;

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { getNotificationsForClient } from "@/lib/notifications-store";
 import { getLoansForClient } from "@/lib/loans-store";
 import type { RowDataPacket } from "mysql2";
@@ -114,16 +114,16 @@ export interface DashboardStats {
 }
 
 // ============================================================
-// Donnees de demonstration generees depuis DEMO_CLIENTS
+// Donnees locales depuis BANK_CLIENTS
 // ============================================================
 
 export function isTransactionsBlocked(clientId: number): boolean {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   return c?._transactions_blocked || false;
 }
 
-function getDemoClient(clientId: number): BankClient | null {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalClient(clientId: number): BankClient | null {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return null;
   return {
     id: c.id, client_number: c.client_number,
@@ -134,8 +134,8 @@ function getDemoClient(clientId: number): BankClient | null {
   };
 }
 
-function getDemoAccounts(clientId: number): BankAccount[] {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalAccounts(clientId: number): BankAccount[] {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   return c.accounts.map((a, i) => ({
     id: clientId * 100 + i + 1,
@@ -149,10 +149,10 @@ function getDemoAccounts(clientId: number): BankAccount[] {
   }));
 }
 
-function getDemoTransactions(accountId: number): BankTransaction[] {
+function getLocalTransactions(accountId: number): BankTransaction[] {
   const clientId = Math.floor(accountId / 100);
   const acctIdx = (accountId % 100) - 1;
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   return c.transactions.map((tx, i) => {
     const isCredit = tx.amount >= 0;
@@ -177,8 +177,8 @@ function convertDate(d: string): string {
   return `${year}-${month}-${day}T12:00:00`;
 }
 
-function getDemoCards(clientId: number): BankCard[] {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalCards(clientId: number): BankCard[] {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   const baseAcctId = clientId * 100 + 1;
   const CARD_LIMITS: Record<string, number> = {
@@ -200,7 +200,7 @@ function getDemoCards(clientId: number): BankCard[] {
   }));
 }
 
-function getDemoLoans(clientId: number): BankLoan[] {
+function getLocalLoans(clientId: number): BankLoan[] {
   return getLoansForClient(clientId).map((l) => ({
     id: l.id,
     client_id: l.clientId,
@@ -218,17 +218,17 @@ function getDemoLoans(clientId: number): BankLoan[] {
 
 const LINKED_GROUP = [19, 21, 22, 23];
 
-function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalBeneficiaries(clientId: number): BankBeneficiary[] {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
 
-  let otherClients: typeof DEMO_CLIENTS;
+  let otherClients: typeof BANK_CLIENTS;
   if (LINKED_GROUP.includes(clientId)) {
-    otherClients = DEMO_CLIENTS.filter(
+    otherClients = BANK_CLIENTS.filter(
       (cl) => cl.id !== clientId && LINKED_GROUP.includes(cl.id)
     );
   } else {
-    otherClients = DEMO_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
+    otherClients = BANK_CLIENTS.filter((cl) => cl.id !== clientId).slice(0, 3);
   }
 
   const base: BankBeneficiary[] = otherClients.map((oc, i) => ({
@@ -252,8 +252,8 @@ function getDemoBeneficiaries(clientId: number): BankBeneficiary[] {
   return [...base, ...extra];
 }
 
-function getDemoMessages(clientId: number): BankMessage[] {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalMessages(clientId: number): BankMessage[] {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   return [
     {
@@ -271,8 +271,8 @@ function getDemoMessages(clientId: number): BankMessage[] {
   ];
 }
 
-function getDemoNotifications(clientId: number): BankNotification[] {
-  const c = DEMO_CLIENTS.find((cl) => cl.id === clientId);
+function getLocalNotifications(clientId: number): BankNotification[] {
+  const c = BANK_CLIENTS.find((cl) => cl.id === clientId);
   if (!c) return [];
   const notifs: BankNotification[] = [];
   if (c.transactions.length > 0) {
@@ -307,15 +307,15 @@ function getDemoNotifications(clientId: number): BankNotification[] {
   return notifs;
 }
 
-const DEMO_DASHBOARD_STATS: DashboardStats = {
-  totalClients: DEMO_CLIENTS.length,
-  activeAccounts: DEMO_CLIENTS.reduce((s, c) => s + c.accounts.length, 0),
+const LOCAL_DASHBOARD_STATS: DashboardStats = {
+  totalClients: BANK_CLIENTS.length,
+  activeAccounts: BANK_CLIENTS.reduce((s, c) => s + c.accounts.length, 0),
   totalDeposits: new Intl.NumberFormat("fr-FR", { minimumFractionDigits: 2 }).format(
-    DEMO_CLIENTS.reduce((s, c) => s + c.accounts.reduce((a, acc) => a + acc.balance, 0), 0)
+    BANK_CLIENTS.reduce((s, c) => s + c.accounts.reduce((a, acc) => a + acc.balance, 0), 0)
   ) + " EUR",
   pendingLoans: 3,
   newClientsThisMonth: 4,
-  transactionsToday: DEMO_CLIENTS.reduce((s, c) => s + c.transactions.length, 0),
+  transactionsToday: BANK_CLIENTS.reduce((s, c) => s + c.transactions.length, 0),
 };
 
 // ============================================================
@@ -339,7 +339,7 @@ export async function getClientById(
     if (rows.length === 0) return null;
     return rows[0] as BankClient;
   } catch {
-    return getDemoClient(clientId);
+    return getLocalClient(clientId);
   }
 }
 
@@ -359,7 +359,7 @@ export async function getClientAccounts(
     );
     return rows as BankAccount[];
   } catch {
-    return getDemoAccounts(clientId);
+    return getLocalAccounts(clientId);
   }
 }
 
@@ -380,8 +380,8 @@ export async function getAccountById(
     if (rows.length === 0) return null;
     return rows[0] as BankAccount;
   } catch {
-    for (const c of DEMO_CLIENTS) {
-      const accts = getDemoAccounts(c.id);
+    for (const c of BANK_CLIENTS) {
+      const accts = getLocalAccounts(c.id);
       const found = accts.find((a) => a.id === accountId);
       if (found) return found;
     }
@@ -409,7 +409,7 @@ export async function getAccountTransactions(
     );
     return rows as BankTransaction[];
   } catch {
-    return getDemoTransactions(accountId).slice(0, limit);
+    return getLocalTransactions(accountId).slice(0, limit);
   }
 }
 
@@ -428,7 +428,7 @@ export async function getClientCards(clientId: number): Promise<BankCard[]> {
     );
     return rows as BankCard[];
   } catch {
-    return getDemoCards(clientId);
+    return getLocalCards(clientId);
   }
 }
 
@@ -447,7 +447,7 @@ export async function getClientLoans(clientId: number): Promise<BankLoan[]> {
     );
     return rows as BankLoan[];
   } catch {
-    return getDemoLoans(clientId);
+    return getLocalLoans(clientId);
   }
 }
 
@@ -467,7 +467,7 @@ export async function getClientBeneficiaries(
     );
     return rows as BankBeneficiary[];
   } catch {
-    return getDemoBeneficiaries(clientId);
+    return getLocalBeneficiaries(clientId);
   }
 }
 
@@ -487,7 +487,7 @@ export async function getClientMessages(
     );
     return rows as BankMessage[];
   } catch {
-    return getDemoMessages(clientId);
+    return getLocalMessages(clientId);
   }
 }
 
@@ -507,7 +507,7 @@ export async function getClientNotifications(
     );
     return rows as BankNotification[];
   } catch {
-    return getDemoNotifications(clientId);
+    return getLocalNotifications(clientId);
   }
 }
 
@@ -553,6 +553,6 @@ export async function getDashboardStats(): Promise<DashboardStats> {
       transactionsToday: Number(txnRow.total),
     };
   } catch {
-    return DEMO_DASHBOARD_STATS;
+    return LOCAL_DASHBOARD_STATS;
   }
 }

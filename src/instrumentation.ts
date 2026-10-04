@@ -2,7 +2,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
   // Every store must be registered before the saved state is loaded into it.
   await Promise.all([
-    import("@/lib/demo-data"),
+    import("@/lib/client-data"),
     import("@/lib/loans-store"),
     import("@/lib/demandes-store"),
     import("@/lib/messages-store"),

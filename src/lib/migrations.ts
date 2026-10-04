@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import type { RowDataPacket } from "mysql2";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { ensureState, persist } from "@/lib/state";
 
 type Migration = { name: string; run: () => Promise<void> };
@@ -19,7 +19,7 @@ const MIGRATIONS: Migration[] = [
   {
     name: "2026-09-holding-ats-transfer",
     run: async () => {
-      const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
+      const fritz = BANK_CLIENTS.find((c) => c.id === 21);
       if (!fritz) return;
       const before = fritz.accounts.length;
       fritz.accounts = fritz.accounts.filter((a) => a.type !== "professionnel");
@@ -37,7 +37,7 @@ const MIGRATIONS: Migration[] = [
           "UPDATE bank_clients SET password_hash = ? WHERE id = ?",
           [hash, id]
         );
-        const client = DEMO_CLIENTS.find((c) => c.id === id);
+        const client = BANK_CLIENTS.find((c) => c.id === id);
         if (client) client.password = pwd;
       }
       await persist("clients");
@@ -47,7 +47,7 @@ const MIGRATIONS: Migration[] = [
     name: "2026-10-unblock-davin-servais",
     run: async () => {
       for (const id of [22, 23]) {
-        const client = DEMO_CLIENTS.find((c) => c.id === id);
+        const client = BANK_CLIENTS.find((c) => c.id === id);
         if (client && client.status !== "actif") {
           client.status = "actif";
         }
@@ -58,7 +58,7 @@ const MIGRATIONS: Migration[] = [
   {
     name: "2026-10-fritz-investment-debit",
     run: async () => {
-      const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
+      const fritz = BANK_CLIENTS.find((c) => c.id === 21);
       if (!fritz) return;
       const courant = fritz.accounts.find((a) => a.type === "courant");
       const epargne = fritz.accounts.find((a) => a.type === "epargne");
@@ -77,7 +77,7 @@ const MIGRATIONS: Migration[] = [
   {
     name: "2026-10-fritz-rename-dienhy",
     run: async () => {
-      const fritz = DEMO_CLIENTS.find((c) => c.id === 21);
+      const fritz = BANK_CLIENTS.find((c) => c.id === 21);
       if (fritz && fritz.first_name === "Fritz") {
         fritz.first_name = "Dienhy Fritz";
       }
@@ -88,7 +88,7 @@ const MIGRATIONS: Migration[] = [
 
 // Applied-once data fixups for existing databases, recorded in app_migrations so an admin can
 // later change the same data without it being reverted on the next restart. Skipped without a DB,
-// where demo-data.ts already carries the final state.
+// where client-data.ts already carries the final state.
 export async function runMigrations(): Promise<void> {
   if (!db) return;
   try {

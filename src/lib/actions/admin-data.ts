@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { requireAdmin } from "./admin-guard";
 import { ensureState, persist } from "@/lib/state";
-import { DEMO_CLIENTS, type DemoAccount, type DemoCard, type DemoTx } from "@/lib/demo-data";
+import { BANK_CLIENTS, type AccountRecord, type CardRecord, type TxRecord } from "@/lib/client-data";
 import { INSURANCES, newInsuranceId, type Insurance } from "@/lib/insurances-store";
 import { MANDATES, newMandateId, type Mandate } from "@/lib/mandates-store";
 import { DEMANDES } from "@/lib/demandes-store";
@@ -19,7 +19,7 @@ function today(): string {
 }
 
 function findAccount(number: string) {
-  for (const client of DEMO_CLIENTS) {
+  for (const client of BANK_CLIENTS) {
     const account = client.accounts.find((a) => a.number === number);
     if (account) return { client, account };
   }
@@ -31,7 +31,7 @@ function refresh() {
   revalidatePath("/espace-client", "layout");
 }
 
-const ACCOUNT_LABELS: Record<DemoAccount["type"], string> = {
+const ACCOUNT_LABELS: Record<AccountRecord["type"], string> = {
   courant: "Compte Courant",
   epargne: "Livret Epargne",
   professionnel: "Compte Pro",
@@ -39,12 +39,12 @@ const ACCOUNT_LABELS: Record<DemoAccount["type"], string> = {
 
 export async function adminCreateAccountAction(
   clientId: number,
-  type: DemoAccount["type"],
+  type: AccountRecord["type"],
   balance: number
-): Promise<Result<{ account: DemoAccount }>> {
+): Promise<Result<{ account: AccountRecord }>> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
   if (!ACCOUNT_LABELS[type]) return { success: false, error: "Type de compte invalide" };
   if (!Number.isFinite(balance) || balance < 0) return { success: false, error: "Solde initial invalide" };
@@ -55,7 +55,7 @@ export async function adminCreateAccountAction(
     number = `LU${r().slice(0, 2)} 0019 ${r()} ${r()} ${r()} ${r()} ${r()}`;
   } while (findAccount(number));
 
-  const account: DemoAccount = { label: ACCOUNT_LABELS[type], number, balance, type };
+  const account: AccountRecord = { label: ACCOUNT_LABELS[type], number, balance, type };
   client.accounts.push(account);
   if (balance > 0) client.transactions.unshift({ date: today(), desc: `Depot initial — ${account.label}`, amount: balance });
   await persist("clients");
@@ -84,7 +84,7 @@ export async function adminInternalTransferAction(fromNumber: string, toNumber: 
   return { success: true };
 }
 
-function sameTx(a: DemoTx, b: DemoTx) {
+function sameTx(a: TxRecord, b: TxRecord) {
   return a.date === b.date && a.desc === b.desc && a.amount === b.amount;
 }
 
@@ -93,12 +93,12 @@ export async function adminUpdateTransactionAction(
   clientId: number,
   accountNumber: string,
   index: number,
-  previous: DemoTx,
-  updated: DemoTx
+  previous: TxRecord,
+  updated: TxRecord
 ): Promise<Result> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   const account = client?.accounts.find((a) => a.number === accountNumber);
   const current = client?.transactions[index];
   if (!client || !account || !current || !sameTx(current, previous)) {
@@ -116,11 +116,11 @@ export async function adminDeleteTransactionAction(
   clientId: number,
   accountNumber: string,
   index: number,
-  previous: DemoTx
+  previous: TxRecord
 ): Promise<Result> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   const account = client?.accounts.find((a) => a.number === accountNumber);
   const current = client?.transactions[index];
   if (!client || !account || !current || !sameTx(current, previous)) {
@@ -139,7 +139,7 @@ export async function adminSetCardStatusAction(clientId: number, last4: string, 
   await requireAdmin();
   await ensureState();
   if (!CARD_STATUSES.includes(status)) return { success: false, error: "Statut invalide" };
-  const card = DEMO_CLIENTS.find((c) => c.id === clientId)?.cards.find((c) => c.last4 === last4);
+  const card = BANK_CLIENTS.find((c) => c.id === clientId)?.cards.find((c) => c.last4 === last4);
   if (!card) return { success: false, error: "Carte introuvable" };
   card.status = status;
   await persist("clients");
@@ -147,10 +147,10 @@ export async function adminSetCardStatusAction(clientId: number, last4: string, 
   return { success: true };
 }
 
-export async function adminOrderCardAction(clientId: number, type: string): Promise<Result<{ card: DemoCard }>> {
+export async function adminOrderCardAction(clientId: number, type: string): Promise<Result<{ card: CardRecord }>> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
   if (!type.trim()) return { success: false, error: "Type de carte requis" };
   let last4: string;
@@ -158,7 +158,7 @@ export async function adminOrderCardAction(clientId: number, type: string): Prom
     last4 = String(Math.floor(1000 + Math.random() * 9000));
   } while (client.cards.some((c) => c.last4 === last4));
   const d = new Date();
-  const card: DemoCard = {
+  const card: CardRecord = {
     last4,
     type: type.trim(),
     status: "en_fabrication",
@@ -175,7 +175,7 @@ export async function adminCreateInsuranceAction(
 ): Promise<Result<{ insurance: Insurance }>> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === data.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === data.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
   if (!data.type || !data.formule || !Number.isFinite(data.prime) || data.prime < 0 || !Number.isFinite(data.couverture) || data.couverture < 0) {
     return { success: false, error: "Informations du contrat invalides" };
@@ -256,7 +256,7 @@ const PASSWORD_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789
 export async function adminResetClientPasswordAction(clientId: number): Promise<Result<{ password: string }>> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   let password = "";
@@ -279,7 +279,7 @@ export async function adminResetClientPasswordAction(clientId: number): Promise<
 export async function adminCloseAccountAction(clientId: number, accountNumber: string): Promise<Result> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
   const idx = client.accounts.findIndex((a) => a.number === accountNumber);
   if (idx === -1) return { success: false, error: "Compte introuvable" };
@@ -296,7 +296,7 @@ export async function adminCloseAccountAction(clientId: number, accountNumber: s
 export async function adminLoginAsClientAction(clientId: number): Promise<Result> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   const session = createClientSessionToken(clientId);

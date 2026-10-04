@@ -2,7 +2,7 @@
 
 import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { createAdminNotification } from "@/lib/notifications-store";
 import {
   initClientConversations,
@@ -27,7 +27,7 @@ export async function sendNotificationToAllAction(formData: FormData): Promise<{
   revalidatePath("/admin", "layout");
 
   await persist("notifications");
-  return { success: true, count: DEMO_CLIENTS.length };
+  return { success: true, count: BANK_CLIENTS.length };
 }
 
 export async function sendNotificationToClientAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
@@ -42,7 +42,7 @@ export async function sendNotificationToClientAction(formData: FormData): Promis
     return { success: false, error: "Tous les champs sont requis" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   createAdminNotification({ title, message, type, targetClientIds: [clientId] });
@@ -65,7 +65,7 @@ export async function sendMessageToAllAction(formData: FormData): Promise<{ succ
     return { success: false, error: "L'objet et le message sont requis" };
   }
 
-  const activeClients = DEMO_CLIENTS.filter((c) => c.status === "actif");
+  const activeClients = BANK_CLIENTS.filter((c) => c.status === "actif");
   let count = 0;
 
   for (const client of activeClients) {

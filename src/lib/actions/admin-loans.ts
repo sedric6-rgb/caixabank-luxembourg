@@ -2,7 +2,7 @@
 
 import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { createLoan, approveLoan, refuseLoan, getAllLoans } from "@/lib/loans-store";
 import { revalidatePath } from "next/cache";
 
@@ -27,7 +27,7 @@ export async function adminCreateLoanAction(formData: FormData): Promise<{ succe
     return { success: false, error: "Tous les champs sont requis" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   const rate = RATES[type] || 4.0;
@@ -72,7 +72,7 @@ export async function adminApproveLoanAction(loanId: number): Promise<{ success:
   const loan = approveLoan(loanId);
   if (!loan) return { success: false, error: "Pret introuvable" };
 
-  const client = DEMO_CLIENTS.find((c) => c.id === loan.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === loan.clientId);
   if (client) {
     const acct = client.accounts[0];
     if (acct) {

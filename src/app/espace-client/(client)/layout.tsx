@@ -6,7 +6,7 @@ import { getClientById, getClientNotifications } from "@/lib/queries/banking";
 import { clientLogoutAction } from "@/lib/actions/client-auth";
 import ClientMobileNav from "./ClientMobileNav";
 import NotificationBell from "./NotificationBell";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { readState } from "@/lib/state";
 import { isValidSessionToken, SESSION_COOKIE_NAME } from "@/lib/auth";
 
@@ -37,8 +37,8 @@ export default async function EspaceClientLayout({ children }: { children: React
   }
 
   await readState();
-  const demoClient = DEMO_CLIENTS.find((c) => c.id === session.clientId);
-  if (demoClient && demoClient.status !== "actif") {
+  const localClient = BANK_CLIENTS.find((c) => c.id === session.clientId);
+  if (localClient && localClient.status !== "actif") {
     redirect("/espace-client/connexion");
   }
 

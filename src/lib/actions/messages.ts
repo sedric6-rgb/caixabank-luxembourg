@@ -3,7 +3,7 @@
 import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import {
   initClientConversations,
   createConversation,
@@ -24,7 +24,7 @@ export async function createConversationAction(formData: FormData) {
     return { success: false, error: "Veuillez remplir tous les champs" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   initClientConversations(client.id, `${client.first_name} ${client.last_name}`, client.client_number);

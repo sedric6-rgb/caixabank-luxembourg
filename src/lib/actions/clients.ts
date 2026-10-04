@@ -2,7 +2,7 @@
 
 import { ensureState, persist } from "@/lib/state";
 import { requireAdmin } from "./admin-guard";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 
 export async function createClientAction(formData: FormData): Promise<{ success: boolean; clientNumber?: string; error?: string }> {
   await requireAdmin();
@@ -30,12 +30,12 @@ export async function createClientAction(formData: FormData): Promise<{ success:
     return { success: false, error: "Le mot de passe doit contenir au moins 8 caracteres" };
   }
 
-  const maxId = DEMO_CLIENTS.reduce((max, c) => Math.max(max, c.id), 0);
+  const maxId = BANK_CLIENTS.reduce((max, c) => Math.max(max, c.id), 0);
   const newId = maxId + 1;
 
   const clientNumber = `CBP-${String(100000 + Math.floor(Math.random() * 900000))}`;
 
-  if (DEMO_CLIENTS.some((c) => c.client_number === clientNumber)) {
+  if (BANK_CLIENTS.some((c) => c.client_number === clientNumber)) {
     return { success: false, error: "Erreur de generation du numero client, veuillez reessayer" };
   }
 
@@ -67,7 +67,7 @@ export async function createClientAction(formData: FormData): Promise<{ success:
   const expiryYear = new Date().getFullYear() + 4;
   const expiryMonth = String(new Date().getMonth() + 1).padStart(2, "0");
 
-  DEMO_CLIENTS.push({
+  BANK_CLIENTS.push({
     id: newId,
     client_number: clientNumber,
     first_name: firstName,

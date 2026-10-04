@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { DemoClient, DemoAccount, DemoTx } from "@/lib/demo-data";
+import type { ClientRecord, AccountRecord, TxRecord } from "@/lib/client-data";
 import {
   toggleBlockTransactionsAction,
   updateClientProfileAction,
@@ -13,10 +13,10 @@ import {
 import { adminResetClientPasswordAction, adminLoginAsClientAction, adminCloseAccountAction } from "@/lib/actions/admin-data";
 import { formatAmount } from "@/lib/format";
 
-export default function ClientDetail({ initial }: { initial: DemoClient }) {
+export default function ClientDetail({ initial }: { initial: ClientRecord }) {
   const [client, setClient] = useState(initial);
-  const [accounts, setAccounts] = useState<DemoAccount[]>(initial.accounts);
-  const [transactions, setTransactions] = useState<DemoTx[]>(initial.transactions);
+  const [accounts, setAccounts] = useState<AccountRecord[]>(initial.accounts);
+  const [transactions, setTransactions] = useState<TxRecord[]>(initial.transactions);
   const [editing, setEditing] = useState(false);
   const [msgOpen, setMsgOpen] = useState(false);
   const [confirmBlock, setConfirmBlock] = useState(false);
@@ -128,7 +128,7 @@ export default function ClientDetail({ initial }: { initial: DemoClient }) {
     const r = () => String(Math.floor(Math.random() * 10000)).padStart(4, "0");
     const types: Record<string, string> = { courant: "Compte Courant", epargne: "Livret Epargne", professionnel: "Compte Pro" };
     const type = String(fd.get("type"));
-    const newAcct: DemoAccount = {
+    const newAcct: AccountRecord = {
       label: types[type] || type,
       number: `LU${r().slice(0,2)} 0019 ${r()} ${r()} ${r()} ${r()} ${r().slice(0,4)}`,
       balance: Number(fd.get("balance") || 0),

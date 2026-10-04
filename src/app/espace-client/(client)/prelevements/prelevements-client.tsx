@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const DEMO_MANDATES = [
+const MANDATES = [
   { id: 1, creditor: "Electro Lux S.A.", ref: "MNDT-2026-001", iban: "LU28 0019 4100 0000 5500 1234", amount: 127.50, frequency: "Mensuel", next: "01/10/2026", status: "actif" },
   { id: 2, creditor: "Immobilière du Grand-Duché", ref: "MNDT-2026-002", iban: "LU33 0019 1014 0000 6600 3333", amount: 1450.00, frequency: "Mensuel", next: "01/10/2026", status: "actif" },
   { id: 3, creditor: "AXA Assurances Luxembourg", ref: "MNDT-2026-003", iban: "LU55 0019 2004 0000 7700 5555", amount: 245.00, frequency: "Mensuel", next: "15/10/2026", status: "actif" },
@@ -13,7 +13,7 @@ const DEMO_MANDATES = [
   { id: 8, creditor: "Ancienne Assurance Auto", ref: "MNDT-2024-008", iban: "LU12 0019 1014 0000 5500 1111", amount: 0, frequency: "Annuel", next: "—", status: "revoque" },
 ];
 
-const DEMO_HISTORY = [
+const MANDATE_HISTORY = [
   { id: 100, date: "01/09/2026", creditor: "Immobilière du Grand-Duché", amount: 1450.00, status: "exécuté" },
   { id: 101, date: "01/09/2026", creditor: "Electro Lux S.A.", amount: 127.50, status: "exécuté" },
   { id: 102, date: "01/09/2026", creditor: "CFL Transport", amount: 75.00, status: "exécuté" },
@@ -24,7 +24,7 @@ const DEMO_HISTORY = [
 ];
 
 export default function PrelevementsClient({ clientName }: { clientName: string }) {
-  const [mandates, setMandates] = useState(DEMO_MANDATES);
+  const [mandates, setMandates] = useState(MANDATES);
   const [tab, setTab] = useState<"mandats" | "historique">("mandats");
   const [confirmRevoke, setConfirmRevoke] = useState<number | null>(null);
   const [toast, setToast] = useState("");
@@ -120,7 +120,7 @@ export default function PrelevementsClient({ clientName }: { clientName: string 
               </tr>
             </thead>
             <tbody>
-              {DEMO_HISTORY.map((h) => (
+              {MANDATE_HISTORY.map((h) => (
                 <tr key={h.id} className="border-b border-gray-100 last:border-0">
                   <td className="px-6 py-3 text-gray-500 whitespace-nowrap">{h.date}</td>
                   <td className="px-6 py-3 font-medium text-gray-900">{h.creditor}</td>

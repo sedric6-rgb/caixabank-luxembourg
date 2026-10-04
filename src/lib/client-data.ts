@@ -1,6 +1,6 @@
 import { shared } from "@/lib/shared-store";
 
-export interface DemoClient {
+export interface ClientRecord {
   id: number;
   client_number: string;
   first_name: string;
@@ -17,34 +17,34 @@ export interface DemoClient {
   status: string;
   created_at: string;
   password?: string;
-  accounts: DemoAccount[];
-  cards: DemoCard[];
-  transactions: DemoTx[];
+  accounts: AccountRecord[];
+  cards: CardRecord[];
+  transactions: TxRecord[];
   _beneficiaries?: { id: number; label: string; name: string; iban: string; bic: string; favorite: boolean }[];
   _transactions_blocked?: boolean;
 }
 
-export interface DemoAccount {
+export interface AccountRecord {
   label: string;
   number: string;
   balance: number;
   type: string;
 }
 
-export interface DemoCard {
+export interface CardRecord {
   last4: string;
   type: string;
   status: string;
   expiry: string;
 }
 
-export interface DemoTx {
+export interface TxRecord {
   date: string;
   desc: string;
   amount: number;
 }
 
-export const DEMO_CLIENTS: DemoClient[] = shared<DemoClient>("clients", () => [
+export const BANK_CLIENTS: ClientRecord[] = shared<ClientRecord>("clients", () => [
   {
     id: 1, client_number: "CBP-284751", first_name: "Jan", last_name: "Kowalski",
     email: "jan.kowalski@email.lu", phone: "+352 621 345 678", date_of_birth: "15/03/1985",

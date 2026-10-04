@@ -8,11 +8,11 @@ import {
   createClientSessionToken,
   CLIENT_SESSION_COOKIE_NAME,
 } from "@/lib/auth-client";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 import { DEMANDES, addDemande } from "@/lib/demandes-store";
 import type { RowDataPacket } from "mysql2";
 
-const DEMO_PASSWORD = "demo2024";
+const DEFAULT_PASSWORD = "demo2024";
 
 export async function clientLoginAction(formData: FormData): Promise<void> {
   const clientNumber = String(formData.get("client_number") || "").trim();
@@ -45,19 +45,19 @@ export async function clientLoginAction(formData: FormData): Promise<void> {
         }
       }
     } catch {
-      // Base de donnees indisponible, verifier les identifiants demo
+      // Base de donnees indisponible, verifier les identifiants locaux
     }
   }
 
   if (clientId === null) {
     await readState();
-    const demoClient = DEMO_CLIENTS.find(
+    const localClient = BANK_CLIENTS.find(
       (c) => c.client_number === clientNumber && c.status === "actif"
     );
-    if (demoClient) {
-      const expected = demoClient.password || DEMO_PASSWORD;
+    if (localClient) {
+      const expected = localClient.password || DEFAULT_PASSWORD;
       if (password === expected) {
-        clientId = demoClient.id;
+        clientId = localClient.id;
       }
     }
   }
@@ -99,7 +99,7 @@ export async function requestPasswordResetAction(formData: FormData): Promise<{ 
   }
 
   await ensureState();
-  const client = DEMO_CLIENTS.find(
+  const client = BANK_CLIENTS.find(
     (c) => c.client_number.toUpperCase() === clientNumber && c.email.toLowerCase() === email
   );
   const alreadyPending = client && DEMANDES.some(
@@ -140,7 +140,7 @@ export async function changePasswordAction(formData: FormData): Promise<{ succes
     return { success: false, error: "Les mots de passe ne correspondent pas" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   let passwordValid = false;
@@ -160,7 +160,7 @@ export async function changePasswordAction(formData: FormData): Promise<{ succes
   }
 
   if (!passwordValid) {
-    const expected = client.password || DEMO_PASSWORD;
+    const expected = client.password || DEFAULT_PASSWORD;
     if (current === expected) passwordValid = true;
   }
 

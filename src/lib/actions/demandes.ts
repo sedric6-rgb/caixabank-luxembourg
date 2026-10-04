@@ -5,7 +5,7 @@ import { requireAdmin } from "./admin-guard";
 import { getClientSession } from "@/lib/auth-client";
 import { getClientById } from "@/lib/queries/banking";
 import { addDemande, updateDemandeStatus, type DemandeType, type DemandeStatus } from "@/lib/demandes-store";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 
 export async function createDemandeAction(formData: FormData): Promise<{ success: boolean; error?: string }> {
   const session = await getClientSession();
@@ -31,7 +31,7 @@ export async function createDemandeAction(formData: FormData): Promise<{ success
   });
 
   if (type === "compte_epargne") {
-    const src = DEMO_CLIENTS.find((c) => c.id === client.id);
+    const src = BANK_CLIENTS.find((c) => c.id === client.id);
     if (src && !src.accounts.some((a) => a.type === "epargne")) {
       const iban = `LU${String(10 + src.id).padStart(2, "0")} 0019 2004 0000 ${String(src.id).padStart(4, "0")} ${String(Date.now()).slice(-4)} ${String(Date.now()).slice(-8, -4)}`;
       src.accounts.push({ label: "Livret Epargne", number: iban, balance: 0, type: "epargne" });

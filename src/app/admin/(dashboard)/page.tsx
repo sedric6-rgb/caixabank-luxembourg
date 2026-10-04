@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { getDashboardStats } from "@/lib/queries/banking";
-import { DEMO_CLIENTS } from "@/lib/demo-data";
+import { BANK_CLIENTS } from "@/lib/client-data";
 
 export default async function AdminDashboard() {
   const stats = await getDashboardStats();
-  const totalCards = DEMO_CLIENTS.reduce((sum, c) => sum + c.cards.length, 0);
-  const recentClients = DEMO_CLIENTS.filter((c) => c.status === "actif").slice(-3).reverse();
+  const totalCards = BANK_CLIENTS.reduce((sum, c) => sum + c.cards.length, 0);
+  const recentClients = BANK_CLIENTS.filter((c) => c.status === "actif").slice(-3).reverse();
 
   return (
     <div>
@@ -35,9 +35,9 @@ export default async function AdminDashboard() {
             {[
               { action: "Nouveau client enregistré", detail: `${recentClients[0] ? `${recentClients[0].first_name} ${recentClients[0].last_name} — ${recentClients[0].client_number}` : "—"}`, time: "Il y a 12 min" },
               { action: "Compte ouvert", detail: `Compte courant pour ${recentClients[1] ? `${recentClients[1].first_name} ${recentClients[1].last_name}` : "—"}`, time: "Il y a 34 min" },
-              { action: "Virement entrant", detail: `${DEMO_CLIENTS[20] ? `Salaire — ${DEMO_CLIENTS[20].first_name} ${DEMO_CLIENTS[20].last_name}` : "—"}`, time: "Il y a 1h" },
-              { action: "Carte émise", detail: `${DEMO_CLIENTS[0]?.cards[0] ? `${DEMO_CLIENTS[0].cards[0].type} *${DEMO_CLIENTS[0].cards[0].last4} pour ${DEMO_CLIENTS[0].first_name} ${DEMO_CLIENTS[0].last_name}` : "—"}`, time: "Il y a 2h" },
-              { action: "Virement traité", detail: `${DEMO_CLIENTS[19] ? `${DEMO_CLIENTS[19].first_name} ${DEMO_CLIENTS[19].last_name} — Virement international` : "—"}`, time: "Il y a 3h" },
+              { action: "Virement entrant", detail: `${BANK_CLIENTS[20] ? `Salaire — ${BANK_CLIENTS[20].first_name} ${BANK_CLIENTS[20].last_name}` : "—"}`, time: "Il y a 1h" },
+              { action: "Carte émise", detail: `${BANK_CLIENTS[0]?.cards[0] ? `${BANK_CLIENTS[0].cards[0].type} *${BANK_CLIENTS[0].cards[0].last4} pour ${BANK_CLIENTS[0].first_name} ${BANK_CLIENTS[0].last_name}` : "—"}`, time: "Il y a 2h" },
+              { action: "Virement traité", detail: `${BANK_CLIENTS[19] ? `${BANK_CLIENTS[19].first_name} ${BANK_CLIENTS[19].last_name} — Virement international` : "—"}`, time: "Il y a 3h" },
             ].map((item, i) => (
               <div key={i} className="flex items-start justify-between py-2 border-b border-gray-100 last:border-0">
                 <div>

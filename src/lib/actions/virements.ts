@@ -2,13 +2,13 @@
 
 import { ensureState, persist } from "@/lib/state";
 import { getClientSession } from "@/lib/auth-client";
-import { DEMO_CLIENTS, type DemoAccount } from "@/lib/demo-data";
+import { BANK_CLIENTS, type AccountRecord } from "@/lib/client-data";
 import { nextId } from "@/lib/shared-store";
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "./admin-guard";
 
 function newBeneficiaryId(): number {
-  return nextId(DEMO_CLIENTS.flatMap((c) => c._beneficiaries ?? []), 10001);
+  return nextId(BANK_CLIENTS.flatMap((c) => c._beneficiaries ?? []), 10001);
 }
 
 export async function updateClientProfileAction(
@@ -17,7 +17,7 @@ export async function updateClientProfileAction(
 ): Promise<{ success: boolean }> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   Object.assign(client, updates);
   await persist("clients");
@@ -31,7 +31,7 @@ export async function toggleClientStatusAction(
   await requireAdmin();
   await ensureState();
   if (newStatus !== "actif" && newStatus !== "bloque") return { success: false };
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.status = newStatus;
   revalidatePath("/admin/clients", "layout");
@@ -46,7 +46,7 @@ export async function adminAddTransactionAction(
 ): Promise<{ success: boolean }> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.transactions.unshift(tx);
   const acct = client.accounts.find((a) => a.number === accountNumber);
@@ -57,11 +57,11 @@ export async function adminAddTransactionAction(
 
 export async function adminAddAccountAction(
   clientId: number,
-  newAcct: DemoAccount
+  newAcct: AccountRecord
 ): Promise<{ success: boolean }> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client.accounts.push(newAcct);
   await persist("clients");
@@ -71,7 +71,7 @@ export async function adminAddAccountAction(
 export async function toggleBlockTransactionsAction(clientId: number, block: boolean): Promise<{ success: boolean }> {
   await requireAdmin();
   await ensureState();
-  const client = DEMO_CLIENTS.find((c) => c.id === clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === clientId);
   if (!client) return { success: false };
   client._transactions_blocked = block;
   await persist("clients");
@@ -96,7 +96,7 @@ export async function addBeneficiaryAction(formData: FormData): Promise<{ succes
     return { success: false, error: "IBAN invalide" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   const id = newBeneficiaryId();
@@ -115,7 +115,7 @@ export async function deleteBeneficiaryAction(beneficiaryId: number): Promise<{ 
   if (!session) return { success: false, error: "Non connecte" };
   await ensureState();
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
 
   const idx = client._beneficiaries.findIndex((b) => b.id === beneficiaryId);
@@ -132,7 +132,7 @@ export async function toggleBeneficiaryFavoriteAction(beneficiaryId: number): Pr
   if (!session) return { success: false, error: "Non connecte" };
   await ensureState();
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client || !client._beneficiaries) return { success: false, error: "Client introuvable" };
 
   const ben = client._beneficiaries.find((b) => b.id === beneficiaryId);
@@ -149,7 +149,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
   if (!session) return { success: false, error: "Non connecte" };
   await ensureState();
 
-  const client0 = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client0 = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (client0?._transactions_blocked) {
     return { success: false, error: "Vos transactions sont temporairement suspendues. Veuillez contacter votre conseiller." };
   }
@@ -170,7 +170,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
     return { success: false, error: "Le montant doit etre superieur a 0" };
   }
 
-  const client = DEMO_CLIENTS.find((c) => c.id === session.clientId);
+  const client = BANK_CLIENTS.find((c) => c.id === session.clientId);
   if (!client) return { success: false, error: "Client introuvable" };
 
   const acctIdx = client.accounts.findIndex((_, i) => session.clientId * 100 + i + 1 === sourceAccountId);
@@ -197,7 +197,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
   });
 
   const normalizedIban = beneficiaryIban.replace(/\s/g, "");
-  for (const recipient of DEMO_CLIENTS) {
+  for (const recipient of BANK_CLIENTS) {
     if (recipient.id === client.id) continue;
     const recipientAcct = recipient.accounts.find((a) => a.number.replace(/\s/g, "") === normalizedIban);
     if (recipientAcct) {
@@ -219,7 +219,7 @@ export async function executeVirementAction(formData: FormData): Promise<{ succe
       client._beneficiaries = [];
     }
     const alreadyExists = client._beneficiaries.some((b) => b.iban === beneficiaryIban) ||
-      DEMO_CLIENTS.filter((c) => c.id !== session.clientId).slice(0, 3).some((oc) => oc.accounts[0]?.number === beneficiaryIban);
+      BANK_CLIENTS.filter((c) => c.id !== session.clientId).slice(0, 3).some((oc) => oc.accounts[0]?.number === beneficiaryIban);
 
     if (!alreadyExists) {
       client._beneficiaries.push({
