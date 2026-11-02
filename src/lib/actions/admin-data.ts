@@ -7,6 +7,7 @@ import { ensureState, persist } from "@/lib/state";
 import { BANK_CLIENTS, type AccountRecord, type CardRecord, type TxRecord } from "@/lib/client-data";
 import { INSURANCES, newInsuranceId, type Insurance } from "@/lib/insurances-store";
 import { MANDATES, newMandateId, type Mandate } from "@/lib/mandates-store";
+import { GUARANTEES, newGuaranteeId, newGuaranteeRef, type BankGuarantee, type GuaranteeStatus } from "@/lib/guarantees-store";
 import { DEMANDES } from "@/lib/demandes-store";
 import { createClientSessionToken } from "@/lib/auth-client";
 import { randomInt } from "crypto";
@@ -308,5 +309,51 @@ export async function adminLoginAsClientAction(clientId: number): Promise<Result
     path: "/",
     expires: session.expires,
   });
+  return { success: true };
+}
+
+export async function adminCreateGuaranteeAction(
+  data: Pick<BankGuarantee, "clientId" | "type" | "swiftType" | "beneficiaire" | "montant" | "devise" | "objet" | "dateExpiration" | "banqueCorrespondante" | "conditions">
+): Promise<Result<{ guarantee: BankGuarantee }>> {
+  await requireAdmin();
+  await ensureState();
+  const client = BANK_CLIENTS.find((c) => c.id === data.clientId);
+  if (!client) return { success: false, error: "Client introuvable" };
+  if (!data.type || !data.beneficiaire.trim() || !Number.isFinite(data.montant) || data.montant <= 0) {
+    return { success: false, error: "Informations de la garantie invalides" };
+  }
+  const guarantee: BankGuarantee = {
+    id: newGuaranteeId(),
+    clientId: client.id,
+    client: `${client.first_name} ${client.last_name}`,
+    reference: newGuaranteeRef(),
+    type: data.type,
+    swiftType: data.swiftType,
+    beneficiaire: data.beneficiaire.trim(),
+    montant: data.montant,
+    devise: data.devise || "EUR",
+    objet: data.objet.trim(),
+    dateEmission: today(),
+    dateExpiration: data.dateExpiration,
+    banqueCorrespondante: data.banqueCorrespondante.trim() || "N/A",
+    conditions: data.conditions.trim(),
+    status: "brouillon",
+  };
+  GUARANTEES.push(guarantee);
+  await persist("guarantees");
+  refresh();
+  return { success: true, guarantee };
+}
+
+export async function adminSetGuaranteeStatusAction(id: number, status: GuaranteeStatus): Promise<Result> {
+  await requireAdmin();
+  await ensureState();
+  const valid: GuaranteeStatus[] = ["brouillon", "en_attente", "active", "expiree", "annulee"];
+  if (!valid.includes(status)) return { success: false, error: "Statut invalide" };
+  const guarantee = GUARANTEES.find((g) => g.id === id);
+  if (!guarantee) return { success: false, error: "Garantie introuvable" };
+  guarantee.status = status;
+  await persist("guarantees");
+  refresh();
   return { success: true };
 }

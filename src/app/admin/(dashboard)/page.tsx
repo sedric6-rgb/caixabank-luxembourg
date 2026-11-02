@@ -80,6 +80,15 @@ export default async function AdminDashboard() {
                 <p className="text-xs text-gray-500">Visa Débit, Classic, Gold ou Platinum</p>
               </div>
             </Link>
+            <Link href="/admin/garanties" className="flex items-center gap-3 p-4 rounded-lg border border-gray-200 hover:border-amber-300 hover:bg-amber-50 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                <svg width="20" height="20" fill="none" viewBox="0 0 20 20"><rect x="4" y="2" width="12" height="16" rx="1.5" stroke="#d97706" strokeWidth="2"/><path d="M7 6h6M7 9h6M7 12h3" stroke="#d97706" strokeWidth="2" strokeLinecap="round"/></svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-900">Garantie bancaire</p>
+                <p className="text-xs text-gray-500">SBLC MT 760, LC MT 700, lettres MT 799</p>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
