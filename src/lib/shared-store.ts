@@ -5,7 +5,8 @@ export type StoreKey =
   | "conversations"
   | "notifications"
   | "insurances"
-  | "mandates";
+  | "mandates"
+  | "guarantees";
 
 export type Identified = { id: number };
 
