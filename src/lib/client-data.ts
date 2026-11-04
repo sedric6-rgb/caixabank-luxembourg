@@ -523,4 +523,18 @@ export const BANK_CLIENTS: ClientRecord[] = shared<ClientRecord>("clients", () =
       { date: "30/09/2026", desc: "Ouverture de compte — CaixaBank Luxembourg", amount: 0 },
     ],
   },
+  {
+    id: 26, client_number: "CBP-261126", first_name: "Mohessou Francis", last_name: "FINAF Conseils Investissement",
+    email: "contact@finaf-conseils.com", phone: "+225 07 00 00 00", date_of_birth: "01/01/1975",
+    address: "Plateau, Boulevard de la Republique", city: "Abidjan", postal_code: "01 BP 1234", country: "Cote d'Ivoire",
+    id_type: "Passeport", id_number: "CI-2024-MF-8841", status: "actif", created_at: "04/11/2026",
+    accounts: [
+      { label: "Compte Courant", number: "LU78 0019 2611 0000 2600 2611 2600", balance: 22000000, type: "courant" },
+    ],
+    cards: [],
+    transactions: [
+      { date: "04/11/2026", desc: "Ouverture de compte — CaixaBank Luxembourg", amount: 0 },
+      { date: "04/11/2026", desc: "Depot initial — Compte Courant", amount: 22000000 },
+    ],
+  },
 ]);

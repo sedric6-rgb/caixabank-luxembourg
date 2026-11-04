@@ -100,6 +100,15 @@ export const GUARANTEES: BankGuarantee[] = shared<BankGuarantee>("guarantees", (
     banqueCorrespondante: "Commerzbank AG, Munich",
     conditions: "Irrevocable, paiement echelonne selon avancement des travaux",
   },
+  {
+    id: 7, clientId: 26, client: "Mohessou Francis — FINAF Conseils Investissement", reference: "GT-2026-007",
+    type: "SBLC — Standby Letter of Credit", swiftType: "MT 760",
+    beneficiaire: "FINAF Conseils Investissement — Gerant : Mohessou Francis", montant: 22000000, devise: "EUR",
+    objet: "Garantie bancaire SBLC MT 760 irrevocable de EUR 22 000 000 emise par CaixaBank S.A. Luxembourg en faveur de FINAF Conseils Investissement pour couverture d'operations d'investissement et de conseil financier",
+    dateEmission: "04/11/2026", dateExpiration: "04/11/2027", status: "active",
+    banqueCorrespondante: "CaixaBank S.A., Luxembourg — SWIFT: CABORABB",
+    conditions: "Irrevocable et inconditionnelle, payable a premiere demande conforme aux regles ISP98 (International Standby Practices) et UCP 600 de la CCI. Montant : EUR 22 000 000,00. Valable 12 mois avec renouvellement tacite.",
+  },
 ]);
 
 export function newGuaranteeId(): number {
